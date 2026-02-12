@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SDTM Timer</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+        body { margin: 0; background: black; color: white; font-family: -apple-system; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; text-align: center; }
+        .screen { display: none; flex-direction: column; gap: 20px; width: 85%; }
+        .active { display: flex; }
+        #timer { font-size: 120px; font-weight: bold; font-variant-numeric: tabular-nums; }
+        button { padding: 20px; font-size: 20px; border-radius: 12px; border: none; background: #333; color: white; font-weight: bold; }
+        .primary { background: #007AFF; }
+        #reportLog { text-align: left; background: #1c1c1e; padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <div id="menu" class="screen active">
+        <h1>Southern Dutchess</h1>
+        <button class="primary" onclick="showScreen('setup')">New Timer</button>
+        <button onclick="showScreen('report')">Meeting Report</button>
+        <button style="color:#ff453a" onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div id="setup" class="screen">
+        <input type="text" id="name" placeholder="Speaker Name" style="padding:15px; border-radius:8px;">
+        <select id="type" style="padding:15px; border-radius:8px;">
+            <option value="60,90,120">Table Topics (1-2m)</option>
+            <option value="120,150,180">Evaluation (2-3m)</option>
+            <option value="300,360,420">Speech (5-7m)</option>
+            <option value="240,300,360">Ice Breaker (4-6m)</option>
+        </select>
+        <button class="primary" onclick="startTimer()">Start</button>
+        <button onclick="showScreen('menu')">Cancel</button>
+    </div>
+
+    <div id="timerDisplay" class="screen" onclick="handleTap()">
+        <div id="spkName" style="font-size:24px; color:#aaa">Name</div>
+        <div id="timer">00:00</div>
+        <div id="status">TAP TO START</div>
+    </div>
+
+    <div id="report" class="screen">
+        <h3>Timer's Report</h3>
+        <div id="reportLog"></div>
+        <button onclick="showScreen('menu')">Back</button>
+    </div>
+
+    <script>
+        let state="ready", elapsed=0, start, iv, lims={};
+        
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'report') loadReport();
+        }
+
+        function startTimer() {
+            const v = document.getElementById('type').value.split(',');
+            lims = { g:v[0], y:v[1], r:v[2] };
+            document.getElementById('spkName').innerText = document.getElementById('name').value || "Speaker";
+            showScreen('timerDisplay');
+        }
+
+        function handleTap() {
+            if(state === "ready") {
+                state = "run"; start = Date.now();
+                iv = setInterval(update, 1000);
+            } else if (state === "run") {
+                state = "done"; clearInterval(iv);
+                saveLog();
+            } else { location.reload(); }
+        }
+
+        function update() {
+            elapsed = Math.floor((Date.now() - start) / 1000);
+            let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
+            document.getElementById('timer').innerText = m+":"+s;
+            if(elapsed >= lims.r) document.body.style.background = "#d32f2f";
+            else if(elapsed >= lims.y) { document.body.style.background = "#fbc02d"; document.body.style.color="black"; }
+            else if(elapsed >= lims.g) document.body.style.background = "#388e3c";
+        }
+
+        function saveLog() {
+            let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
+            logs.push(`${document.getElementById('spkName').innerText}: ${document.getElementById('timer').innerText}`);
+            localStorage.setItem('sdtm_logs', JSON.stringify(logs));
+        }
+
+        function loadReport() {
+            let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
+            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No logs.";
+        }
+
+        function clearLogs() { if(confirm("Clear?")) localStorage.removeItem('sdtm_logs'); }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    </script>
+</body>
+</html>
