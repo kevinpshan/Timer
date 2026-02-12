@@ -26,76 +26,70 @@
             box-sizing: border-box; overflow: hidden;
         }
 
-        .header { padding: 40px 20px 10px; text-align: left; flex-shrink: 0; }
-        h1 { margin: 0; font-size: clamp(34px, 5vw, 60px); font-weight: 800; }
-        .subtitle { opacity: 0.8; font-size: clamp(17px, 2.5vw, 28px); margin-top: 5px; color: var(--accent); font-weight: 600; }
+        .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; }
+        h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; }
+        .subtitle { opacity: 0.8; font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 600; }
 
         .container { 
             flex: 1; display: flex; flex-direction: column; padding: 0 20px; 
-            gap: 15px; overflow-y: auto; min-height: 0;
+            gap: 12px; overflow-y: auto; min-height: 0;
             max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box;
-            -webkit-overflow-scrolling: touch;
         }
 
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .active { display: flex; }
 
-        /* Main Menu Cards */
+        /* Main Menu Cards - Compressed height, larger text */
         .card { 
-            background: var(--card); border-radius: 20px; padding: clamp(25px, 5vw, 45px); 
+            background: var(--card); border-radius: 18px; padding: clamp(20px, 3.5vw, 35px); 
             display: flex; align-items: center; justify-content: space-between; 
             border: none; color: white; text-align: left; width: 100%; flex-shrink: 0;
         }
-        .card-content h3 { margin: 0; font-size: clamp(22px, 3.5vw, 34px); font-weight: 700; }
-        .card-content p { margin: 8px 0 0; font-size: clamp(15px, 2.2vw, 22px); opacity: 0.6; }
+        .card-content h3 { margin: 0; font-size: clamp(24px, 3.8vw, 36px); font-weight: 700; }
+        .card-content p { margin: 4px 0 0; font-size: clamp(16px, 2.2vw, 22px); opacity: 0.6; }
 
-        /* Speaker Entry & List */
+        /* Search & Roster Area */
         .input-row { display: flex; gap: 10px; align-items: stretch; flex-shrink: 0; }
         input { 
-            background: var(--card); border: none; color: white; padding: 18px; 
-            border-radius: 14px; font-size: 18px; flex: 1; outline: none;
+            background: var(--card); border: none; color: white; padding: 15px; 
+            border-radius: 14px; font-size: 22px; flex: 1; outline: none;
         }
-        .add-btn { 
-            background: var(--accent); color: white; border: none; 
-            padding: 0 25px; border-radius: 14px; font-weight: 700; font-size: 16px;
-        }
+        .add-btn { background: var(--accent); color: white; border: none; padding: 0 25px; border-radius: 14px; font-weight: 700; font-size: 18px; }
 
-        .list-label { font-size: 13px; text-transform: uppercase; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; }
-        
-        /* THE FIXED SPEAKER AREA */
         .speaker-area {
-            background: #121214; border-radius: 18px; padding: 5px;
-            max-height: 220px; overflow-y: auto; border: 1px solid #333; flex-shrink: 0;
+            background: #121214; border-radius: 16px; padding: 2px;
+            flex: 1; overflow-y: auto; border: 1px solid #333; min-height: 120px;
         }
         .speaker-item {
-            padding: 16px; border-bottom: 1px solid #222;
+            padding: 12px 16px; border-bottom: 1px solid #222;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .speaker-item:last-child { border-bottom: none; }
-        .sp-name { font-size: 19px; flex: 1; color: var(--accent); font-weight: 500; }
-        .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 20px; opacity: 0.5; }
+        .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 500; }
+        .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 22px; opacity: 0.4; }
 
-        /* Selection Grid */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex-shrink: 0; margin-top: 5px; }
+        /* Selection Grid - COMPRESSED HEIGHT */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
         .select-card { 
-            background: var(--card); border-radius: 16px; padding: 15px; 
+            background: var(--card); border-radius: 14px; padding: 12px; 
             text-align: center; border: 3px solid transparent; 
         }
         .select-card.selected { border-color: var(--accent); background: #2c2c2e; }
+        .select-card h4 { margin: 0; font-size: 20px; }
+        .select-card p { margin: 2px 0 0; font-size: 14px; opacity: 0.5; }
 
         /* Sticky Footers */
-        .button-row { display: flex; gap: 15px; padding: 15px 20px 25px; flex-shrink: 0; background: black; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: black; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { 
-            flex: 1; padding: 22px; border-radius: 18px; font-size: 19px; 
+            flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; 
             font-weight: 700; border: none; background: var(--accent); color: white; 
         }
         .secondary-btn { background: #333; }
 
-        .credit-footer { text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid #222; flex-shrink: 0; }
-        .credit-link { color: var(--accent); text-decoration: none; font-weight: 700; font-size: clamp(16px, 2.5vw, 22px); }
+        .credit-footer { text-align: center; margin-top: auto; padding: 15px 0; border-top: 1px solid #222; flex-shrink: 0; }
+        .credit-link { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 18px; }
 
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums;}
-        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; }
+        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 22px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -108,14 +102,14 @@
         <div class="container">
             <button class="card" onclick="showScreen('setup')">
                 <div class="card-content"><h3>New Timer</h3><p>Select a speaker and start</p></div>
-                <div style="font-size:30px; color:var(--accent)">⊕</div>
+                <div style="font-size:40px; color:var(--accent)">⊕</div>
             </button>
             <button class="card" onclick="showScreen('report')">
                 <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
-                <div style="font-size:24px; color:var(--accent)">☰</div>
+                <div style="font-size:35px; color:var(--accent)">☰</div>
             </button>
-            <button class="card" onclick="clearLogs()" style="background: rgba(255,69,58,0.1); border: 2px solid var(--red);">
-                <div style="color:var(--red); font-weight:800; width:100%; text-align:center;">CLEAR MEETING LOGS</div>
+            <button class="card" onclick="clearLogs()" style="background: rgba(255,69,58,0.1); border: 2px solid var(--red); padding: 15px;">
+                <div style="color:var(--red); font-weight:800; width:100%; text-align:center; font-size: 22px;">CLEAR MEETING LOGS</div>
             </button>
         </div>
         <div class="credit-footer">
@@ -134,7 +128,6 @@
                 <button class="add-btn" onclick="saveSpeaker()">Add</button>
             </div>
             
-            <div class="list-label">Roster / Search Results</div>
             <div id="speakerArea" class="speaker-area">
                 </div>
 
@@ -153,9 +146,9 @@
     </div>
 
     <div id="timerDisplay" class="screen" onclick="handleTap()">
-        <div id="spkName" style="font-size:30px; opacity:0.5; margin-top:20px; text-align:center;">Speaker</div>
+        <div id="spkName" style="font-size:clamp(30px, 5vw, 55px); opacity:0.5; margin-top:20px; text-align:center;">Speaker</div>
         <div id="timer">00:00</div>
-        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:22px;">TAP TO START</div>
+        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:24px;">TAP TO START</div>
     </div>
 
     <div id="report" class="screen">
@@ -194,7 +187,7 @@
                 allSpeakers.sort();
                 localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
             }
-            nameEl.value = ""; // Clear input after adding
+            nameEl.value = ""; 
             renderSpeakerList(allSpeakers);
         }
 
@@ -207,10 +200,9 @@
         function renderSpeakerList(listToDisplay) {
             const area = document.getElementById('speakerArea');
             if (listToDisplay.length === 0) {
-                area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center">No names found. Type a name and tap 'Add'.</div>`;
+                area.innerHTML = `<div style="padding:15px; opacity:0.3; text-align:center; font-size:18px;">Roster empty. Type & Add above.</div>`;
                 return;
             }
-            
             area.innerHTML = listToDisplay.map(name => `
                 <div class="speaker-item">
                     <div class="sp-name" onclick="selectSpeaker('${name}')">${name}</div>
@@ -224,7 +216,7 @@
         }
 
         function deleteSpeaker(name) {
-            if(confirm("Delete " + name + " from roster?")) {
+            if(confirm("Delete " + name + "?")) {
                 allSpeakers = allSpeakers.filter(s => s !== name);
                 localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
                 renderSpeakerList(allSpeakers);
@@ -249,8 +241,8 @@
 
         function startTimer() {
             const currentName = document.getElementById('name').value;
-            if(!lims.g) return alert("Select speech type first.");
-            if(!currentName) return alert("Enter or select a speaker name.");
+            if(!lims.g) return alert("Select speech type.");
+            if(!currentName) return alert("Select speaker.");
             document.getElementById('spkName').innerText = currentName;
             showScreen('timerDisplay');
         }
