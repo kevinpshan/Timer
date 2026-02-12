@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SDTM Timer</title>
+    <title>Meeting Timer</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,7 +52,6 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .active { display: flex; }
 
-        /* UNIFIED CARD SCALING */
         .card { 
             background: var(--card); 
             border-radius: 18px; 
@@ -66,17 +65,8 @@
             width: 100%; 
         }
 
-        .card-content h3 { 
-            margin: 0; 
-            font-size: clamp(22px, 3.5vw, 32px); 
-            font-weight: 700; 
-        }
-
-        .card-content p { 
-            margin: 8px 0 0; 
-            font-size: clamp(15px, 2.2vw, 20px); 
-            opacity: 0.6; 
-        }
+        .card-content h3 { margin: 0; font-size: clamp(22px, 3.5vw, 32px); font-weight: 700; }
+        .card-content p { margin: 8px 0 0; font-size: clamp(15px, 2.2vw, 20px); opacity: 0.6; }
 
         .icon-circle { 
             width: clamp(40px, 6vw, 60px); 
@@ -90,28 +80,29 @@
             font-size: clamp(18px, 3vw, 26px);
         }
 
-        /* HIGH-CONTRAST CLEAR BUTTON */
         .clear-btn {
-            background: rgba(255, 69, 58, 0.15);
-            border: 3px solid var(--red);
+            background: rgba(255, 69, 58, 0.1);
+            border: 2px solid var(--red);
             border-radius: 18px;
-            padding: clamp(20px, 4vw, 35px);
+            padding: clamp(15px, 3vw, 25px);
             color: var(--red);
-            font-size: clamp(18px, 3vw, 26px);
-            font-weight: 800;
-            margin-top: auto;
-            margin-bottom: 30px;
+            font-size: clamp(16px, 2vw, 22px);
+            font-weight: 700;
+            margin-top: 10px;
             text-align: center;
         }
 
-        /* TIMER DISPLAY */
-        #timer { 
-            font-size: clamp(100px, 35vw, 400px); 
-            font-weight: 200; 
-            font-variant-numeric: tabular-nums; 
-            margin: 10px 0; 
+        .credit-link {
             text-align: center;
+            margin-top: auto;
+            padding: 20px 0;
+            font-size: 14px;
+            opacity: 0.4;
+            color: white;
+            text-decoration: none;
         }
+
+        #timer { font-size: clamp(100px, 35vw, 400px); font-weight: 200; font-variant-numeric: tabular-nums; margin: 10px 0; text-align: center;}
         
         #reportLog { 
             background: var(--card); 
@@ -150,8 +141,8 @@
 
     <div id="menu" class="screen active">
         <div class="header">
-            <h1>SDTM Timer</h1>
-            <div class="subtitle">Southern Dutchess Toastmasters</div>
+            <h1>Meeting Timer</h1>
+            <div class="subtitle">Toastmasters International</div>
         </div>
         <div class="container">
             <button class="card" onclick="showScreen('setup')">
@@ -169,9 +160,11 @@
                 <div class="icon-circle">☰</div>
             </button>
             
-            <button class="clear-btn" onclick="clearLogs()">
-                CLEAR MEETING LOGS
-            </button>
+            <button class="clear-btn" onclick="clearLogs()">CLEAR LOGS</button>
+            
+            <a href="https://bit.ly/southerndutchess" class="credit-link">
+                Created by Southern Dutchess Toastmasters
+            </a>
         </div>
     </div>
 
@@ -272,10 +265,10 @@
         async function shareReport() {
             const logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
             if (logs.length === 0) return alert("Nothing to share.");
-            const text = "SDTM Timer Report:\n\n" + logs.join('\n');
+            const text = "Meeting Timer Report:\n\n" + logs.join('\n');
             try {
                 if (navigator.share) {
-                    await navigator.share({ title: 'Southern Dutchess Timer Report', text: text });
+                    await navigator.share({ title: 'Meeting Timer Report', text: text });
                 } else {
                     const textArea = document.createElement("textarea");
                     textArea.value = text;
