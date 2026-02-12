@@ -62,6 +62,7 @@
         input { 
             background: #2c2c2e; border: 1px solid #444; color: white; padding: 15px; 
             border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box;
+            text-transform: uppercase; /* Visual uppercase while typing */
         }
 
         .speaker-area {
@@ -143,7 +144,7 @@
         <div class="header"><h1>Speech Info</h1></div>
         <div class="container">
             <div style="display:flex; gap:10px; flex-shrink:0;">
-                <input type="text" id="name" placeholder="Search or Enter Name" oninput="filterSpeakers()">
+                <input type="text" id="name" placeholder="Search or Enter Name" oninput="handleNameInput(this)">
                 <button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="saveSpeaker()">Add</button>
             </div>
             <div id="speakerArea" class="speaker-area"></div>
@@ -186,6 +187,11 @@
     <script>
         let state="stopped", elapsed=0, start, iv, lims={}, selectedTypeLabel="";
         let allSpeakers = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
+
+        function handleNameInput(el) {
+            el.value = el.value.toUpperCase();
+            filterSpeakers();
+        }
 
         function openModal(title, bodyHTML, onConfirm) {
             document.getElementById('modalTitle').innerText = title;
@@ -243,11 +249,15 @@
 
         function saveSpeaker() {
             const nameEl = document.getElementById('name');
-            const name = nameEl.value.trim();
-            if(!name || allSpeakers.includes(name)) return;
-            allSpeakers.push(name); allSpeakers.sort();
-            localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
-            nameEl.value = ""; renderSpeakerList(allSpeakers);
+            const name = nameEl.value.trim().toUpperCase();
+            if(!name) return;
+            if(!allSpeakers.includes(name)) {
+                allSpeakers.push(name); allSpeakers.sort();
+                localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
+            }
+            // Keep the name in the box and refresh the list
+            renderSpeakerList(allSpeakers);
+            nameEl.focus(); 
         }
 
         function filterSpeakers() {
@@ -294,9 +304,8 @@
             lims = { g, y, r };
         }
 
-        // TIMER LOGIC
         function startTimer() {
-            const currentName = document.getElementById('name').value;
+            const currentName = document.getElementById('name').value.trim();
             if(!lims.g || !currentName) return alert("Select type and speaker.");
             
             document.getElementById('spkName').innerText = currentName;
@@ -329,6 +338,7 @@
             state = "stopped";
             document.getElementById('timer').innerText = "00:00";
             document.body.style.background = "black";
+            document.body.style.color = "white";
             document.getElementById('pauseResumeBtn').innerText = "START";
         }
 
@@ -337,7 +347,7 @@
             let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
             document.getElementById('timer').innerText = `${m}:${s}`;
             
-            if(elapsed >= lims.r) document.body.style.background = "var(--red)";
+            if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
             else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
             else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
         }
@@ -348,7 +358,8 @@
                 logs.push(`${document.getElementById('spkName').innerText} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`);
                 localStorage.setItem('sdtm_logs', JSON.stringify(logs));
             }
-            location.reload();
+            // Reset state and return to setup instead of full reload for speed
+            showScreen('menu');
         }
 
         function loadReport() {
