@@ -22,94 +22,48 @@
             margin: 0; 
             background: var(--bg); 
             color: var(--text); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, sans-serif;
             display: flex; 
             flex-direction: column; 
             height: 100vh;
             overflow: hidden;
         }
 
-        .header {
-            padding: 60px 20px 20px;
-            text-align: left;
-        }
-
+        .header { padding: 50px 20px 20px; text-align: left; }
         h1 { margin: 0; font-size: 34px; font-weight: 800; }
         .subtitle { opacity: 0.5; font-size: 17px; margin-top: 5px; }
 
-        .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 0 20px;
-            gap: 15px;
-        }
-
+        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; }
         .screen { display: none; flex-direction: column; height: 100%; }
         .active { display: flex; }
 
-        /* Card Styling */
-        .card {
+        /* Input Card */
+        .input-group { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+        input { background: none; border: none; color: white; width: 100%; font-size: 19px; outline: none; }
+
+        /* Grid Selection */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+        .select-card {
             background: var(--card);
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            color: inherit;
-            border: none;
-            width: 100%;
-            text-align: left;
-            transition: background 0.2s;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: 0.2s;
         }
-
-        .card:active { background: #2c2c2e; }
-
-        .card-content h3 { margin: 0; font-size: 19px; font-weight: 600; }
-        .card-content p { margin: 5px 0 0; font-size: 14px; opacity: 0.6; }
-
-        .icon-circle {
-            width: 36px;
-            height: 36px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* Input Styling */
-        input, select {
-            background: var(--card);
-            border: none;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 17px;
-            margin-bottom: 10px;
-        }
+        .select-card.selected { border-color: var(--accent); background: #2c2c2e; }
+        .select-card h4 { margin: 0; font-size: 16px; }
+        .select-card p { margin: 5px 0 0; font-size: 12px; opacity: 0.5; }
 
         /* Timer UI */
         #timerDisplay { justify-content: center; text-align: center; }
         #timer { font-size: 120px; font-weight: 200; font-variant-numeric: tabular-nums; margin: 20px 0; }
         #status { font-size: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Report area */
-        #reportLog { background: var(--card); border-radius: 12px; padding: 15px; flex: 1; overflow-y: auto; font-family: monospace; }
-        
-        .footer-btn {
-            margin-top: auto;
-            margin-bottom: 40px;
-            padding: 18px;
-            border-radius: 14px;
-            font-size: 17px;
-            font-weight: 600;
-            border: none;
-            background: var(--accent);
-            color: white;
-        }
+        /* Global UI */
+        .card { background: var(--card); border-radius: 14px; padding: 20px; display: flex; align-items: center; justify-content: space-between; border: none; color: white; text-align: left; }
+        .icon-circle { width: 36px; height: 36px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .footer-btn { padding: 18px; border-radius: 14px; font-size: 17px; font-weight: 600; border: none; background: var(--accent); color: white; margin-bottom: 40px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -127,7 +81,6 @@
                 </div>
                 <div class="icon-circle">＋</div>
             </button>
-
             <button class="card" onclick="showScreen('report')">
                 <div class="card-content">
                     <h3>Meeting Report</h3>
@@ -135,26 +88,37 @@
                 </div>
                 <div class="icon-circle">☰</div>
             </button>
-
-            <button class="card" onclick="clearLogs()" style="margin-top: 20px; opacity: 0.8;">
-                <div class="card-content">
-                    <h3 style="color: var(--red)">Reset All</h3>
-                    <p>Wipe current meeting logs</p>
-                </div>
+            <button class="card" onclick="clearLogs()" style="margin-top:20px; opacity:0.6; border:1px solid #333;">
+                <div style="color:var(--red)">Clear All Meeting Logs</div>
             </button>
         </div>
     </div>
 
     <div id="setup" class="screen">
-        <div class="header"><h1>Speech Details</h1></div>
+        <div class="header"><h1>Speech Info</h1></div>
         <div class="container">
-            <input type="text" id="name" placeholder="Speaker Name" autocomplete="off">
-            <select id="type">
-                <option value="60,90,120">Table Topics (1-2 min)</option>
-                <option value="120,150,180">Evaluation (2-3 min)</option>
-                <option value="300,360,420">Speech (5-7 min)</option>
-                <option value="240,300,360">Ice Breaker (4-6 min)</option>
-            </select>
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Speaker Name" autocomplete="off">
+            </div>
+            
+            <div class="selection-grid">
+                <div class="select-card" onclick="selectType(this, 60, 90, 120, 'Table Topics')">
+                    <h4>Table Topics</h4><p>1 - 2 min</p>
+                </div>
+                <div class="select-card" onclick="selectType(this, 120, 150, 180, 'Evaluation')">
+                    <h4>Evaluation</h4><p>2 - 3 min</p>
+                </div>
+                <div class="select-card" onclick="selectType(this, 300, 360, 420, 'Speech')">
+                    <h4>Speech</h4><p>5 - 7 min</p>
+                </div>
+                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'Ice Breaker')">
+                    <h4>Ice Breaker</h4><p>4 - 6 min</p>
+                </div>
+                <div class="select-card" style="grid-column: span 2;" onclick="selectType(this, 0, 0, 0, 'Custom')">
+                    <h4>Custom Time</h4><p>Manual Entry</p>
+                </div>
+            </div>
+
             <button class="footer-btn" onclick="startTimer()">Begin Timing</button>
             <button style="background:none; color:var(--accent); border:none;" onclick="showScreen('menu')">Cancel</button>
         </div>
@@ -169,13 +133,13 @@
     <div id="report" class="screen">
         <div class="header"><h1>Meeting Report</h1></div>
         <div class="container">
-            <div id="reportLog"></div>
+            <div id="reportLog" style="background:var(--card); border-radius:12px; padding:15px; flex:1; overflow-y:auto; white-space:pre-wrap;"></div>
             <button class="footer-btn" onclick="showScreen('menu')">Done</button>
         </div>
     </div>
 
     <script>
-        let state="ready", elapsed=0, start, iv, lims={};
+        let state="ready", elapsed=0, start, iv, lims={}, selectedTypeLabel="";
         
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -185,9 +149,22 @@
             if(id === 'report') loadReport();
         }
 
+        function selectType(el, g, y, r, label) {
+            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedTypeLabel = label;
+            if(label === 'Custom') {
+                const cg = prompt("Green (min):", "5") * 60;
+                const cy = prompt("Yellow (min):", "6") * 60;
+                const cr = prompt("Red (min):", "7") * 60;
+                lims = { g:cg, y:cy, r:cr };
+            } else {
+                lims = { g, y, r };
+            }
+        }
+
         function startTimer() {
-            const v = document.getElementById('type').value.split(',');
-            lims = { g:v[0], y:v[1], r:v[2] };
+            if(!lims.g) { alert("Please select a speech type."); return; }
             document.getElementById('spkName').innerText = document.getElementById('name').value || "Speaker";
             showScreen('timerDisplay');
         }
@@ -216,16 +193,16 @@
 
         function saveLog() {
             let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
-            logs.push(`${document.getElementById('spkName').innerText} | ${document.getElementById('timer').innerText}`);
+            logs.push(`${document.getElementById('spkName').innerText} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`);
             localStorage.setItem('sdtm_logs', JSON.stringify(logs));
         }
 
         function loadReport() {
             let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
-            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data recorded yet.";
+            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data recorded.";
         }
 
-        function clearLogs() { if(confirm("Clear all speaker logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); } }
+        function clearLogs() { if(confirm("Clear meeting logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); } }
 
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
