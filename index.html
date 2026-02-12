@@ -32,7 +32,7 @@
 
         .container { 
             flex: 1; display: flex; flex-direction: column; padding: 0 20px; 
-            gap: 20px; overflow-y: auto; min-height: 0;
+            gap: 15px; overflow-y: auto; min-height: 0;
             max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box;
             -webkit-overflow-scrolling: touch;
         }
@@ -49,45 +49,53 @@
         .card-content h3 { margin: 0; font-size: clamp(22px, 3.5vw, 34px); font-weight: 700; }
         .card-content p { margin: 8px 0 0; font-size: clamp(15px, 2.2vw, 22px); opacity: 0.6; }
 
-        /* Search & Speaker List */
-        .input-row { display: flex; gap: 10px; align-items: stretch; flex-shrink: 0; margin-bottom: 5px;}
+        /* Speaker Entry & List */
+        .input-row { display: flex; gap: 10px; align-items: stretch; flex-shrink: 0; }
         input { 
-            background: var(--card); border: none; color: white; padding: clamp(15px, 2.5vw, 25px); 
-            border-radius: 16px; font-size: clamp(18px, 2.5vw, 24px); flex: 1; outline: none;
+            background: var(--card); border: none; color: white; padding: 18px; 
+            border-radius: 14px; font-size: 18px; flex: 1; outline: none;
         }
+        .add-btn { 
+            background: var(--accent); color: white; border: none; 
+            padding: 0 25px; border-radius: 14px; font-weight: 700; font-size: 16px;
+        }
+
+        .list-label { font-size: 13px; text-transform: uppercase; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; }
+        
+        /* THE FIXED SPEAKER AREA */
         .speaker-area {
-            background: #121214; border-radius: 18px; padding: 10px;
-            max-height: 200px; overflow-y: auto; border: 1px solid #333;
+            background: #121214; border-radius: 18px; padding: 5px;
+            max-height: 220px; overflow-y: auto; border: 1px solid #333; flex-shrink: 0;
         }
         .speaker-item {
-            padding: 15px; border-bottom: 1px solid #222;
-            font-size: clamp(16px, 2vw, 22px); display: flex; justify-content: space-between;
+            padding: 16px; border-bottom: 1px solid #222;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .speaker-item:last-child { border-bottom: none; }
-        .speaker-item:active { background: #2c2c2e; }
+        .sp-name { font-size: 19px; flex: 1; color: var(--accent); font-weight: 500; }
+        .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 20px; opacity: 0.5; }
 
         /* Selection Grid */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex-shrink: 0; }
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex-shrink: 0; margin-top: 5px; }
         .select-card { 
-            background: var(--card); border-radius: 18px; padding: clamp(15px, 3vw, 25px); 
+            background: var(--card); border-radius: 16px; padding: 15px; 
             text-align: center; border: 3px solid transparent; 
         }
         .select-card.selected { border-color: var(--accent); background: #2c2c2e; }
 
-        /* Footers */
-        .button-row { display: flex; gap: 15px; padding: 20px 20px 30px; flex-shrink: 0; background: black; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        /* Sticky Footers */
+        .button-row { display: flex; gap: 15px; padding: 15px 20px 25px; flex-shrink: 0; background: black; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { 
-            flex: 1; padding: clamp(20px, 4vw, 30px); border-radius: 20px; font-size: clamp(18px, 2.8vw, 26px); 
+            flex: 1; padding: 22px; border-radius: 18px; font-size: 19px; 
             font-weight: 700; border: none; background: var(--accent); color: white; 
         }
         .secondary-btn { background: #333; }
 
-        .credit-footer { text-align: center; margin-top: auto; padding: 25px 0; border-top: 1px solid #222; flex-shrink: 0; }
+        .credit-footer { text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid #222; flex-shrink: 0; }
         .credit-link { color: var(--accent); text-decoration: none; font-weight: 700; font-size: clamp(16px, 2.5vw, 22px); }
 
-        /* Timer Display */
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums;}
-        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: clamp(17px, 2.5vw, 24px); }
+        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -99,15 +107,15 @@
         </div>
         <div class="container">
             <button class="card" onclick="showScreen('setup')">
-                <div class="card-content"><h3>New Timer</h3><p>Start timing a speaker</p></div>
-                <div style="font-size:clamp(30px, 5vw, 50px); color:var(--accent)">⊕</div>
+                <div class="card-content"><h3>New Timer</h3><p>Select a speaker and start</p></div>
+                <div style="font-size:30px; color:var(--accent)">⊕</div>
             </button>
             <button class="card" onclick="showScreen('report')">
                 <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
-                <div style="font-size:clamp(24px, 4vw, 40px); color:var(--accent)">☰</div>
+                <div style="font-size:24px; color:var(--accent)">☰</div>
             </button>
-            <button class="card" onclick="clearLogs()" style="background: rgba(255,69,58,0.1); border: 3px solid var(--red);">
-                <div style="color:var(--red); font-weight:800; width:100%; text-align:center; font-size: clamp(18px, 2.5vw, 24px);">CLEAR MEETING LOGS</div>
+            <button class="card" onclick="clearLogs()" style="background: rgba(255,69,58,0.1); border: 2px solid var(--red);">
+                <div style="color:var(--red); font-weight:800; width:100%; text-align:center;">CLEAR MEETING LOGS</div>
             </button>
         </div>
         <div class="credit-footer">
@@ -123,9 +131,10 @@
         <div class="container">
             <div class="input-row">
                 <input type="text" id="name" placeholder="Search or Enter Name" oninput="filterSpeakers()">
-                <button class="footer-btn" style="flex:0; padding: 0 20px; font-size: 16px;" onclick="saveSpeaker()">Add</button>
+                <button class="add-btn" onclick="saveSpeaker()">Add</button>
             </div>
             
+            <div class="list-label">Roster / Search Results</div>
             <div id="speakerArea" class="speaker-area">
                 </div>
 
@@ -144,9 +153,9 @@
     </div>
 
     <div id="timerDisplay" class="screen" onclick="handleTap()">
-        <div id="spkName" style="font-size:clamp(30px, 5vw, 55px); opacity:0.5; margin-top:20px; text-align:center;">Speaker</div>
+        <div id="spkName" style="font-size:30px; opacity:0.5; margin-top:20px; text-align:center;">Speaker</div>
         <div id="timer">00:00</div>
-        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:clamp(20px, 3.5vw, 35px);">TAP TO START</div>
+        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:22px;">TAP TO START</div>
     </div>
 
     <div id="report" class="screen">
@@ -168,7 +177,7 @@
                 document.getElementById('clubSubtitle').innerText = savedName;
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
-            filterSpeakers(); 
+            renderSpeakerList(allSpeakers); 
         }
 
         function setClubName() {
@@ -177,30 +186,37 @@
         }
 
         function saveSpeaker() {
-            const name = document.getElementById('name').value.trim();
-            if(!name || allSpeakers.includes(name)) return;
-            allSpeakers.push(name);
-            allSpeakers.sort();
-            localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
-            document.getElementById('name').value = "";
-            filterSpeakers();
+            const nameEl = document.getElementById('name');
+            const name = nameEl.value.trim();
+            if(!name) return;
+            if(!allSpeakers.includes(name)) {
+                allSpeakers.push(name);
+                allSpeakers.sort();
+                localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
+            }
+            nameEl.value = ""; // Clear input after adding
+            renderSpeakerList(allSpeakers);
         }
 
         function filterSpeakers() {
             const query = document.getElementById('name').value.toLowerCase();
-            const area = document.getElementById('speakerArea');
             const filtered = allSpeakers.filter(s => s.toLowerCase().includes(query));
+            renderSpeakerList(filtered);
+        }
+
+        function renderSpeakerList(listToDisplay) {
+            const area = document.getElementById('speakerArea');
+            if (listToDisplay.length === 0) {
+                area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center">No names found. Type a name and tap 'Add'.</div>`;
+                return;
+            }
             
-            area.innerHTML = filtered.map(name => `
+            area.innerHTML = listToDisplay.map(name => `
                 <div class="speaker-item">
-                    <span onclick="selectSpeaker('${name}')">${name}</span>
-                    <span onclick="deleteSpeaker('${name}')" style="color:var(--red); font-size:14px; opacity:0.6">✕</span>
+                    <div class="sp-name" onclick="selectSpeaker('${name}')">${name}</div>
+                    <div class="sp-del" onclick="deleteSpeaker('${name}')">✕</div>
                 </div>
             `).join('');
-            
-            if (filtered.length === 0) {
-                area.innerHTML = `<div style="padding:15px; opacity:0.3; text-align:center">No matches found</div>`;
-            }
         }
 
         function selectSpeaker(name) {
@@ -208,10 +224,10 @@
         }
 
         function deleteSpeaker(name) {
-            if(confirm("Delete " + name + "?")) {
+            if(confirm("Delete " + name + " from roster?")) {
                 allSpeakers = allSpeakers.filter(s => s !== name);
                 localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
-                filterSpeakers();
+                renderSpeakerList(allSpeakers);
             }
         }
 
@@ -232,8 +248,10 @@
         }
 
         function startTimer() {
-            if(!lims.g) return alert("Select speech type");
-            document.getElementById('spkName').innerText = document.getElementById('name').value || "Speaker";
+            const currentName = document.getElementById('name').value;
+            if(!lims.g) return alert("Select speech type first.");
+            if(!currentName) return alert("Enter or select a speaker name.");
+            document.getElementById('spkName').innerText = currentName;
             showScreen('timerDisplay');
         }
 
@@ -275,10 +293,12 @@
             const club = localStorage.getItem('sdtm_club_name') || "Meeting";
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) { await navigator.share({ title: 'Timer Report', text: text }); } 
-            else { const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); alert("Copied to clipboard!"); }
+            else { 
+                const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); alert("Copied to clipboard!"); 
+            }
         }
 
-        function clearLogs() { if(confirm("Clear logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); } }
+        function clearLogs() { if(confirm("Clear meeting logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); } }
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>
