@@ -28,12 +28,13 @@
 
         .header { padding: 40px 20px 10px; text-align: left; flex-shrink: 0; }
         h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; }
-        .subtitle { opacity: 0.5; font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); }
+        .subtitle { opacity: 0.8; font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 600; }
 
         .container { 
             flex: 1; display: flex; flex-direction: column; padding: 0 20px; 
             gap: 15px; overflow-y: auto; min-height: 0;
             max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
         }
 
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
@@ -43,54 +44,61 @@
         .card { 
             background: var(--card); border-radius: 18px; padding: clamp(20px, 4vw, 35px); 
             display: flex; align-items: center; justify-content: space-between; 
-            border: none; color: white; text-align: left; width: 100%; 
+            border: none; color: white; text-align: left; width: 100%; flex-shrink: 0;
         }
 
-        .input-row { display: flex; gap: 10px; align-items: stretch; }
+        .input-row { display: flex; gap: 10px; align-items: stretch; flex-shrink: 0; }
         input { 
             background: var(--card); border: none; color: white; padding: 18px; 
-            border-radius: 14px; font-size: 18px; flex: 1;
+            border-radius: 14px; font-size: 18px; flex: 1; outline: none;
         }
         .small-btn { 
-            background: var(--card); color: var(--accent); border: 1px solid var(--accent);
-            padding: 0 15px; border-radius: 14px; font-weight: 600;
+            background: var(--accent); color: white; border: none;
+            padding: 0 20px; border-radius: 14px; font-weight: 700;
         }
 
         /* SPEAKER LIST */
-        .list-header { font-size: 14px; text-transform: uppercase; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; display: flex; justify-content: space-between; }
+        .list-header { font-size: 13px; text-transform: uppercase; opacity: 0.5; margin-top: 5px; letter-spacing: 1px; display: flex; justify-content: space-between; flex-shrink: 0; }
         .speaker-scroll { 
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; 
-            -webkit-overflow-scrolling: touch;
+            display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; 
+            flex-shrink: 0; min-height: 45px;
         }
         .speaker-chip { 
             background: #2c2c2e; padding: 10px 18px; border-radius: 20px; 
-            white-space: nowrap; font-size: 15px; border: 1px solid #444;
+            white-space: nowrap; font-size: 15px; border: 1px solid #444; color: var(--accent);
         }
 
         /* SELECTION GRID */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex-shrink: 0; }
         .select-card { 
             background: var(--card); border-radius: 16px; padding: 15px; 
             text-align: center; border: 3px solid transparent; 
         }
         .select-card.selected { border-color: var(--accent); background: #2c2c2e; }
+        .select-card h4 { margin: 0; font-size: 17px; }
+        .select-card p { margin: 4px 0 0; font-size: 13px; opacity: 0.5; }
 
         /* FOOTER / CREDIT */
         .credit-footer {
-            text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid #222;
+            text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid #222; flex-shrink: 0;
         }
         .credit-link {
-            color: var(--accent); text-decoration: underline; font-weight: 600; font-size: 15px;
+            color: var(--accent); text-decoration: none; font-weight: 600; font-size: 16px;
         }
+        .credit-link span { text-decoration: underline; }
 
-        /* UI ELEMENTS */
-        #timer { font-size: clamp(100px, 35vw, 400px); font-weight: 200; text-align: center; margin: auto 0; }
-        .button-row { display: flex; gap: 15px; padding: 20px 0; flex-shrink: 0; }
+        /* TIMER SCREEN */
+        #timerDisplay { justify-content: center; }
+        #timer { font-size: clamp(100px, 35vw, 400px); font-weight: 200; text-align: center; margin: 20px 0; }
+        
+        .button-row { display: flex; gap: 15px; padding: 15px 20px 25px; flex-shrink: 0; background: black; }
         .footer-btn { 
-            flex: 1; padding: 20px; border-radius: 18px; font-size: 18px; 
+            flex: 1; padding: 22px; border-radius: 18px; font-size: 19px; 
             font-weight: 700; border: none; background: var(--accent); color: white; 
         }
         .secondary-btn { background: #333; }
+
+        #reportLog { background: var(--card); border-radius: 16px; padding: 20px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -109,17 +117,15 @@
                 <div class="card-content"><h3>Meeting Report</h3><p>View speaker times</p></div>
                 <div style="font-size:24px; color:var(--accent)">☰</div>
             </button>
-            <button class="card" onclick="clearLogs()" style="opacity:0.6; border: 1px solid var(--red);">
-                <div style="color:var(--red); font-weight:bold;">CLEAR MEETING LOGS</div>
+            <button class="card" onclick="clearLogs()" style="background: rgba(255,69,58,0.1); border: 2px solid var(--red);">
+                <div style="color:var(--red); font-weight:bold; width:100%; text-align:center;">CLEAR MEETING LOGS</div>
             </button>
-            
-            <div class="credit-footer">
-                <div style="opacity:0.4; font-size:12px; margin-bottom:5px;">APP CREATED BY</div>
-                <a href="https://bit.ly/m/SDTM" class="credit-link">
-                    Southern Dutchess Toastmasters ↗
-                    <br><span style="text-decoration:none; font-size:13px; opacity:0.8;">Visit Our Website</span>
-                </a>
-            </div>
+        </div>
+        <div class="credit-footer">
+            <a href="https://bit.ly/m/SDTM" class="credit-link">
+                <span>Visit Our Website</span> ↗<br>
+                <small style="opacity:0.5; font-weight:400; text-decoration:none;">Created by Southern Dutchess Toastmasters</small>
+            </a>
         </div>
     </div>
 
@@ -135,8 +141,7 @@
                 <span>Saved Speakers</span>
                 <span onclick="manageSpeakers()" style="color:var(--accent); font-weight:bold">Manage</span>
             </div>
-            <div class="speaker-scroll" id="speakerList">
-                </div>
+            <div class="speaker-scroll" id="speakerList"></div>
 
             <div class="selection-grid">
                 <div class="select-card" onclick="selectType(this, 60, 90, 120, 'Table Topics')"><h4>Table Topics</h4><p>1-2m</p></div>
@@ -145,27 +150,27 @@
                 <div class="select-card" onclick="selectType(this, 240, 300, 360, 'Ice Breaker')"><h4>Ice Breaker</h4><p>4-6m</p></div>
                 <div class="select-card" style="grid-column: span 2;" onclick="selectType(this, 0, 0, 0, 'Custom')"><h4>Custom Time</h4></div>
             </div>
-            <div class="button-row">
-                <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
-                <button class="footer-btn" onclick="startTimer()">Begin</button>
-            </div>
+        </div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
+            <button class="footer-btn" onclick="startTimer()">Begin</button>
         </div>
     </div>
 
     <div id="timerDisplay" class="screen" onclick="handleTap()">
         <div id="spkName" style="font-size:30px; opacity:0.5; margin-top:20px; text-align:center;">Speaker</div>
         <div id="timer">00:00</div>
-        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px;">TAP TO START</div>
+        <div id="status" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:20px;">TAP TO START</div>
     </div>
 
     <div id="report" class="screen">
         <div class="header"><h1 id="reportTitle">Meeting Report</h1></div>
         <div class="container">
-            <div id="reportLog" style="background:var(--card); border-radius:16px; padding:20px; flex:1; overflow-y:auto; font-family:monospace; font-size:18px;"></div>
-            <div class="button-row">
-                <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
-                <button class="footer-btn" onclick="showScreen('menu')">Done</button>
-            </div>
+            <div id="reportLog"></div>
+        </div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
+            <button class="footer-btn" onclick="showScreen('menu')">Done</button>
         </div>
     </div>
 
@@ -176,7 +181,6 @@
             const savedName = localStorage.getItem('sdtm_club_name');
             if (savedName) {
                 document.getElementById('clubSubtitle').innerText = savedName;
-                document.getElementById('clubSubtitle').style.color = "var(--accent)";
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
             renderSpeakers();
@@ -201,7 +205,7 @@
         function renderSpeakers() {
             const list = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
             const container = document.getElementById('speakerList');
-            container.innerHTML = list.length ? "" : "<p style='opacity:0.3; font-size:14px;'>No saved speakers</p>";
+            container.innerHTML = list.length ? "" : "<p style='opacity:0.3; font-size:14px; margin:10px 0;'>No saved speakers</p>";
             list.forEach(name => {
                 const chip = document.createElement('div');
                 chip.className = 'speaker-chip';
@@ -213,7 +217,7 @@
 
         function manageSpeakers() {
             let list = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
-            if(!list.length) return alert("No speakers to manage.");
+            if(!list.length) return;
             let msg = "Type the number to delete:\n" + list.map((n,i) => (i+1)+": "+n).join('\n');
             let idx = prompt(msg);
             if(idx && list[idx-1]) {
@@ -279,11 +283,13 @@
 
         async function shareReport() {
             const logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
-            if (!logs.length) return alert("No data.");
+            if (!logs.length) return;
             const club = localStorage.getItem('sdtm_club_name') || "Meeting";
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) { await navigator.share({ title: 'Timer Report', text: text }); } 
-            else { alert("Copied to clipboard!"); }
+            else { 
+                const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); alert("Copied to clipboard!"); 
+            }
         }
 
         function clearLogs() { if(confirm("Clear logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); } }
