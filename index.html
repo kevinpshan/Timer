@@ -41,7 +41,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .active { display: flex; }
 
-        /* MODAL */
+        /* Custom App Modals */
         #customModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); z-index: 9999; align-items: center; justify-content: center;
@@ -53,7 +53,7 @@
             border: 1px solid var(--border);
         }
 
-        /* CARDS */
+        /* Menu Cards */
         .card { 
             background: var(--card); border-radius: 18px; padding: clamp(20px, 3.5vw, 35px); 
             display: flex; align-items: center; justify-content: space-between; 
@@ -88,7 +88,7 @@
         .select-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
         .select-card h4 { margin: 0; font-size: 20px; color: #1C1C1E; }
 
-        /* FOOTERS */
+        /* Buttons & Footers */
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: var(--bg); max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { 
             flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; 
@@ -97,23 +97,21 @@
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
         .commit-btn { background: var(--green); color: white; }
 
-        /* RESPONSIVE CREDIT FOOTER */
+        /* Responsive Footer */
         .credit-footer { 
             text-align: center; margin-top: auto; padding: 15px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
         }
         .link-row { 
             display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: center; margin-bottom: 8px;
         }
-        /* Switch to horizontal on wider screens */
         @media (min-width: 600px) {
             .link-row { flex-direction: row; gap: 40px; }
         }
-        .credit-link { 
-            color: var(--subtext); text-decoration: none; font-weight: 600; font-size: 16px;
-        }
+        .credit-link { color: var(--subtext); text-decoration: none; font-weight: 600; font-size: 16px; }
         .credit-link span { color: var(--accent); text-decoration: underline; font-weight: 800; }
-        .version-tag { font-size: 11px; opacity: 0.4; margin-top: 5px; font-family: monospace; }
+        .version-tag { font-size: 11px; opacity: 0.4; margin-top: 5px; font-family: monospace; letter-spacing: 1px; }
 
+        /* Timer UI */
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
         #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 22px; border: 1px solid var(--border); color: #000; }
     </style>
@@ -155,7 +153,7 @@
                 <a href="https://bit.ly/m/SDTM" target="_blank" class="credit-link"><span>Visit Our Website ↗</span></a>
             </div>
             <div class="credit-link" style="font-weight: 400;">Created by Southern Dutchess Toastmasters</div>
-            <div class="version-tag">VERSION 2.1.0</div>
+            <div id="versionDisplay" class="version-tag">FETCHING VERSION...</div>
         </div>
     </div>
 
@@ -263,6 +261,14 @@
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
             renderSpeakerList(allSpeakers); 
+            
+            // Dynamic Version from Cache
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    if (names.length > 0) document.getElementById('versionDisplay').innerText = names[0].toUpperCase();
+                    else document.getElementById('versionDisplay').innerText = "V2.1.0-LOCAL";
+                });
+            }
         }
 
         function saveSpeaker() {
@@ -323,7 +329,10 @@
 
         function startTimer() {
             const currentName = document.getElementById('name').value.trim();
-            if(!lims.g || !currentName) return;
+            if(!lims.g || !currentName) {
+                openModal("Required", "Select a speech type and a speaker.", () => {});
+                return;
+            }
             document.getElementById('spkName').innerText = currentName;
             showScreen('timerDisplay');
             resetCurrentTimer();
@@ -359,6 +368,7 @@
             elapsed = Math.floor((Date.now() - start) / 1000);
             let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
             document.getElementById('timer').innerText = `${m}:${s}`;
+            
             if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
             else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
             else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
@@ -375,7 +385,7 @@
 
         function loadReport() {
             let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
-            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data.";
+            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data logged.";
         }
 
         async function shareReport() {
@@ -384,9 +394,13 @@
             const club = localStorage.getItem('sdtm_club_name') || "Meeting";
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) await navigator.share({ title: 'Timer Report', text: text });
-            else { alert("Copied to clipboard!"); }
+            else { 
+                const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
+                openModal("Success", "Report copied to clipboard!", () => {});
+            }
         }
 
+        // Service Worker Update Check
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').then(reg => {
                 reg.onupdatefound = () => {
