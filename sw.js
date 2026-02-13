@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sdtm-v1';
+const CACHE_NAME = 'sdtm-v1.1';
 const ASSETS = ['index.html', 'manifest.json'];
 
 self.addEventListener('install', e => {
