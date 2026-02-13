@@ -9,9 +9,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <style>
         :root {
-            --bg: #F2F2F7;
+            --bg: #F2F2F7; 
             --card: #FFFFFF;
-            --accent: #007AFF;
+            --accent: #007AFF; 
             --text: #000000;
             --subtext: #3A3A3C;
             --red: #FF3B30;
@@ -30,7 +30,7 @@
 
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; }
         h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
-        .subtitle { opacity: 1; font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
+        .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
 
         .container { 
             flex: 1; display: flex; flex-direction: column; padding: 0 20px; 
@@ -41,6 +41,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .active { display: flex; }
 
+        /* MODAL */
         #customModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); z-index: 9999; align-items: center; justify-content: center;
@@ -52,6 +53,7 @@
             border: 1px solid var(--border);
         }
 
+        /* CARDS */
         .card { 
             background: var(--card); border-radius: 18px; padding: clamp(20px, 3.5vw, 35px); 
             display: flex; align-items: center; justify-content: space-between; 
@@ -64,7 +66,6 @@
         input { 
             background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; 
             border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box;
-            text-transform: uppercase;
         }
 
         .speaker-area {
@@ -75,7 +76,7 @@
             padding: 12px 16px; border-bottom: 1px solid var(--bg);
             display: flex; justify-content: space-between; align-items: center;
         }
-        .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; }
+        .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
         .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 22px; }
 
         .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
@@ -86,6 +87,7 @@
         .select-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
         .select-card h4 { margin: 0; font-size: 20px; color: #1C1C1E; }
 
+        /* FOOTERS */
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: var(--bg); max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { 
             flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; 
@@ -94,22 +96,15 @@
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
         .commit-btn { background: var(--green); color: white; }
 
-        /* Responsive Footer */
         .credit-footer { 
-            text-align: center; margin-top: auto; padding: 15px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
+            text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
         }
-        .link-row { 
-            display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: center; margin-bottom: 8px;
+        .credit-link { 
+            color: var(--subtext); text-decoration: none; font-weight: 600; font-size: 18px; line-height: 1.5;
         }
-        @media (min-width: 600px) {
-            .link-row { flex-direction: row; gap: 40px; }
-        }
-        .credit-link { color: var(--subtext); text-decoration: none; font-weight: 600; font-size: 16px; }
         .credit-link span { color: var(--accent); text-decoration: underline; font-weight: 800; }
-        
-        .version-tag { font-size: 11px; opacity: 0.4; margin-top: 5px; font-family: monospace; }
-        .refresh-link { color: var(--accent); font-size: 12px; text-decoration: underline; cursor: pointer; display: block; margin-top: 10px; font-weight: bold; }
 
+        /* TIMER SCREEN */
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
         #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 22px; border: 1px solid var(--border); color: #000; }
     </style>
@@ -146,13 +141,10 @@
             </button>
         </div>
         <div class="credit-footer">
-            <div class="link-row">
-                <a href="manual.html" class="credit-link"><span>User Guide ↗</span></a>
-                <a href="https://bit.ly/m/SDTM" target="_blank" class="credit-link"><span>Visit Our Website ↗</span></a>
-            </div>
-            <div class="credit-link" style="font-weight: 400;">Created by Southern Dutchess Toastmasters</div>
-            <div id="versionDisplay" class="version-tag">LOADING...</div>
-            <div class="refresh-link" onclick="forceAppUpdate()">Update / Refresh App</div>
+            <a href="https://bit.ly/m/SDTM" class="credit-link">
+                <span>Visit Our Website ↗</span><br>
+                Created by Southern Dutchess Toastmasters
+            </a>
         </div>
     </div>
 
@@ -160,15 +152,15 @@
         <div class="header"><h1>Speech Info</h1></div>
         <div class="container">
             <div style="display:flex; gap:10px; flex-shrink:0;">
-                <input type="text" id="name" placeholder="Search or Enter Name" oninput="handleNameInput(this)">
+                <input type="text" id="name" placeholder="SEARCH OR ENTER NAME" oninput="handleNameInput(this)">
                 <button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="saveSpeaker()">Add</button>
             </div>
             <div id="speakerArea" class="speaker-area"></div>
             <div class="selection-grid">
-                <div class="select-card" onclick="selectType(this, 60, 90, 120, 'Table Topics')"><h4>Table Topics</h4><p>1-2m</p></div>
-                <div class="select-card" onclick="selectType(this, 120, 150, 180, 'Evaluation')"><h4>Evaluation</h4><p>2-3m</p></div>
-                <div class="select-card" onclick="selectType(this, 300, 360, 420, 'Speech')"><h4>Speech</h4><p>5-7m</p></div>
-                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'Ice Breaker')"><h4>Ice Breaker</h4><p>4-6m</p></div>
+                <div class="select-card" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4>Table Topics</h4><p>1-2m</p></div>
+                <div class="select-card" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4>Evaluation</h4><p>2-3m</p></div>
+                <div class="select-card" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4>Speech</h4><p>5-7m</p></div>
+                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4>Ice Breaker</h4><p>4-6m</p></div>
                 <div class="select-card" style="grid-column: span 2;" onclick="askCustomTime()"><h4>Custom Time</h4><p>Manual Entry</p></div>
             </div>
         </div>
@@ -179,8 +171,9 @@
     </div>
 
     <div id="timerDisplay" class="screen">
-        <div id="spkName" style="font-size:clamp(30px, 5vw, 55px); color:#666; margin-top:20px; text-align:center;">Speaker</div>
+        <div id="spkName" style="font-size:clamp(30px, 5vw, 55px); color:#666; margin-top:20px; text-align:center; text-transform: uppercase;">Speaker</div>
         <div id="timer">00:00</div>
+        
         <div class="button-row">
             <button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
             <button class="footer-btn secondary-btn" onclick="resetCurrentTimer()">RESET</button>
@@ -204,7 +197,10 @@
         let allSpeakers = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
 
         function handleNameInput(el) {
+            // Fixed Uppercase logic to prevent flickering/jumping cursor
+            const start = el.selectionStart;
             el.value = el.value.toUpperCase();
+            el.setSelectionRange(start, start);
             filterSpeakers();
         }
 
@@ -223,9 +219,14 @@
 
         function askClubName() {
             const cur = localStorage.getItem('sdtm_club_name') || "";
-            openModal("Set Club Name", `<input type="text" id="cNameInput" value="${cur}">`, () => {
+            openModal("Set Club Name", `<input type="text" id="cNameInput" value="${cur}" style="text-transform:none;">`, () => {
                 const val = document.getElementById('cNameInput').value;
-                if(val) { localStorage.setItem('sdtm_club_name', val); initApp(); }
+                if(val) { 
+                    localStorage.setItem('sdtm_club_name', val); 
+                    // Update UI manually without full initApp loop
+                    document.getElementById('clubSubtitle').innerText = val;
+                    document.getElementById('reportTitle').innerText = val + " Report";
+                }
             });
         }
 
@@ -241,7 +242,7 @@
                     y: document.getElementById('cy').value * 60,
                     r: document.getElementById('cr').value * 60
                 };
-                selectedTypeLabel = "Custom";
+                selectedTypeLabel = "CUSTOM";
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
             });
         }
@@ -260,31 +261,6 @@
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
             renderSpeakerList(allSpeakers); 
-            
-            // Dynamic Cache Puller
-            if ('caches' in window) {
-                caches.keys().then(names => {
-                    if (names.length > 0) {
-                        document.getElementById('versionDisplay').innerText = names[0].toUpperCase();
-                    } else {
-                        document.getElementById('versionDisplay').innerText = "V1.1-LOCAL";
-                    }
-                });
-            }
-        }
-
-        function forceAppUpdate() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                    for(let registration of registrations) { registration.unregister(); }
-                });
-            }
-            if ('caches' in window) {
-                caches.keys().then(names => {
-                    for (let name of names) caches.delete(name);
-                });
-            }
-            window.location.reload(true);
         }
 
         function saveSpeaker() {
@@ -300,8 +276,8 @@
         }
 
         function filterSpeakers() {
-            const query = document.getElementById('name').value.toLowerCase();
-            const filtered = allSpeakers.filter(s => s.toLowerCase().includes(query));
+            const query = document.getElementById('name').value.toUpperCase();
+            const filtered = allSpeakers.filter(s => s.toUpperCase().includes(query));
             renderSpeakerList(filtered);
         }
 
@@ -319,7 +295,7 @@
             `).join('');
         }
 
-        function selectSpeaker(name) { document.getElementById('name').value = name; }
+        function selectSpeaker(name) { document.getElementById('name').value = name.toUpperCase(); }
 
         function askDeleteSpeaker(name) {
             openModal("Delete?", `Remove "${name}"?`, () => {
@@ -344,13 +320,12 @@
         }
 
         function startTimer() {
-            const currentName = document.getElementById('name').value.trim();
-            if(!lims.g || !currentName) {
-                openModal("Missing Info", "Choose a speaker and a speech type.", () => {});
-                return;
-            }
+            const currentName = document.getElementById('name').value.trim().toUpperCase();
+            if(!lims.g || !currentName) return;
+            
             document.getElementById('spkName').innerText = currentName;
             showScreen('timerDisplay');
+            
             resetCurrentTimer();
             runTimer();
         }
@@ -367,7 +342,9 @@
                 state = "paused";
                 clearInterval(iv);
                 document.getElementById('pauseResumeBtn').innerText = "RESUME";
-            } else { runTimer(); }
+            } else {
+                runTimer();
+            }
         }
 
         function resetCurrentTimer() {
@@ -401,7 +378,7 @@
 
         function loadReport() {
             let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
-            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No entries.";
+            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data.";
         }
 
         async function shareReport() {
@@ -410,25 +387,10 @@
             const club = localStorage.getItem('sdtm_club_name') || "Meeting";
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) await navigator.share({ title: 'Timer Report', text: text });
-            else { 
-                const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
-                openModal("Copied", "Text ready to paste.", () => {});
-            }
+            else { alert("Copied to clipboard!"); }
         }
 
-        // Service Worker Management
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js?v=' + Date.now()).then(reg => {
-                reg.onupdatefound = () => {
-                    const sw = reg.installing;
-                    sw.onstatechange = () => {
-                        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-                            window.location.reload();
-                        }
-                    };
-                };
-            });
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>
 </html>
