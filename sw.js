@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SDTM-TIMER-V2.1.2'; // Change this to update the version
+const CACHE_NAME = 'SDTM-TIMER-V1.1'; // Change this to update the version
 const ASSETS = [
   'index.html',
   'manual.html',
