@@ -1,13 +1,14 @@
-my const CACHE_NAME = 'SDTM-TIMER-V1.1'; // Change this to update the version
+const CACHE_NAME = 'SDTM-TIMER-V2.1.2'; // Update this whenever you change index.html
+
 const ASSETS = [
   'index.html',
   'manual.html',
   'manifest.json'
 ];
 
-// 1. Install Phase - Download new files
+// 1. Install Phase: Download new files and force immediate take-over
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // FORCE new SW to take over immediately
+  self.skipWaiting(); // Forces the new service worker to become active immediately
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Caching assets');
@@ -16,7 +17,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 2. Activate Phase - Remove old caches
+// 2. Activate Phase: Delete any old caches to free up space and prevent conflicts
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -28,11 +29,11 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => self.clients.claim()) // Forces current tabs to use the new SW
+    }).then(() => self.clients.claim()) // Forces open pages to use this new worker immediately
   );
 });
 
-// 3. Fetch Phase - Serve from cache, then network
+// 3. Fetch Phase: Network-first strategy (Try internet first, then use cache if offline)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request).catch(() => {
@@ -40,4 +41,3 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-
