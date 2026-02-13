@@ -97,12 +97,13 @@
         .commit-btn { background: var(--green); color: white; }
 
         .credit-footer { 
-            text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
+            text-align: center; margin-top: auto; padding: 15px 0; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
         }
         .credit-link { 
-            color: var(--subtext); text-decoration: none; font-weight: 600; font-size: 18px; line-height: 1.5;
+            color: var(--text); text-decoration: none; font-weight: 700; font-size: 18px; line-height: 1.5;
         }
         .credit-link span { color: var(--accent); text-decoration: underline; font-weight: 800; }
+        .version-tag { display: block; font-size: 12px; opacity: 0.5; font-weight: 400; margin-top: 4px; }
 
         /* TIMER SCREEN */
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
@@ -144,6 +145,7 @@
             <a href="https://bit.ly/m/SDTM" class="credit-link">
                 <span>Visit Our Website ↗</span><br>
                 Created by Southern Dutchess Toastmasters
+                <span class="version-tag">Version 2.4.0</span>
             </a>
         </div>
     </div>
@@ -197,10 +199,9 @@
         let allSpeakers = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
 
         function handleNameInput(el) {
-            // Fixed Uppercase logic to prevent flickering/jumping cursor
-            const start = el.selectionStart;
+            const startPos = el.selectionStart;
             el.value = el.value.toUpperCase();
-            el.setSelectionRange(start, start);
+            el.setSelectionRange(startPos, startPos);
             filterSpeakers();
         }
 
@@ -223,7 +224,6 @@
                 const val = document.getElementById('cNameInput').value;
                 if(val) { 
                     localStorage.setItem('sdtm_club_name', val); 
-                    // Update UI manually without full initApp loop
                     document.getElementById('clubSubtitle').innerText = val;
                     document.getElementById('reportTitle').innerText = val + " Report";
                 }
