@@ -22,7 +22,10 @@
             --warning: #ffcc00;
         }
 
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -45,10 +48,26 @@
             overflow-y: auto;
         }
 
-        .active { display: flex; }
+        .active {
+            display: flex;
+        }
 
-        h1 { font-size: 34px; font-weight: 800; margin: 10px 0 5px; letter-spacing: -0.5px; }
-        .club-subtitle { color: var(--tm-maroon); font-weight: 700; margin-bottom: 25px; cursor: pointer; text-decoration: underline; font-size: 16px; text-transform: uppercase; }
+        h1 {
+            font-size: 34px;
+            font-weight: 800;
+            margin: 10px 0 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .club-subtitle {
+            color: var(--tm-maroon);
+            font-weight: 700;
+            margin-bottom: 25px;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
 
         .card {
             background: var(--card-bg);
@@ -62,11 +81,29 @@
             cursor: pointer;
         }
 
-        .card:active { transform: scale(0.98); background: #e5e5ea; }
-        .card-content h3 { margin: 0; font-size: 19px; font-weight: 700; }
-        .card-content p { margin: 4px 0 0; font-size: 15px; color: #636366; line-height: 1.2; }
+        .card:active {
+            transform: scale(0.98);
+            background: #e5e5ea;
+        }
 
-        .btn-icon { color: var(--accent); font-size: 22px; font-weight: 600; }
+        .card-content h3 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .card-content p {
+            margin: 4px 0 0;
+            font-size: 15px;
+            color: #636366;
+            line-height: 1.2;
+        }
+
+        .btn-icon {
+            color: var(--accent);
+            font-size: 22px;
+            font-weight: 600;
+        }
 
         .footer-btn {
             background: var(--accent);
@@ -81,9 +118,18 @@
             cursor: pointer;
         }
 
-        .danger-btn { background: var(--danger); margin-top: 10px; margin-bottom: 20px; }
+        .danger-btn {
+            background: var(--danger);
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
 
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
         input[type="text"] {
             flex: 1;
             padding: 15px;
@@ -102,7 +148,12 @@
             font-weight: 700;
         }
 
-        .roster-list { flex: 1; overflow-y: auto; margin-bottom: 20px; }
+        .roster-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
         .roster-item {
             padding: 15px;
             background: var(--card-bg);
@@ -114,10 +165,24 @@
             font-weight: 500;
         }
 
-        .roster-item.selected { background: var(--accent); color: white; }
-        .delete-member { color: var(--danger); padding: 5px 10px; font-weight: 800; }
+        .roster-item.selected {
+            background: var(--accent);
+            color: white;
+        }
 
-        .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .delete-member {
+            color: var(--danger);
+            padding: 5px 10px;
+            font-weight: 800;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
         .preset-btn {
             background: var(--card-bg);
             padding: 15px;
@@ -125,9 +190,21 @@
             text-align: center;
             border: 2px solid transparent;
         }
-        .preset-btn.selected { border-color: var(--accent); background: #e8f2ff; }
-        .preset-btn div:first-child { font-weight: 700; font-size: 15px; }
-        .preset-btn div:last-child { font-size: 12px; color: #636366; }
+
+        .preset-btn.selected {
+            border-color: var(--accent);
+            background: #e8f2ff;
+        }
+
+        .preset-btn div:first-child {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .preset-btn div:last-child {
+            font-size: 12px;
+            color: #636366;
+        }
 
         #timerDisplay {
             flex: 1;
@@ -138,8 +215,19 @@
             transition: background-color 0.5s;
         }
 
-        .time-text { font-size: 120px; font-weight: 800; margin: 20px 0; font-variant-numeric: tabular-nums; }
-        .timer-name { font-size: 28px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .time-text {
+            font-size: 120px;
+            font-weight: 800;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-name {
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .log-item {
             background: var(--card-bg);
@@ -150,14 +238,30 @@
             justify-content: space-between;
             align-items: center;
         }
-        .log-info h4 { margin: 0; font-size: 17px; }
-        .log-info p { margin: 2px 0 0; font-size: 14px; color: #636366; }
-        .log-time { font-weight: 700; font-size: 18px; }
+
+        .log-info h4 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .log-info p {
+            margin: 2px 0 0;
+            font-size: 14px;
+            color: #636366;
+        }
+
+        .log-time {
+            font-weight: 700;
+            font-size: 18px;
+        }
 
         #modalOverlay {
             display: none;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.4);
             backdrop-filter: blur(5px);
             z-index: 1000;
@@ -174,15 +278,51 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .modal h2 { margin-top: 0; font-size: 22px; }
-        .modal input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 17px; }
-        .modal-btns { display: flex; gap: 10px; }
+        .modal h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
 
-        .credit-footer { margin-top: auto; text-align: center; padding: 20px 0; }
-        .res-btn { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; margin: 0 10px; }
-        .credit-text { font-size: 12px; color: #8e8e93; margin-top: 15px; }
-        .version-tag { font-size: 12px; font-weight: 700; color: #c6c6c8; margin-top: 5px; }
+        .modal input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 17px;
+        }
 
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .credit-footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .res-btn {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0 10px;
+        }
+
+        .credit-text {
+            font-size: 12px;
+            color: #8e8e93;
+            margin-top: 15px;
+        }
+
+        .version-tag {
+            font-size: 12px;
+            font-weight: 700;
+            color: #c6c6c8;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body onload="initApp()">
@@ -281,6 +421,21 @@
         </div>
     </div>
 
+    <div id="customModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="modal">
+            <h2>Custom Timing</h2>
+            <p style="font-size:14px; color:#636366;">Set Min and Max minutes:</p>
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <input type="number" id="minTime" placeholder="Min" style="width: 50%; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
+                <input type="number" id="maxTime" placeholder="Max" style="width: 50%; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
+            </div>
+            <div class="modal-btns">
+                <button class="footer-btn secondary-btn" onclick="closeCustomModal()" style="margin:0;">Cancel</button>
+                <button class="footer-btn" onclick="saveCustomTiming()" style="margin:0;">Set</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let roster = JSON.parse(localStorage.getItem('sdtm_roster')) || [];
         let logs = JSON.parse(localStorage.getItem('sdtm_logs')) || [];
@@ -344,9 +499,29 @@
             document.getElementById('activePreset').innerText = `${Math.floor(g/60)}:00 - ${Math.floor(r/60)}:00`;
         }
 
+        function openCustomModal() {
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeCustomModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        function saveCustomTiming() {
+            const min = parseInt(document.getElementById('minTime').value);
+            const max = parseInt(document.getElementById('maxTime').value);
+            if(min >= 0 && max > min) {
+                const mid = min + (max - min) / 2;
+                setPreset(min * 60, mid * 60, max * 60, 'pre-custom');
+                closeCustomModal();
+            } else {
+                alert("Please enter valid minimum and maximum times.");
+            }
+        }
+
         function startTimer() {
             if(!selectedMember) return alert("Please select or add a speaker name first.");
-            if(currentThresholds.green === 0) return alert("Please select a timing preset.");
+            if(currentThresholds.green === 0 && currentThresholds.red === 0) return alert("Please select a timing preset.");
             
             document.getElementById('activeSpeaker').innerText = selectedMember;
             seconds = 0;
