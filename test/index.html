@@ -20,22 +20,23 @@
             --danger: #ff3b30;
             --success: #34c759;
             --warning: #ffcc00;
-            --staging: #ff9500; /* Staging Orange */
         }
 
-        /* STAGING RIBBON STYLE */
-        .staging-ribbon {
-            background-color: var(--staging);
+        /* NEW: NON-BREAKING TEST BADGE */
+        .test-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 149, 0, 0.9);
             color: black;
-            text-align: center;
-            font-weight: bold;
-            font-size: 13px;
-            padding: 6px 0;
-            position: sticky;
-            top: 0;
-            z-index: 10000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            z-index: 99999;
+            pointer-events: none; /* Allows clicks to pass through to buttons underneath */
             letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -207,7 +208,7 @@
 </head>
 <body onload="initApp()">
 
-    <div class="staging-ribbon">TEST ENVIRONMENT - v2.4.1 (STAGING)</div>
+    <div class="test-badge">STAGING v2.4.1</div>
 
     <div id="menu" class="screen active">
         <div class="club-subtitle" id="displayClubName" onclick="openClubModal()">SOUTHERN DUTCHESS TOASTMASTERS</div>
