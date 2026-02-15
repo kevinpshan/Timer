@@ -1,7 +1,6 @@
 {
   "name": "Meeting Timer TEST",
   "short_name": "Timer TEST",
-  "description": "Staging version for Southern Dutchess Toastmasters",
   "version": "1.0.0",
   "start_url": "index.html",
   "display": "standalone",
