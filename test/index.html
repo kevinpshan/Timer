@@ -229,7 +229,7 @@
                 document.getElementById('customModal').style.display = 'none';
             };
             const cancelBtn = document.getElementById('modalCancel');
-            cancelBtn.style.display = 'block'; // Reset display
+            cancelBtn.style.display = 'block';
             cancelBtn.onclick = () => {
                 document.getElementById('customModal').style.display = 'none';
             };
@@ -407,19 +407,13 @@
             else { alert("Copied to clipboard!"); }
         }
 
-        // --- FIXED EXPORT/IMPORT LOGIC ---
-
         function exportRoster() {
-            // Get raw data from localStorage
             const rawSpeakers = localStorage.getItem('sdtm_speakers');
             const clubName = localStorage.getItem('sdtm_club_name');
-            
-            // Construct the backup object
             const backupData = {
                 speakers: rawSpeakers ? JSON.parse(rawSpeakers) : [],
                 club: clubName || ""
             };
-            
             const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -438,20 +432,19 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    
                     openModal("Import Roster?", "This will overwrite your current list and club name. Proceed?", () => {
-                        // Ensure data is stringified back into localStorage format
                         if (data.speakers) {
                             localStorage.setItem('sdtm_speakers', JSON.stringify(data.speakers));
+                            // Update the live variable so changes appear immediately
+                            allSpeakers = data.speakers;
+                            renderSpeakerList(allSpeakers);
                         }
                         if (data.club) {
                             localStorage.setItem('sdtm_club_name', data.club);
+                            document.getElementById('clubSubtitle').innerText = data.club;
                         }
                         
-                        // Show final success notice
-                        openModal("Success", "Roster imported successfully. The app will now reload.", () => {
-                            location.reload();
-                        });
+                        openModal("Success", "Roster imported successfully.", () => {});
                         document.getElementById('modalCancel').style.display = 'none';
                     });
                 } catch (err) {
@@ -459,7 +452,7 @@
                 }
             };
             reader.readAsText(file);
-            input.value = ""; // Clear file input
+            input.value = "";
         }
 
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
