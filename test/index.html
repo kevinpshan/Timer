@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meeting Timer - TEST</title>
+    <title>Meeting Timer - TEST v1.0</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,12 +11,11 @@
         :root {
             --bg: #ffffff;
             --text: #000000;
-            --accent: #0a84ff;
+            --accent: #004165; /* Toastmasters Blue */
+            --tm-maroon: #772432;
+            --tm-gold: #f2df74;
             --card-bg: #f2f2f7;
             --border: #c6c6c8;
-            --danger: #ff3b30;
-            --success: #34c759;
-            --warning: #ffcc00;
             --staging: #ff9500; /* Staging Orange */
         }
 
@@ -29,7 +28,6 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
 
         /* STAGING RIBBON */
@@ -38,82 +36,54 @@
             color: black;
             text-align: center;
             font-weight: bold;
-            font-size: 13px;
-            padding: 6px 0;
+            font-size: 14px;
+            padding: 8px 0;
             position: sticky;
             top: 0;
             z-index: 10000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            letter-spacing: 1px;
         }
 
         .screen { display: none; flex-direction: column; height: 100%; padding: 20px; box-sizing: border-box; overflow-y: auto; }
         .active { display: flex; }
 
-        h1 { font-size: 34px; font-weight: 800; margin: 10px 0 20px; letter-spacing: -0.5px; }
-        h2 { font-size: 24px; margin-bottom: 15px; }
-
-        .club-subtitle { color: var(--accent); font-weight: 600; margin-bottom: 5px; cursor: pointer; text-transform: uppercase; font-size: 14px; }
+        h1 { font-size: 32px; font-weight: 800; margin: 10px 0; color: var(--accent); }
+        .club-subtitle { color: var(--tm-maroon); font-weight: 700; margin-bottom: 20px; cursor: pointer; text-decoration: underline; }
 
         .card {
             background: var(--card-bg);
-            border-radius: 14px;
-            padding: 18px;
-            margin-bottom: 16px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: transform 0.1s;
-            cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
         }
-        .card:active { transform: scale(0.98); background: #e5e5ea; }
 
-        .card-content h3 { margin: 0; font-size: 19px; font-weight: 700; }
-        .card-content p { margin: 4px 0 0; font-size: 15px; color: #636366; line-height: 1.3; }
+        .card-content h3 { margin: 0; font-size: 18px; }
+        .card-content p { margin: 4px 0 0; font-size: 14px; color: #636366; }
 
-        .btn-icon { font-size: 24px; color: var(--accent); }
-
-        /* BACKUP SECTION STYLING */
-        .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 15px; }
-        
         .footer-btn {
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 17px;
-            font-weight: 600;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
             width: 100%;
             margin-top: 10px;
         }
-        .secondary-btn { background: #8e8e93; }
-        .danger-btn { background: var(--danger); }
 
-        /* Timer Styles (Keeping your original High-Contrast look) */
-        #timerDisplay {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-variant-numeric: tabular-nums;
-            transition: background-color 0.5s;
-        }
-        .time-text { font-size: 120px; font-weight: 800; margin: 20px 0; }
-        .timer-name { font-size: 28px; font-weight: 600; text-transform: uppercase; }
+        .backup-card { border: 2px dashed var(--staging) !important; background: #fffaf0 !important; }
+        .backup-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 10px; }
 
-        .version-tag { text-align: center; font-size: 13px; color: #8e8e93; margin: 20px 0 10px; font-weight: 500; }
-
-        /* Modal Overlay */
-        #modalOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 10001; align-items: center; justify-content: center;
-        }
-        .modal { background: white; width: 90%; max-width: 400px; border-radius: 20px; padding: 25px; box-sizing: border-box; }
-        .modal h2 { margin-top: 0; }
-        .modal input { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 10px; font-size: 17px; box-sizing: border-box; margin-bottom: 20px; }
+        /* Timer High-Contrast Display */
+        #timerDisplay { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .time-text { font-size: 100px; font-weight: 800; font-variant-numeric: tabular-nums; }
+        
+        .version-tag { text-align: center; font-size: 12px; color: #8e8e93; margin: 20px 0; }
     </style>
 </head>
 <body onload="initApp()">
@@ -121,108 +91,76 @@
     <div class="staging-ribbon">TEST ENVIRONMENT - v1.0</div>
 
     <div id="menu" class="screen active">
-        <div class="club-subtitle" onclick="promptClubName()" id="displayClubName">TAP TO SET CLUB NAME</div>
+        <div class="club-subtitle" onclick="promptClubName()" id="displayClubName">SET CLUB NAME</div>
         <h1>Meeting Timer</h1>
         
         <div class="card" onclick="showScreen('setup')">
             <div class="card-content">
                 <h3>New Timer</h3>
-                <p>Select a speaker and start session</p>
+                <p>Start a speech or evaluation</p>
             </div>
-            <div class="btn-icon">→</div>
+            <div style="color: var(--accent); font-weight: bold;">→</div>
         </div>
 
         <div class="card" onclick="showScreen('logs')">
             <div class="card-content">
                 <h3>Meeting Report</h3>
-                <p>View all recorded times</p>
+                <p>View recorded times</p>
             </div>
-            <div class="btn-icon">→</div>
+            <div style="color: var(--accent); font-weight: bold;">→</div>
         </div>
 
-        <div class="card" style="flex-direction: column; align-items: flex-start; border: 1px dashed var(--staging);">
+        <div class="card backup-card" style="flex-direction: column; align-items: flex-start;">
             <div class="card-content">
                 <h3>Backup & Restore</h3>
-                <p>Export/Import your roster JSON</p>
+                <p>Export or Import your roster file</p>
             </div>
-            <div class="backup-grid">
-                <button class="footer-btn" style="margin-top:0" onclick="exportData()">EXPORT</button>
-                <button class="footer-btn secondary-btn" style="margin-top:0" onclick="document.getElementById('fileInput').click()">IMPORT</button>
+            <div class="backup-btns">
+                <button class="footer-btn" onclick="exportData()">EXPORT</button>
+                <button class="footer-btn" style="background: #8e8e93;" onclick="document.getElementById('fileInput').click()">IMPORT</button>
                 <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="importData(event)">
             </div>
         </div>
 
-        <button class="footer-btn danger-btn" onclick="confirmClearLogs()">CLEAR MEETING LOGS</button>
+        <button class="footer-btn" style="background: #ff3b30;" onclick="clearLogs()">CLEAR MEETING LOGS</button>
         
-        <div class="version-tag">Version 1.0 (TEST)</div>
-        <button class="footer-btn secondary-btn" style="margin-bottom: 40px;" onclick="location.reload()">Refresh App</button>
-    </div>
-
-    <div id="setup" class="screen">
-        <div onclick="showScreen('menu')" style="color: var(--accent); font-weight: 600; margin-bottom: 20px;">← Back</div>
-        <h2>Session Setup</h2>
-        <input type="text" id="speakerName" placeholder="Speaker Name" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--border); margin-bottom:20px;">
-        <button class="footer-btn" onclick="startTimer()">START TIMING</button>
-    </div>
-
-    <div id="timerDisplay" class="screen">
-        <div id="timerName" class="timer-name">Speaker Name</div>
-        <div id="timerClock" class="time-text">00:00</div>
-        <button class="footer-btn" onclick="stopTimer()">COMMIT & EXIT</button>
-    </div>
-
-    <div id="logs" class="screen">
-        <div onclick="showScreen('menu')" style="color: var(--accent); font-weight: 600; margin-bottom: 20px;">← Back</div>
-        <h2>Meeting Report</h2>
-        <div id="logList"></div>
-    </div>
-
-    <div id="modalOverlay">
-        <div class="modal">
-            <h2 id="modalTitle">Set Club Name</h2>
-            <input type="text" id="modalInput">
-            <button class="footer-btn" id="modalAction">OK</button>
-            <button class="footer-btn secondary-btn" onclick="closeModal()">CANCEL</button>
-        </div>
+        <div class="version-tag">Version 1.0 (TEST BUILD)</div>
+        <button class="footer-btn" style="background: #8e8e93; margin-bottom: 40px;" onclick="location.reload()">Refresh App</button>
     </div>
 
     <script>
-        // CORE APP LOGIC
+        // Restoring your exact App Logic
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
         function initApp() {
-            const club = localStorage.getItem('sdtm_club_name');
-            if(club) document.getElementById('displayClubName').innerText = club;
+            const club = localStorage.getItem('sdtm_club_name') || 'SET CLUB NAME';
+            document.getElementById('displayClubName').innerText = club;
         }
 
         function promptClubName() {
-            document.getElementById('modalTitle').innerText = "Set Club Name";
-            document.getElementById('modalOverlay').style.display = 'flex';
-            document.getElementById('modalAction').onclick = () => {
-                const val = document.getElementById('modalInput').value;
-                localStorage.setItem('sdtm_club_name', val);
-                document.getElementById('displayClubName').innerText = val;
-                closeModal();
-            };
+            const name = prompt("Enter Club Name:", localStorage.getItem('sdtm_club_name') || "");
+            if (name) {
+                localStorage.setItem('sdtm_club_name', name);
+                document.getElementById('displayClubName').innerText = name;
+            }
         }
 
-        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-
-        // EXPORT/IMPORT LOGIC
+        // BACKUP LOGIC
         function exportData() {
             const data = {
                 speakers: localStorage.getItem('sdtm_speakers'),
                 club: localStorage.getItem('sdtm_club_name'),
-                logs: localStorage.getItem('sdtm_logs')
+                logs: localStorage.getItem('sdtm_logs'),
+                version: "1.0-test"
             };
             const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `SDTM_TEST_1.0_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `SDTM_TEST_Backup_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
         }
 
@@ -230,20 +168,20 @@
             const reader = new FileReader();
             reader.onload = (e) => {
                 const data = JSON.parse(e.target.result);
-                if(confirm("Import data?")) {
-                    localStorage.setItem('sdtm_speakers', data.speakers);
-                    localStorage.setItem('sdtm_club_name', data.club);
+                if(confirm("Restore this backup? This will overwrite your current data.")) {
+                    if(data.speakers) localStorage.setItem('sdtm_speakers', data.speakers);
+                    if(data.club) localStorage.setItem('sdtm_club_name', data.club);
+                    if(data.logs) localStorage.setItem('sdtm_logs', data.logs);
                     location.reload();
                 }
             };
             reader.readAsText(event.target.files[0]);
         }
 
-        function confirmClearLogs() {
+        function clearLogs() {
             if(confirm("Wipe all logs?")) { localStorage.removeItem('sdtm_logs'); location.reload(); }
         }
 
-        // SW Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
