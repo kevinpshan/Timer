@@ -1,24 +1,23 @@
 {
-  "name": "Meeting Timer",
-  "short_name": "Timer",
-  "description": "High-visibility speech timer for Toastmasters meetings.",
-  "start_url": "index.html?v=2.1.2",
+  "name": "Meeting Timer TEST",
+  "short_name": "Timer TEST",
+  "version": "1.0.0",
+  "start_url": "index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#F2F2F7",
+  "background_color": "#ffffff",
   "theme_color": "#007AFF",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon-timer.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-timer.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
