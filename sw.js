@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SDTM-TIMER-V1.1'; // Update this whenever you change index.html
+const CACHE_NAME = 'SDTM-TIMER-V1.2'; // Update this whenever you change index.html
 
 const ASSETS = [
   'index.html',
