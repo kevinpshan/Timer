@@ -22,21 +22,19 @@
             --warning: #ffcc00;
         }
 
-        /* NEW: NON-BREAKING TEST BADGE */
-        .test-badge {
+        /* WATERMARK LOGIC: This cannot shift layout because it's attached to the background */
+        body::before {
+            content: "STAGING v2.4.1";
             position: fixed;
-            top: 10px;
+            top: env(safe-area-inset-top);
             right: 10px;
-            background: rgba(255, 149, 0, 0.9);
-            color: black;
-            padding: 4px 10px;
-            border-radius: 20px;
+            color: rgba(255, 149, 0, 0.7);
             font-size: 10px;
             font-weight: 900;
             z-index: 99999;
-            pointer-events: none; /* Allows clicks to pass through to buttons underneath */
+            pointer-events: none;
             letter-spacing: 1px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-family: -apple-system, sans-serif;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -207,8 +205,6 @@
     </style>
 </head>
 <body onload="initApp()">
-
-    <div class="test-badge">STAGING v2.4.1</div>
 
     <div id="menu" class="screen active">
         <div class="club-subtitle" id="displayClubName" onclick="openClubModal()">SOUTHERN DUTCHESS TOASTMASTERS</div>
