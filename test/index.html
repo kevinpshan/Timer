@@ -195,7 +195,14 @@
 
     <div id="report" class="screen">
         <div class="header"><h1 id="reportTitle">Meeting Report</h1></div>
-        <div class="container"><div id="reportLog"></div></div>
+        <div class="container">
+            <div id="reportLog"></div>
+            <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="footer-btn secondary-btn" style="font-size:16px; padding:12px;" onclick="exportData()">Export Roster</button>
+                <button class="footer-btn secondary-btn" style="font-size:16px; padding:12px;" onclick="document.getElementById('importFile').click()">Import Roster</button>
+            </div>
+        </div>
         <div class="button-row">
             <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
             <button class="footer-btn" onclick="showScreen('menu')">Done</button>
@@ -396,6 +403,46 @@
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) await navigator.share({ title: 'Timer Report', text: text });
             else { alert("Copied to clipboard!"); }
+        }
+
+        // --- NEW FILE LOGIC ---
+
+        function exportData() {
+            const data = {
+                speakers: localStorage.getItem('sdtm_speakers'),
+                club: localStorage.getItem('sdtm_club_name'),
+                logs: localStorage.getItem('sdtm_logs')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SDTM_Backup_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm("Importing will overwrite your current roster and settings. Proceed?")) {
+                        if (data.speakers) localStorage.setItem('sdtm_speakers', data.speakers);
+                        if (data.club) localStorage.setItem('sdtm_club_name', data.club);
+                        if (data.logs) localStorage.setItem('sdtm_logs', data.logs);
+                        alert("Import successful! Reloading...");
+                        location.reload();
+                    }
+                } catch (err) {
+                    alert("Error: Invalid backup file.");
+                }
+            };
+            reader.readAsText(file);
         }
 
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
