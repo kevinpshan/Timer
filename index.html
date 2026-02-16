@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Meeting Timer</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-timer.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="icon-timer.png">
     <style>
         :root {
             --bg: #F2F2F7; 
@@ -113,6 +113,7 @@
         .credit-text { 
             display: block; color: var(--text); font-weight: 700; font-size: 15px; margin: 0;
         }
+        /* version-tag remains standard, JS will append to it */
         .version-tag { display: block; font-size: 12px; opacity: 0.5; font-weight: 400; margin-top: 4px; color: #000; }
 
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
@@ -160,7 +161,7 @@
                 <a href="manual.html" class="res-btn">User Manual ↗</a>
             </div>
             <p class="credit-text">Created by Southern Dutchess Toastmasters</p>
-            <span class="version-tag">Version 1.0 (TEST)</span>
+            <span id="versionLabel" class="version-tag">Version 1.0</span>
         </div>
     </div>
 
@@ -272,7 +273,6 @@
         }
 
         function askCustomTime(el) {
-            // Retrieve last used values or default to 5,6,7
             const savedCustom = JSON.parse(localStorage.getItem('sdtm_custom_limits') || '{"g":5,"y":6,"r":7}');
             
             openModal("Custom Thresholds", `
@@ -291,12 +291,8 @@
                     r: rVal * 60
                 };
                 
-                // Save custom values
                 localStorage.setItem('sdtm_custom_limits', JSON.stringify({g: gVal, y: yVal, r: rVal}));
-                
-                // Update UI Label
                 document.getElementById('customLabel').innerText = `${gVal}-${rVal}m`;
-                
                 selectedTypeLabel = "CUSTOM";
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
@@ -317,10 +313,15 @@
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
             
-            // Restore Custom Label if it exists
             const savedCustom = JSON.parse(localStorage.getItem('sdtm_custom_limits'));
             if (savedCustom) {
                 document.getElementById('customLabel').innerText = `${savedCustom.g}-${savedCustom.r}m`;
+            }
+
+            // AUTO-DETECT TEST FOLDER
+            const versionLabel = document.getElementById('versionLabel');
+            if (window.location.pathname.toLowerCase().includes('/test/')) {
+                versionLabel.innerText += " (TEST)";
             }
             
             renderSpeakerList(allSpeakers); 
