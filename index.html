@@ -113,7 +113,6 @@
         .credit-text { 
             display: block; color: var(--text); font-weight: 700; font-size: 15px; margin: 0;
         }
-        /* version-tag remains standard, JS will append to it */
         .version-tag { display: block; font-size: 12px; opacity: 0.5; font-weight: 400; margin-top: 4px; color: #000; }
 
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
@@ -235,8 +234,18 @@
     </div>
 
     <script>
+        // --- DYNAMIC STORAGE KEY LOGIC ---
+        const isTestEnv = window.location.pathname.toLowerCase().includes('/test/');
+        const prefix = isTestEnv ? 'test_' : 'prod_';
+
+        const KEY_SPEAKERS = prefix + 'sdtm_speakers';
+        const KEY_LOGS = prefix + 'sdtm_logs';
+        const KEY_CLUB = prefix + 'sdtm_club_name';
+        const KEY_CUSTOM = prefix + 'sdtm_custom_limits';
+
+        // --- APP STATE ---
         let state="stopped", elapsed=0, start, iv, lims={}, selectedTypeLabel="";
-        let allSpeakers = JSON.parse(localStorage.getItem('sdtm_speakers') || "[]");
+        let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
         function handleNameInput(el) {
             const startPos = el.selectionStart;
@@ -261,11 +270,11 @@
         }
 
         function askClubName() {
-            const cur = localStorage.getItem('sdtm_club_name') || "";
+            const cur = localStorage.getItem(KEY_CLUB) || "";
             openModal("Set Club Name", `<input type="text" id="cNameInput" value="${cur}" style="text-transform:none;">`, () => {
                 const val = document.getElementById('cNameInput').value;
                 if(val) { 
-                    localStorage.setItem('sdtm_club_name', val); 
+                    localStorage.setItem(KEY_CLUB, val); 
                     document.getElementById('clubSubtitle').innerText = val;
                     document.getElementById('reportTitle').innerText = val + " Report";
                 }
@@ -273,8 +282,7 @@
         }
 
         function askCustomTime(el) {
-            const savedCustom = JSON.parse(localStorage.getItem('sdtm_custom_limits') || '{"g":5,"y":6,"r":7}');
-            
+            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"y":6,"r":7}');
             openModal("Custom Thresholds", `
                 <div style="display:grid; gap:10px; text-align:left;">
                     <label>Green (Min): <input type="number" id="cg" value="${savedCustom.g}"></label>
@@ -284,14 +292,8 @@
                 const gVal = document.getElementById('cg').value;
                 const yVal = document.getElementById('cy').value;
                 const rVal = document.getElementById('cr').value;
-                
-                lims = { 
-                    g: gVal * 60,
-                    y: yVal * 60,
-                    r: rVal * 60
-                };
-                
-                localStorage.setItem('sdtm_custom_limits', JSON.stringify({g: gVal, y: yVal, r: rVal}));
+                lims = { g: gVal * 60, y: yVal * 60, r: rVal * 60 };
+                localStorage.setItem(KEY_CUSTOM, JSON.stringify({g: gVal, y: yVal, r: rVal}));
                 document.getElementById('customLabel').innerText = `${gVal}-${rVal}m`;
                 selectedTypeLabel = "CUSTOM";
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
@@ -301,29 +303,25 @@
 
         function askClearLogs() {
             openModal("Clear Logs?", "Wipe all recorded data?", () => {
-                localStorage.removeItem('sdtm_logs');
+                localStorage.removeItem(KEY_LOGS);
                 location.reload();
             });
         }
 
         function initApp() {
-            const savedName = localStorage.getItem('sdtm_club_name');
+            const savedName = localStorage.getItem(KEY_CLUB);
             if (savedName) {
                 document.getElementById('clubSubtitle').innerText = savedName;
                 document.getElementById('reportTitle').innerText = savedName + " Report";
             }
-            
-            const savedCustom = JSON.parse(localStorage.getItem('sdtm_custom_limits'));
+            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM));
             if (savedCustom) {
                 document.getElementById('customLabel').innerText = `${savedCustom.g}-${savedCustom.r}m`;
             }
-
-            // AUTO-DETECT TEST FOLDER
             const versionLabel = document.getElementById('versionLabel');
-            if (window.location.pathname.toLowerCase().includes('/test/')) {
+            if (isTestEnv) {
                 versionLabel.innerText += " (TEST)";
             }
-            
             renderSpeakerList(allSpeakers); 
         }
 
@@ -333,7 +331,7 @@
             if(!name) return;
             if(!allSpeakers.includes(name)) {
                 allSpeakers.push(name); allSpeakers.sort();
-                localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
+                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
             }
             renderSpeakerList(allSpeakers);
             nameEl.focus(); 
@@ -364,7 +362,7 @@
         function askDeleteSpeaker(name) {
             openModal("Delete?", `Remove "${name}"?`, () => {
                 allSpeakers = allSpeakers.filter(s => s !== name);
-                localStorage.setItem('sdtm_speakers', JSON.stringify(allSpeakers));
+                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
                 renderSpeakerList(allSpeakers);
             });
         }
@@ -387,10 +385,8 @@
         function startTimer() {
             const currentName = document.getElementById('name').value.trim().toUpperCase();
             if(!lims.g || !currentName) return;
-            
             document.getElementById('spkName').innerText = currentName;
             showScreen('timerDisplay');
-            
             resetCurrentTimer();
             runTimer();
         }
@@ -426,7 +422,6 @@
             elapsed = Math.floor((Date.now() - start) / 1000);
             let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
             document.getElementById('timer').innerText = `${m}:${s}`;
-            
             if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
             else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
             else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
@@ -435,9 +430,9 @@
         function commitAndExit() {
             clearInterval(iv);
             if (elapsed > 0) {
-                let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
+                let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
                 logs.push(`${document.getElementById('spkName').innerText} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`);
-                localStorage.setItem('sdtm_logs', JSON.stringify(logs));
+                localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
             }
             document.body.style.background = "var(--bg)";
             document.body.style.color = "var(--text)";
@@ -445,26 +440,23 @@
         }
 
         function loadReport() {
-            let logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
             document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data.";
         }
 
         async function shareReport() {
-            const logs = JSON.parse(localStorage.getItem('sdtm_logs')||"[]");
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
             if (!logs.length) return;
-            const club = localStorage.getItem('sdtm_club_name') || "Meeting";
+            const club = localStorage.getItem(KEY_CLUB) || "Meeting";
             const text = club + " Timer Report:\n\n" + logs.join('\n');
             if (navigator.share) await navigator.share({ title: 'Timer Report', text: text });
             else { alert("Copied to clipboard!"); }
         }
 
         function exportRoster() {
-            const rawSpeakers = localStorage.getItem('sdtm_speakers');
-            const clubName = localStorage.getItem('sdtm_club_name');
-            const backupData = {
-                speakers: rawSpeakers ? JSON.parse(rawSpeakers) : [],
-                club: clubName || ""
-            };
+            const rawSpeakers = localStorage.getItem(KEY_SPEAKERS);
+            const clubName = localStorage.getItem(KEY_CLUB);
+            const backupData = { speakers: rawSpeakers ? JSON.parse(rawSpeakers) : [], club: clubName || "" };
             const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -485,12 +477,12 @@
                     const data = JSON.parse(e.target.result);
                     openModal("Import Roster?", "This will overwrite your current list and club name. Proceed?", () => {
                         if (data.speakers) {
-                            localStorage.setItem('sdtm_speakers', JSON.stringify(data.speakers));
+                            localStorage.setItem(KEY_SPEAKERS, JSON.stringify(data.speakers));
                             allSpeakers = data.speakers;
                             renderSpeakerList(allSpeakers);
                         }
                         if (data.club) {
-                            localStorage.setItem('sdtm_club_name', data.club);
+                            localStorage.setItem(KEY_CLUB, data.club);
                             document.getElementById('clubSubtitle').innerText = data.club;
                         }
                         openModal("Success", "Roster imported successfully.", () => {});
