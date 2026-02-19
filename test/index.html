@@ -126,10 +126,10 @@
 
         <div id="counterMode" class="container" style="display:none;">
             <button class="card" onclick="showScreen('setup')">
-                <div class="card-content"><h3>Start Tracking</h3><p>Count filler words & vocabulary</p></div>
+                <div class="card-content"><h3>Start Tracking</h3><p>Count filler words per role</p></div>
                 <div style="font-size:40px; color:var(--accent)">✍</div>
             </button>
-            <button class="card" onclick="openModal('Coming Soon', 'Ah-Counter reports in next update!', ()=>{})">
+            <button class="card" onclick="showScreen('report')">
                 <div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div>
                 <div style="font-size:35px; color:var(--accent)">📊</div>
             </button>
@@ -160,13 +160,13 @@
             </div>
             <div id="speakerArea" class="speaker-area"></div>
             
-            <div id="timerPresets" class="selection-grid">
-                <div class="select-card" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4>Table Topics</h4><p>1-2m</p></div>
-                <div class="select-card" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4>Evaluation</h4><p>2-3m</p></div>
-                <div class="select-card" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4>Speech</h4><p>5-7m</p></div>
-                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4>Ice Breaker</h4><p>4-6m</p></div>
+            <div id="presetGrid" class="selection-grid">
+                <div class="select-card" id="btn-tt" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4 id="lbl-tt">Table Topics</h4><p id="sub-tt">1-2m</p></div>
+                <div class="select-card" id="btn-ev" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4 id="lbl-ev">Evaluation</h4><p id="sub-ev">2-3m</p></div>
+                <div class="select-card" id="btn-sp" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4 id="lbl-sp">Speech</h4><p id="sub-sp">5-7m</p></div>
+                <div class="select-card" id="btn-ib" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4 id="lbl-ib">Ice Breaker</h4><p id="sub-ib">4-6m</p></div>
                 <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
-                    <h4>Custom</h4><p id="customLabel">Manual Entry</p>
+                    <h4 id="customTitle">Custom</h4><p id="customLabel">Manual Entry</p>
                 </div>
             </div>
         </div>
@@ -179,7 +179,7 @@
     <div id="counterDisplay" class="screen">
         <div class="header">
             <h1 id="counterSpeakerName">Speaker Name</h1>
-            <div class="subtitle" style="color:#666">AH-COUNTER TRACKING</div>
+            <div id="counterSpeakerRole" class="subtitle" style="color:#666">ROLE</div>
         </div>
         <div class="container">
             <div style="display:flex; gap:10px; flex-shrink:0; margin-bottom:10px;">
@@ -251,6 +251,7 @@
             document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter';
             document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none';
             document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none';
+            selectedTypeLabel = ""; // Clear selection on switch
         }
 
         function showScreen(id) {
@@ -258,40 +259,95 @@
             document.getElementById(id).classList.add('active');
             document.body.style.background = "var(--bg)";
             document.body.style.color = "var(--text)";
+            
             if (id === 'setup') {
-                document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup';
-                document.getElementById('timerPresets').style.display = currentMode === 'timer' ? 'grid' : 'none';
+                updateSetupGrid();
             }
             if (id === 'report') loadReport();
         }
 
+        function updateSetupGrid() {
+            const tt = document.getElementById('lbl-tt'), subtt = document.getElementById('sub-tt');
+            const ev = document.getElementById('lbl-ev'), subev = document.getElementById('sub-ev');
+            const sp = document.getElementById('lbl-sp'), subsp = document.getElementById('sub-sp');
+            const ib = document.getElementById('lbl-ib'), subib = document.getElementById('sub-ib');
+            const cust = document.getElementById('customTitle'), subcust = document.getElementById('customLabel');
+
+            if (currentMode === 'timer') {
+                document.getElementById('setupHeader').innerText = 'Speech Info';
+                tt.innerText = 'Table Topics'; subtt.innerText = '1-2m';
+                ev.innerText = 'Evaluation'; subev.innerText = '2-3m';
+                sp.innerText = 'Speech'; subsp.innerText = '5-7m';
+                ib.innerText = 'Ice Breaker'; subib.innerText = '4-6m';
+                cust.innerText = 'Custom'; subcust.innerText = 'Manual Entry';
+            } else {
+                document.getElementById('setupHeader').innerText = 'Counter Setup';
+                tt.innerText = 'Table Topics'; subtt.innerText = 'Role';
+                ev.innerText = 'Evaluator'; subev.innerText = 'Role';
+                sp.innerText = 'Speaker'; subsp.innerText = 'Role';
+                ib.innerText = 'Toastmaster'; subib.innerText = 'Role';
+                cust.innerText = 'Other Role'; subcust.innerText = 'Type to Enter';
+            }
+            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+        }
+
+        function selectType(el, g, y, r, label) {
+            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            // If in counter mode, the label is the role. In timer mode, we also use it for the report label.
+            selectedTypeLabel = label;
+            lims = { g, y, r };
+        }
+
         function handleStart() {
             const name = document.getElementById('name').value.trim().toUpperCase();
-            
-            // MODAL ERROR: No Name
-            if (!name) { 
-                openModal("Missing Info", "Please select a speaker from the list or enter a name.", () => {});
-                document.getElementById('modalCancel').style.display = 'none';
-                return; 
-            }
+            if (!name) { openModal("Missing Info", "Please select a speaker.", () => {}); document.getElementById('modalCancel').style.display = 'none'; return; }
+            if (!selectedTypeLabel) { openModal("Select Role", "Please choose a speech type or role.", () => {}); document.getElementById('modalCancel').style.display = 'none'; return; }
             
             currentSpeaker = name;
-            
             if (currentMode === 'timer') {
-                // MODAL ERROR: No Selection
-                if (!lims.g) { 
-                    openModal("Select Speech Type", "Please choose a timing preset (e.g., Table Topics) before starting.", () => {});
-                    document.getElementById('modalCancel').style.display = 'none';
-                    return; 
-                }
                 document.getElementById('spkName').innerText = name;
                 showScreen('timerDisplay');
                 startTimer();
             } else {
                 showScreen('counterDisplay');
                 document.getElementById('counterSpeakerName').innerText = name;
+                document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
                 initTally();
             }
+        }
+
+        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
+        function renderTally() {
+            const area = document.getElementById('tallyArea');
+            area.innerHTML = fillerList.map(f => `
+                <div class="tally-btn" onclick="increment('${f}')">
+                    <div class="tally-count" id="count-${f}">${currentTally[f]}</div>
+                    <div class="tally-label">${f}</div>
+                    <div class="tally-minus" onclick="decrement(event, '${f}')">−</div>
+                </div>
+            `).join('');
+        }
+        function increment(f) { currentTally[f]++; document.getElementById(`count-${f}`).innerText = currentTally[f]; }
+        function decrement(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`count-${f}`).innerText = currentTally[f]; }
+        
+        function addFiller() {
+            const val = document.getElementById('newFiller').value.trim().toUpperCase();
+            if (val && !fillerList.includes(val)) {
+                fillerList.push(val); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList));
+                currentTally[val] = 0; renderTally(); document.getElementById('newFiller').value = "";
+            }
+        }
+
+        function saveCounterSession() { 
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            let results = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, count]) => `${f}: ${count}`).join(', ');
+            if (!results) results = "Clean speech! (0 fillers)";
+            logs.push(`${currentSpeaker} | ${selectedTypeLabel} (AH): ${results}`);
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            openModal("Saved", `Results for ${currentSpeaker} as ${selectedTypeLabel} recorded.`, () => { showScreen('menu'); }); 
+            document.getElementById('modalCancel').style.display = 'none';
         }
 
         function startTimer() {
@@ -322,54 +378,34 @@
             clearInterval(iv);
             if (elapsed > 0) {
                 let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-                logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`);
+                logs.push(`${currentSpeaker} | ${selectedTypeLabel} (TIME): ${document.getElementById('timer').innerText}`);
                 localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
             }
             showScreen('menu');
         }
 
-        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
-        function renderTally() {
-            const area = document.getElementById('tallyArea');
-            area.innerHTML = fillerList.map(f => `
-                <div class="tally-btn" onclick="increment('${f}')">
-                    <div class="tally-count" id="count-${f}">${currentTally[f]}</div>
-                    <div class="tally-label">${f}</div>
-                    <div class="tally-minus" onclick="decrement(event, '${f}')">−</div>
-                </div>
-            `).join('');
-        }
-        function increment(f) { currentTally[f]++; document.getElementById(`count-${f}`).innerText = currentTally[f]; }
-        function decrement(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`count-${f}`).innerText = currentTally[f]; }
-        function addFiller() {
-            const val = document.getElementById('newFiller').value.trim().toUpperCase();
-            if (val && !fillerList.includes(val)) {
-                fillerList.push(val); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList));
-                currentTally[val] = 0; renderTally(); document.getElementById('newFiller').value = "";
-            }
-        }
-        function saveCounterSession() { 
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            let results = Object.entries(currentTally).map(([f, count]) => `${f}: ${count}`).join(', ');
-            logs.push(`${currentSpeaker} | COUNTER: ${results}`);
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            openModal("Saved", `Results for ${currentSpeaker} recorded.`, () => { showScreen('menu'); }); 
-            document.getElementById('modalCancel').style.display = 'none';
-        }
-
         function askCustomTime(el) {
             const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}');
-            openModal("Custom Thresholds", `
-                <div style="display:grid; gap:10px; text-align:left;">
-                    <label>Green (Min): <input type="number" id="cg" value="${saved.g}"></label>
-                    <label>Yellow (Min): <input type="number" id="cy" value="${saved.cy}"></label>
-                    <label>Red (Min): <input type="number" id="cr" value="${saved.r}"></label>
-                </div>`, () => {
-                const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value;
-                lims = { g: g*60, y: y*60, r: r*60 };
-                localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r}));
-                document.getElementById('customLabel').innerText = `${g}-${r}m`;
-                selectedTypeLabel = "CUSTOM";
+            const title = currentMode === 'timer' ? "Custom Thresholds" : "Enter Custom Role";
+            const body = currentMode === 'timer' ? 
+                `<div style="display:grid; gap:10px; text-align:left;">
+                    <label>Green: <input type="number" id="cg" value="${saved.g}"></label>
+                    <label>Yellow: <input type="number" id="cy" value="${saved.cy}"></label>
+                    <label>Red: <input type="number" id="cr" value="${saved.r}"></label>
+                </div>` : 
+                `<input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;
+
+            openModal(title, body, () => {
+                if (currentMode === 'timer') {
+                    const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value;
+                    lims = { g: g*60, y: y*60, r: r*60 };
+                    localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r}));
+                    document.getElementById('customLabel').innerText = `${g}-${r}m`;
+                    selectedTypeLabel = "CUSTOM";
+                } else {
+                    selectedTypeLabel = document.getElementById('customRole').value.toUpperCase();
+                    document.getElementById('customLabel').innerText = selectedTypeLabel;
+                }
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
             });
@@ -379,8 +415,6 @@
         function initApp() {
             const savedName = localStorage.getItem(KEY_CLUB);
             if (savedName) document.getElementById('clubSubtitle').innerText = savedName;
-            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM));
-            if (savedCustom) document.getElementById('customLabel').innerText = `${savedCustom.g}-${savedCustom.r}m`;
             const versionLabel = document.getElementById('versionLabel');
             if (isTestEnv) versionLabel.innerText += " (TEST)";
             renderSpeakerList(allSpeakers);
@@ -400,13 +434,7 @@
 
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); document.getElementById('modalCancel').style.display = 'block'; }
-        function selectType(el, g, y, r, label) { document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
-        function openModal(t, b, c) { 
-            document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; 
-            document.getElementById('customModal').style.display = 'flex';
-            document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; };
-            document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; };
-        }
+        function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); document.getElementById('modalCancel').style.display = 'block'; }
         function askClearLogs() { openModal("Clear Data?", "Wipe all meeting records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); document.getElementById('modalCancel').style.display = 'block'; }
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
