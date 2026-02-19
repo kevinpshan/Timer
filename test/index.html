@@ -71,8 +71,6 @@
         .tally-count { font-size: 45px; font-weight: 800; color: var(--accent); }
         .tally-label { font-size: 18px; font-weight: 700; color: var(--subtext); text-transform: uppercase; }
         .tally-minus { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 10px; background: #F2F2F7; color: var(--red); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
-        .wod-btn { border: 2px solid var(--gold); }
-        .wod-btn .tally-count { color: var(--gold); }
 
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; }
@@ -131,7 +129,7 @@
                 <div class="card-content"><h3>Start Tracking</h3><p>Count filler words & vocabulary</p></div>
                 <div style="font-size:40px; color:var(--accent)">✍</div>
             </button>
-            <button class="card" onclick="openModal('Ah-Counter', 'Ah-Counter logic coming soon!', ()=>{})">
+            <button class="card" onclick="openModal('Coming Soon', 'Ah-Counter reports in next update!', ()=>{})">
                 <div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div>
                 <div style="font-size:35px; color:var(--accent)">📊</div>
             </button>
@@ -168,7 +166,7 @@
                 <div class="select-card" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4>Speech</h4><p>5-7m</p></div>
                 <div class="select-card" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4>Ice Breaker</h4><p>4-6m</p></div>
                 <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
-                    <h4>Custom</h4><p id="customLabel">Manual</p>
+                    <h4>Custom</h4><p id="customLabel">Manual Entry</p>
                 </div>
             </div>
         </div>
@@ -267,19 +265,25 @@
             if (id === 'report') loadReport();
         }
 
-        function selectType(el, g, y, r, label) {
-            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedTypeLabel = label;
-            lims = { g, y, r };
-        }
-
         function handleStart() {
             const name = document.getElementById('name').value.trim().toUpperCase();
-            if (!name) { alert("Please enter or select a name."); return; }
+            
+            // MODAL ERROR: No Name
+            if (!name) { 
+                openModal("Missing Info", "Please select a speaker from the list or enter a name.", () => {});
+                document.getElementById('modalCancel').style.display = 'none';
+                return; 
+            }
+            
             currentSpeaker = name;
+            
             if (currentMode === 'timer') {
-                if (!lims.g) { alert("Please select a speech type."); return; }
+                // MODAL ERROR: No Selection
+                if (!lims.g) { 
+                    openModal("Select Speech Type", "Please choose a timing preset (e.g., Table Topics) before starting.", () => {});
+                    document.getElementById('modalCancel').style.display = 'none';
+                    return; 
+                }
                 document.getElementById('spkName').innerText = name;
                 showScreen('timerDisplay');
                 startTimer();
@@ -304,7 +308,14 @@
 
         function togglePause() {
             if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; }
-            else { start = Date.now() - (elapsed*1000); iv = setInterval(() => { /* same logic */ }, 1000); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; }
+            else { start = Date.now() - (elapsed*1000); iv = setInterval(() => {
+                elapsed = Math.floor((Date.now() - start) / 1000);
+                let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
+                document.getElementById('timer').innerText = `${m}:${s}`;
+                if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
+                else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
+                else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
+            }, 1000); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; }
         }
 
         function commitAndExit() {
@@ -317,12 +328,11 @@
             showScreen('menu');
         }
 
-        // AH-COUNTER LOGIC
         function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
         function renderTally() {
             const area = document.getElementById('tallyArea');
             area.innerHTML = fillerList.map(f => `
-                <div class="tally-btn ${f === 'WORD OF DAY' ? 'wod-btn' : ''}" onclick="increment('${f}')">
+                <div class="tally-btn" onclick="increment('${f}')">
                     <div class="tally-count" id="count-${f}">${currentTally[f]}</div>
                     <div class="tally-label">${f}</div>
                     <div class="tally-minus" onclick="decrement(event, '${f}')">−</div>
@@ -338,7 +348,14 @@
                 currentTally[val] = 0; renderTally(); document.getElementById('newFiller').value = "";
             }
         }
-        function saveCounterSession() { openModal("Saved", `Results for ${currentSpeaker} recorded.`, () => { showScreen('menu'); }); }
+        function saveCounterSession() { 
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            let results = Object.entries(currentTally).map(([f, count]) => `${f}: ${count}`).join(', ');
+            logs.push(`${currentSpeaker} | COUNTER: ${results}`);
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            openModal("Saved", `Results for ${currentSpeaker} recorded.`, () => { showScreen('menu'); }); 
+            document.getElementById('modalCancel').style.display = 'none';
+        }
 
         function askCustomTime(el) {
             const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}');
@@ -356,6 +373,7 @@
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
             });
+            document.getElementById('modalCancel').style.display = 'block';
         }
 
         function initApp() {
@@ -381,10 +399,16 @@
         }
 
         function selectSpeaker(n) { document.getElementById('name').value = n; }
-        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
-        function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
-        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
-        function askClearLogs() { openModal("Clear Data?", "Wipe all meeting records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); document.getElementById('modalCancel').style.display = 'block'; }
+        function selectType(el, g, y, r, label) { document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
+        function openModal(t, b, c) { 
+            document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; 
+            document.getElementById('customModal').style.display = 'flex';
+            document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; };
+            document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; };
+        }
+        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); document.getElementById('modalCancel').style.display = 'block'; }
+        function askClearLogs() { openModal("Clear Data?", "Wipe all meeting records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); document.getElementById('modalCancel').style.display = 'block'; }
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function exportRoster() { const blob = new Blob([JSON.stringify({speakers: allSpeakers})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'roster.json'; a.click(); }
