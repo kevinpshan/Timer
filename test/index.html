@@ -60,12 +60,24 @@
         .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
         .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 22px; cursor: pointer; }
 
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
-        .select-card { background: var(--card); border-radius: 14px; padding: 15px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
-        .select-card h4 { margin: 0; font-size: 22px; color: #1C1C1E; font-weight: 700; }
-        .select-card p { margin: 2px 0 0; font-size: 16px; color: var(--subtext); }
+        /* MULTI-COLUMN SELECTION GRID */
+        .selection-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px; 
+            flex-shrink: 0; 
+        }
+        /* Adaptive 3-column for iPad/Tablet widths */
+        @media (min-width: 600px) {
+            .selection-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .select-card { background: var(--card); border-radius: 14px; padding: 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; justify-content: center; min-height: 70px; }
+        .select-card h4 { margin: 0; font-size: 18px; color: #1C1C1E; font-weight: 700; line-height: 1.2; }
+        .select-card p { margin: 2px 0 0; font-size: 13px; color: var(--subtext); font-weight: 500; }
         .select-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
 
+        /* TALLY SCREEN */
         .tally-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0; }
         .tally-btn { background: white; border: 1px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; }
         .tally-count { font-size: 45px; font-weight: 800; color: var(--accent); }
@@ -161,14 +173,7 @@
             <div id="speakerArea" class="speaker-area"></div>
             
             <div id="presetGrid" class="selection-grid">
-                <div class="select-card" id="btn-tt" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4 id="lbl-tt">Table Topics</h4><p id="sub-tt">1-2m</p></div>
-                <div class="select-card" id="btn-ev" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4 id="lbl-ev">Evaluation</h4><p id="sub-ev">2-3m</p></div>
-                <div class="select-card" id="btn-sp" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4 id="lbl-sp">Speech</h4><p id="sub-sp">5-7m</p></div>
-                <div class="select-card" id="btn-ib" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4 id="lbl-ib">Ice Breaker</h4><p id="sub-ib">4-6m</p></div>
-                <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
-                    <h4 id="customTitle">Custom</h4><p id="customLabel">Manual Entry</p>
                 </div>
-            </div>
         </div>
         <div class="button-row">
             <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
@@ -244,6 +249,18 @@
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
         let iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
 
+        const TIMER_PRESETS = [
+            {label: 'TABLE TOPICS', sub: '1-2m', g:60, y:90, r:120},
+            {label: 'EVALUATION', sub: '2-3m', g:120, y:150, r:180},
+            {label: 'SPEECH', sub: '5-7m', g:300, y:360, r:420},
+            {label: 'ICE BREAKER', sub: '4-6m', g:240, y:300, r:360}
+        ];
+
+        const COUNTER_ROLES = [
+            "TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", 
+            "JOKE MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS", "GENERAL EVALUATOR"
+        ];
+
         function switchMode(mode) {
             currentMode = mode;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -251,59 +268,59 @@
             document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter';
             document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none';
             document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none';
-            selectedTypeLabel = ""; // Clear selection on switch
+            selectedTypeLabel = ""; 
         }
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.body.style.background = "var(--bg)";
-            document.body.style.color = "var(--text)";
-            
-            if (id === 'setup') {
-                updateSetupGrid();
-            }
+            if (id === 'setup') updateSetupGrid();
             if (id === 'report') loadReport();
         }
 
         function updateSetupGrid() {
-            const tt = document.getElementById('lbl-tt'), subtt = document.getElementById('sub-tt');
-            const ev = document.getElementById('lbl-ev'), subev = document.getElementById('sub-ev');
-            const sp = document.getElementById('lbl-sp'), subsp = document.getElementById('sub-sp');
-            const ib = document.getElementById('lbl-ib'), subib = document.getElementById('sub-ib');
-            const cust = document.getElementById('customTitle'), subcust = document.getElementById('customLabel');
+            const grid = document.getElementById('presetGrid');
+            grid.innerHTML = "";
 
             if (currentMode === 'timer') {
                 document.getElementById('setupHeader').innerText = 'Speech Info';
-                tt.innerText = 'Table Topics'; subtt.innerText = '1-2m';
-                ev.innerText = 'Evaluation'; subev.innerText = '2-3m';
-                sp.innerText = 'Speech'; subsp.innerText = '5-7m';
-                ib.innerText = 'Ice Breaker'; subib.innerText = '4-6m';
-                cust.innerText = 'Custom'; subcust.innerText = 'Manual Entry';
+                TIMER_PRESETS.forEach(p => {
+                    grid.innerHTML += `
+                        <div class="select-card" onclick="selectType(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')">
+                            <h4>${p.label}</h4><p>${p.sub}</p>
+                        </div>`;
+                });
+                const savedCust = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"r":7}');
+                grid.innerHTML += `
+                    <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
+                        <h4>CUSTOM</h4><p id="customLabel">${savedCust.g}-${savedCust.r}m</p>
+                    </div>`;
             } else {
                 document.getElementById('setupHeader').innerText = 'Counter Setup';
-                tt.innerText = 'Table Topics'; subtt.innerText = 'Role';
-                ev.innerText = 'Evaluator'; subev.innerText = 'Role';
-                sp.innerText = 'Speaker'; subsp.innerText = 'Role';
-                ib.innerText = 'Toastmaster'; subib.innerText = 'Role';
-                cust.innerText = 'Other Role'; subcust.innerText = 'Type to Enter';
+                COUNTER_ROLES.forEach(role => {
+                    grid.innerHTML += `
+                        <div class="select-card" onclick="selectType(this, 0, 0, 0, '${role}')">
+                            <h4>${role}</h4>
+                        </div>`;
+                });
+                grid.innerHTML += `
+                    <div id="custom-card" class="select-card" onclick="askCustomTime(this)">
+                        <h4>OTHER ROLE</h4><p id="customLabel">Type to enter</p>
+                    </div>`;
             }
-            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
         }
 
         function selectType(el, g, y, r, label) {
             document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
-            
-            // If in counter mode, the label is the role. In timer mode, we also use it for the report label.
             selectedTypeLabel = label;
             lims = { g, y, r };
         }
 
         function handleStart() {
             const name = document.getElementById('name').value.trim().toUpperCase();
-            if (!name) { openModal("Missing Info", "Please select a speaker.", () => {}); document.getElementById('modalCancel').style.display = 'none'; return; }
-            if (!selectedTypeLabel) { openModal("Select Role", "Please choose a speech type or role.", () => {}); document.getElementById('modalCancel').style.display = 'none'; return; }
+            if (!name) { openModal("Missing Info", "Please select a speaker.", () => {}); return; }
+            if (!selectedTypeLabel) { openModal("Missing Role", "Please select a role or speech type.", () => {}); return; }
             
             currentSpeaker = name;
             if (currentMode === 'timer') {
@@ -343,11 +360,10 @@
         function saveCounterSession() { 
             let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
             let results = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, count]) => `${f}: ${count}`).join(', ');
-            if (!results) results = "Clean speech! (0 fillers)";
+            if (!results) results = "0 Fillers";
             logs.push(`${currentSpeaker} | ${selectedTypeLabel} (AH): ${results}`);
             localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
             openModal("Saved", `Results for ${currentSpeaker} as ${selectedTypeLabel} recorded.`, () => { showScreen('menu'); }); 
-            document.getElementById('modalCancel').style.display = 'none';
         }
 
         function startTimer() {
@@ -393,7 +409,7 @@
                     <label>Yellow: <input type="number" id="cy" value="${saved.cy}"></label>
                     <label>Red: <input type="number" id="cr" value="${saved.r}"></label>
                 </div>` : 
-                `<input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;
+                `<input type="text" id="customRole" placeholder="e.g. INVOCATION" style="text-transform:uppercase">`;
 
             openModal(title, body, () => {
                 if (currentMode === 'timer') {
@@ -409,14 +425,11 @@
                 document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
             });
-            document.getElementById('modalCancel').style.display = 'block';
         }
 
         function initApp() {
             const savedName = localStorage.getItem(KEY_CLUB);
             if (savedName) document.getElementById('clubSubtitle').innerText = savedName;
-            const versionLabel = document.getElementById('versionLabel');
-            if (isTestEnv) versionLabel.innerText += " (TEST)";
             renderSpeakerList(allSpeakers);
         }
 
@@ -433,10 +446,10 @@
         }
 
         function selectSpeaker(n) { document.getElementById('name').value = n; }
-        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); document.getElementById('modalCancel').style.display = 'block'; }
+        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
-        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); document.getElementById('modalCancel').style.display = 'block'; }
-        function askClearLogs() { openModal("Clear Data?", "Wipe all meeting records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); document.getElementById('modalCancel').style.display = 'block'; }
+        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
+        function askClearLogs() { openModal("Clear Data?", "Wipe all meeting records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function exportRoster() { const blob = new Blob([JSON.stringify({speakers: allSpeakers})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'roster.json'; a.click(); }
