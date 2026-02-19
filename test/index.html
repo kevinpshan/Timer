@@ -49,7 +49,6 @@
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); }
 
         .card { background: var(--card); border-radius: 18px; padding: 25px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); color: var(--text); text-align: left; width: 100%; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
-        .card:active { transform: scale(0.98); background: #f9f9f9; }
         .card-content h3 { margin: 0; font-size: 24px; font-weight: 700; }
         .card-content p { margin: 4px 0 0; font-size: 16px; color: var(--subtext); }
 
@@ -67,22 +66,36 @@
         .select-card p { margin: 2px 0 0; font-size: 12px; color: var(--subtext); }
         .select-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
 
-        /* TIGHTER TALLY GRID */
-        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px 0; }
+        /* TALLY GRID REFINEMENT */
+        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px 0; }
         @media (min-width: 600px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
+        
         .tally-btn { 
-            background: white; border: 1px solid var(--border); border-radius: 16px; 
+            background: white; border: 1px solid var(--border); border-radius: 20px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 15px 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative; 
+            padding: 20px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); position: relative; 
         }
         .tally-btn:active { background: #E8F2FF; transform: scale(0.96); }
-        .tally-count { font-size: 32px; font-weight: 800; color: var(--accent); pointer-events: none; }
-        .tally-label { font-size: 14px; font-weight: 700; color: var(--subtext); text-transform: uppercase; pointer-events: none; }
+        .tally-count { font-size: 38px; font-weight: 800; color: var(--accent); pointer-events: none; }
+        .tally-label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; pointer-events: none; }
         
-        /* TALLY UTILS */
-        .tally-minus { position: absolute; top: 0; right: 0; width: 30px; height: 30px; color: var(--red); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; z-index: 5; }
-        .tally-del { position: absolute; top: 0; left: 0; width: 30px; height: 30px; color: var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; z-index: 5; }
-        .wod-btn { border: 2px solid var(--gold); }
+        /* DELETE FILLER WORD ICON (Red Circle X) */
+        .tally-del { 
+            position: absolute; top: -8px; left: -8px; width: 32px; height: 32px; 
+            background: var(--red); color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 16px; font-weight: 900; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* MINUS BUTTON (Gray Circle -) */
+        .tally-minus { 
+            position: absolute; top: -8px; right: -8px; width: 32px; height: 32px; 
+            background: #8E8E93; color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 24px; font-weight: 700; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .wod-btn { border: 3px solid var(--gold); }
         .wod-btn .tally-count { color: var(--gold); }
 
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
@@ -132,8 +145,8 @@
             <button class="card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words per role</p></div><div style="font-size:35px; color:var(--accent)">✍</div></button>
             <button class="card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div><div style="font-size:35px; color:var(--accent)">📊</div></button>
         </div>
-        <div class="container" style="flex:0; margin-top: 10px;"><button class="card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red); padding: 12px;"><div style="color:var(--red); font-weight:800; width:100%; text-align:center; font-size: 18px;">CLEAR MEETING DATA</div></button></div>
-        <div class="credit-footer"><div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div><p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p><span id="versionLabel" class="version-tag">Version 2.5</span></div>
+        <div class="container" style="flex:0; margin-top: 10px;"><button class="card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red); padding: 15px;"><div style="color:var(--red); font-weight:800; width:100%; text-align:center; font-size: 18px;">CLEAR MEETING DATA</div></button></div>
+        <div class="credit-footer"><div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div><p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p><span id="versionLabel" class="version-tag">Version 2.6</span></div>
     </div>
 
     <div id="setup" class="screen">
@@ -152,7 +165,10 @@
             <div id="counterSpeakerRole" class="subtitle">ROLE</div>
         </div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink:0; margin-bottom:5px;"><input type="text" id="newFiller" placeholder="NEW CRUTCH WORD"><button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="addFiller()">Add</button></div>
+            <div style="display:flex; gap:10px; flex-shrink:0; margin-bottom:10px;">
+                <input type="text" id="newFiller" placeholder="NEW CRUTCH WORD">
+                <button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="addFiller()">Add</button>
+            </div>
             <div id="tallyArea" class="tally-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn commit-btn" onclick="saveCounterSession()">SAVE RESULTS</button></div>
@@ -193,10 +209,7 @@
             {label: 'ICE BREAKER', sub: '4-6m', g:240, y:300, r:360}
         ];
 
-        const COUNTER_ROLES = [
-            "TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", 
-            "JOKE MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS", "GENERAL EVALUATOR"
-        ];
+        const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "JOKE MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS", "GENERAL EVALUATOR"];
 
         function switchMode(mode) {
             currentMode = mode;
@@ -254,12 +267,10 @@
             }
         }
 
-        /* AH-COUNTER UI LOGIC */
         function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
         
         function renderTally() {
             const area = document.getElementById('tallyArea');
-            // Alphabetize except Word of Day
             const sorted = [...fillerList].sort((a,b) => {
                 if(a === "WORD OF DAY") return -1;
                 if(b === "WORD OF DAY") return 1;
@@ -289,7 +300,7 @@
 
         function askDeleteFiller(e, f) {
             e.stopPropagation();
-            openModal("Delete Word?", `Remove "${f}" from your permanent list?`, () => {
+            openModal("Delete Word?", `Remove "${f}" from your list?`, () => {
                 fillerList = fillerList.filter(word => word !== f);
                 localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList));
                 renderTally();
@@ -305,7 +316,6 @@
             openModal("Saved", `Results for ${currentSpeaker} recorded.`, () => { showScreen('menu'); }); 
         }
 
-        /* TIMER LOGIC */
         function startTimer() { elapsed = 0; start = Date.now(); iv = setInterval(() => {
             elapsed = Math.floor((Date.now() - start) / 1000);
             let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
@@ -315,7 +325,7 @@
             else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
         }, 1000); }
 
-        function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); iv = setInterval(() => { /* repeat logic */ }, 1000); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
+        function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); iv = setInterval(() => { /* logic */ }, 1000); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
 
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) {
             let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
@@ -323,7 +333,6 @@
             localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
         } showScreen('menu'); }
 
-        /* DATA UTILS */
         function askCustomTime(el) {
             const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}');
             const title = currentMode === 'timer' ? "Custom Thresholds" : "Enter Custom Role";
@@ -343,11 +352,7 @@
         }
 
         function exportData() {
-            const data = { 
-                speakers: allSpeakers, 
-                fillers: fillerList,
-                club: localStorage.getItem(KEY_CLUB) || "" 
-            };
+            const data = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" };
             const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sdtm_backup.json'; a.click();
         }
@@ -364,7 +369,6 @@
             reader.readAsText(input.files[0]);
         }
 
-        /* CORE UI HELPERS */
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM)); if (sc) { if(document.getElementById('customLabel')) document.getElementById('customLabel').innerText = `${sc.g}-${sc.r}m`; }
@@ -381,7 +385,7 @@
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function loadReport() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data."; }
-        function shareReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); if (!logs.length) return; const text = (localStorage.getItem(KEY_CLUB) || "Meeting") + " Report:\n\n" + logs.join('\n'); if (navigator.share) navigator.share({ title: 'Report', text: text }); else alert("Logs saved!"); }
+        function shareReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); if (!logs.length) return; const club = localStorage.getItem(KEY_CLUB) || "Meeting"; const text = (localStorage.getItem(KEY_CLUB) || "Meeting") + " Report:\n\n" + logs.join('\n'); if (navigator.share) navigator.share({ title: 'Report', text: text }); else alert("Logs saved!"); }
     </script>
 </body>
 </html>
