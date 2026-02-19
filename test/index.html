@@ -72,7 +72,7 @@
             border: 1px solid var(--border);
         }
 
-        /* CARDS - RESTORED SIZES */
+        /* CARDS */
         .card { 
             background: var(--card); border-radius: 18px; padding: clamp(20px, 3.5vw, 35px); 
             display: flex; align-items: center; justify-content: space-between; 
@@ -81,7 +81,7 @@
         }
         .card:active { transform: scale(0.98); background: #f9f9f9; }
         .card-content h3 { margin: 0; font-size: clamp(24px, 3.8vw, 36px); font-weight: 700; }
-        .card-content p { margin: 4px 0 0; font-size: clamp(16px, 2.2vw, 22px); color: var(--subtext); }
+        .card-content p { margin: 4px 0 0; font-size: 18px; color: var(--subtext); }
 
         input { 
             background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; 
@@ -97,8 +97,9 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+        .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 22px; cursor: pointer; }
 
-        /* PRESET BUTTONS - RESTORED FONT SIZES */
+        /* PRESET BUTTONS */
         .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
         .select-card { background: var(--card); border-radius: 14px; padding: 15px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
         .select-card h4 { margin: 0; font-size: 22px; color: #1C1C1E; font-weight: 700; }
@@ -114,6 +115,9 @@
         }
         .tally-count { font-size: 45px; font-weight: 800; color: var(--accent); }
         .tally-label { font-size: 18px; font-weight: 700; color: var(--subtext); text-transform: uppercase; }
+        .tally-minus { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 10px; background: #F2F2F7; color: var(--red); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+        .wod-btn { border: 2px solid var(--gold); }
+        .wod-btn .tally-count { color: var(--gold); }
 
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; }
@@ -175,7 +179,7 @@
                 <div class="card-content"><h3>Start Tracking</h3><p>Count filler words & vocabulary</p></div>
                 <div style="font-size:40px; color:var(--accent)">✍</div>
             </button>
-            <button class="card" onclick="openModal('Ah-Counter', 'Ah-Counter reporting coming soon!', ()=>{})">
+            <button class="card" onclick="openModal('Ah-Counter', 'Report logic coming soon!', ()=>{})">
                 <div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div>
                 <div style="font-size:35px; color:var(--accent)">📊</div>
             </button>
@@ -210,9 +214,8 @@
                 <div class="select-card" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4>Table Topics</h4><p>1-2m</p></div>
                 <div class="select-card" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4>Evaluation</h4><p>2-3m</p></div>
                 <div class="select-card" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4>Speech</h4><p>5-7m</p></div>
-                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4>Ice Breaker</h4><p>4-6m</p></div>
-                <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
-                    <h4>Custom Time</h4><p id="customLabel">Manual Entry</p>
+                <div id="custom-card" class="select-card" style="grid-column: span 1;" onclick="askCustomTime(this)">
+                    <h4>Custom</h4><p id="customLabel">Manual</p>
                 </div>
             </div>
         </div>
@@ -228,7 +231,7 @@
             <div class="subtitle" style="color:#666">AH-COUNTER TRACKING</div>
         </div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink:0;">
+            <div style="display:flex; gap:10px; flex-shrink:0; margin-bottom:10px;">
                 <input type="text" id="newFiller" placeholder="NEW CRUTCH WORD">
                 <button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="addFiller()">Add</button>
             </div>
@@ -269,9 +272,7 @@
 
     <div id="report" class="screen">
         <div class="header"><h1>Meeting Report</h1></div>
-        <div class="container">
-            <div id="reportLog"></div>
-        </div>
+        <div class="container"><div id="reportLog"></div></div>
         <div class="button-row">
             <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
             <button class="footer-btn" onclick="showScreen('menu')">Done</button>
@@ -287,9 +288,7 @@
         const KEY_CUSTOM = prefix + 'sdtm_custom_limits';
         const KEY_FILLERS = prefix + 'sdtm_fillers';
 
-        let currentMode = 'timer';
-        let currentSpeaker = "";
-        let currentTally = {};
+        let currentMode = 'timer', currentSpeaker = "", currentTally = {};
         let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
         let iv, start, elapsed=0, lims={}, selectedTypeLabel="";
@@ -306,13 +305,29 @@
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.body.style.background = "var(--bg)";
-            document.body.style.color = "var(--text)";
             if (id === 'setup') {
                 document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup';
                 document.getElementById('timerPresets').style.display = currentMode === 'timer' ? 'grid' : 'none';
             }
             if (id === 'report') loadReport();
+        }
+
+        function askCustomTime(el) {
+            const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"y":6,"r":7}');
+            openModal("Custom Thresholds", `
+                <div style="display:grid; gap:10px; text-align:left;">
+                    <label>Green (Min): <input type="number" id="cg" value="${saved.g}"></label>
+                    <label>Yellow (Min): <input type="number" id="cy" value="${saved.cy || 6}"></label>
+                    <label>Red (Min): <input type="number" id="cr" value="${saved.r}"></label>
+                </div>`, () => {
+                const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value;
+                lims = { g: g*60, y: y*60, r: r*60 };
+                localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r}));
+                document.getElementById('customLabel').innerText = `${g}-${r}m`;
+                selectedTypeLabel = "CUSTOM";
+                document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+            });
         }
 
         function handleStart() {
@@ -352,14 +367,13 @@
         function decrement(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`count-${f}`).innerText = currentTally[f]; }
 
         function addFiller() {
-            const input = document.getElementById('newFiller');
-            const val = input.value.trim().toUpperCase();
+            const val = document.getElementById('newFiller').value.trim().toUpperCase();
             if (val && !fillerList.includes(val)) {
                 fillerList.push(val);
                 localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList));
                 currentTally[val] = 0;
                 renderTally();
-                input.value = "";
+                document.getElementById('newFiller').value = "";
             }
         }
 
@@ -396,72 +410,58 @@
 
         function shareReport() {
             const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            if (!logs.length) return;
-            const club = localStorage.getItem(KEY_CLUB) || "Meeting";
-            const text = club + " Timer Report:\n\n" + logs.join('\n');
-            if (navigator.share) navigator.share({ title: 'Timer Report', text: text });
+            const text = (localStorage.getItem(KEY_CLUB) || "Meeting") + " Report:\n\n" + logs.join('\n');
+            if (navigator.share) navigator.share({ title: 'Report', text: text });
             else alert("Sharing not supported, but logs are saved!");
         }
 
         function initApp() {
             const savedName = localStorage.getItem(KEY_CLUB);
             if (savedName) document.getElementById('clubSubtitle').innerText = savedName;
+            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM));
+            if (savedCustom) document.getElementById('customLabel').innerText = `${savedCustom.g}-${savedCustom.r}m`;
+            const versionLabel = document.getElementById('versionLabel');
+            if (isTestEnv) versionLabel.innerText += " (TEST)";
             renderSpeakerList(allSpeakers);
         }
 
         function saveSpeaker() {
-            const nameEl = document.getElementById('name');
-            const name = nameEl.value.trim().toUpperCase();
-            if(!name) return;
-            if(!allSpeakers.includes(name)) {
+            const name = document.getElementById('name').value.trim().toUpperCase();
+            if(name && !allSpeakers.includes(name)) {
                 allSpeakers.push(name); allSpeakers.sort();
                 localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
             }
             renderSpeakerList(allSpeakers);
-            nameEl.focus();
+            document.getElementById('name').focus();
         }
 
-        function renderSpeakerList(listToDisplay) {
+        function renderSpeakerList(list) {
             const area = document.getElementById('speakerArea');
-            if (listToDisplay.length === 0) { area.innerHTML = `<div style="padding:15px; opacity:0.3; text-align:center;">Empty</div>`; return; }
-            area.innerHTML = listToDisplay.map(name => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${name}')">${name}</div></div>`).join('');
+            if (!list.length) { area.innerHTML = `<div style="padding:15px; opacity:0.3; text-align:center;">Empty</div>`; return; }
+            area.innerHTML = list.map(n => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');
         }
 
-        function selectSpeaker(name) { document.getElementById('name').value = name.toUpperCase(); }
-        function selectType(el, g, y, r, label) {
-            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedTypeLabel = label;
-            lims = { g, y, r };
-        }
-
-        function openModal(title, bodyHTML, onConfirm) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalBody').innerHTML = bodyHTML;
+        function selectSpeaker(n) { document.getElementById('name').value = n; }
+        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
+        function selectType(el, g, y, r, label) { document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
+        function openModal(t, b, c) { 
+            document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; 
             document.getElementById('customModal').style.display = 'flex';
-            document.getElementById('modalConfirm').onclick = () => { onConfirm(); document.getElementById('customModal').style.display = 'none'; };
+            document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; };
             document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; };
         }
-
         function askClubName() {
             const cur = localStorage.getItem(KEY_CLUB) || "";
             openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => {
-                const val = document.getElementById('cInput').value;
-                localStorage.setItem(KEY_CLUB, val);
-                document.getElementById('clubSubtitle').innerText = val;
+                const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v;
             });
         }
-
-        function askClearLogs() {
-            openModal("Clear Data?", "Wipe all meeting records?", () => {
-                localStorage.removeItem(KEY_LOGS);
-                location.reload();
-            });
-        }
-        
-        function handleNameInput(el) { el.value = el.value.toUpperCase(); }
-        function exportRoster() { /* logic same as before */ }
-        function handleImportFile(input) { /* logic same as before */ }
+        function askClearLogs() { openModal("Clear Data?", "Wipe all records?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
+        function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
+        function togglePause() { if (state === "running") { clearInterval(iv); state="paused"; } else { start = Date.now() - (elapsed*1000); iv = setInterval(updateTimer, 1000); state="running"; } }
+        function exportRoster() { const blob = new Blob([JSON.stringify({speakers: allSpeakers})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'roster.json'; a.click(); }
+        function handleImportFile(input) { const reader = new FileReader(); reader.onload = (e) => { const data = JSON.parse(e.target.result); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(data.speakers)); location.reload(); }; reader.readAsText(input.files[0]); }
     </script>
 </body>
 </html>
