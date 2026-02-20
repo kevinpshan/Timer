@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. MAIN MENU & CARDS --- */
+        /* --- 2. MAIN MENU BUTTONS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: grid; grid-template-columns: 1fr 60px;
@@ -56,9 +56,9 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- 3. ROSTER AREA (FIXED) --- */
+        /* --- 3. ROSTER AREA --- */
         .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
-        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        .speaker-item { padding: 12px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
         .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
         .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
         
@@ -68,7 +68,7 @@
             width: 100%; box-sizing: border-box; 
         }
 
-        /* --- 4. SETUP ROLES & TALLY --- */
+        /* --- 4. ROLES & TALLY --- */
         .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 10px; }
         @media (min-width: 650px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
         .role-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); cursor: pointer; min-height: 55px; display: flex; flex-direction: column; justify-content: center; }
@@ -82,17 +82,19 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             padding: 20px 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); position: relative; min-height: 110px;
         }
-        .tally-card .count { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
-        .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; }
-        .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; cursor: pointer; }
-        .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; cursor: pointer; }
+        .tally-card .count { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; pointer-events: none; }
+        .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; pointer-events: none; }
+        .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
+        .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
+        .wod-card { border: 4px solid var(--gold); }
+        .wod-card .count { color: var(--gold); }
 
-        /* --- 5. FOOTERS & MODALS --- */
+        /* --- 5. FOOTER & MODALS --- */
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 22px; border-radius: 18px; font-size: 24px; font-weight: 700; border: none; background: var(--accent); color: white; }
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
         .credit-footer { text-align: center; padding: 25px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
-        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; color: #000; font-weight: 400; }
+        .version-tag { display: block; font-size: 13px; opacity: 0.5; margin-top: 6px; color: #000; font-weight: 400; }
 
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); }
@@ -134,12 +136,12 @@
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div><div class="icon">📊</div></div>
         </div>
         <div class="credit-footer">
-            <div class="resource-row" style="display:flex; gap:10px; margin-bottom:12px;">
-                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn" style="flex:1; background:#F2F2F7; padding:12px; border-radius:10px; text-decoration:none; color:var(--accent); font-weight:700;">Website ↗</a>
-                <a href="manual.html" class="res-btn" style="flex:1; background:#F2F2F7; padding:12px; border-radius:10px; text-decoration:none; color:var(--accent); font-weight:700;">Manual ↗</a>
+            <div class="resource-row" style="display:flex; gap:12px; margin-bottom:15px; justify-content:center;">
+                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn" style="flex:1; background:#F2F2F7; padding:14px; border-radius:12px; text-decoration:none; color:var(--accent); font-weight:700; border:1px solid var(--border);">Website ↗</a>
+                <a href="manual.html" class="res-btn" style="flex:1; background:#F2F2F7; padding:14px; border-radius:12px; text-decoration:none; color:var(--accent); font-weight:700; border:1px solid var(--border);">Manual ↗</a>
             </div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag">Version 2.2</span>
+            <span id="versionLabel" class="version-tag">Version 2.3</span>
         </div>
     </div>
 
@@ -161,10 +163,7 @@
     <div id="setup" class="screen">
         <div class="header"><h1 id="setupHeader">Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink: 0;">
-                <input type="text" id="name" placeholder="SEARCH OR ENTER NAME" style="flex:1;" oninput="handleNameInput(this)">
-                <button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button>
-            </div>
+            <div style="display:flex; gap:10px; flex-shrink:0;"><input type="text" id="name" placeholder="SEARCH OR ENTER NAME" style="flex:1;" oninput="handleNameInput(this)"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button></div>
             <div id="speakerArea" class="speaker-area"></div>
             <div id="roleGridArea" class="role-grid"></div>
         </div>
@@ -174,30 +173,15 @@
     <div id="counterDisplay" class="screen">
         <div class="header"><h1 id="counterSpeakerName">Name</h1><div id="counterSpeakerRole" class="subtitle">ROLE</div></div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink: 0;">
-                <input type="text" id="newFiller" placeholder="NEW CRUTCH WORD" style="flex:1;">
-                <button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="addFiller()">Add</button>
-            </div>
+            <div style="display:flex; gap:10px; flex-shrink:0; margin-bottom:15px;"><input type="text" id="newFiller" placeholder="NEW CRUTCH WORD" style="flex:1;"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="addFiller()">Add</button></div>
             <div id="tallyArea" class="tally-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn commit-btn" onclick="saveCounterSession()">SAVE RESULTS</button></div>
     </div>
 
-    <div id="timerDisplay" class="screen">
-        <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div>
-        <div id="timer">00:00</div>
-        <div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn commit-btn" onclick="commitAndExit()">COMMIT & EXIT</button></div>
-    </div>
+    <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div><div id="timer">00:00</div><div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn commit-btn" onclick="commitAndExit()">COMMIT & EXIT</button></div></div>
 
-    <div id="report" class="screen">
-        <div class="header"><h1 id="reportPageTitle">Report</h1></div>
-        <div class="container"><div id="reportLog"></div></div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button>
-            <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
-            <button class="footer-btn" onclick="showScreen('menu')">Done</button>
-        </div>
-    </div>
+    <div id="report" class="screen"><div class="header"><h1 id="reportPageTitle">Report</h1></div><div class="container"><div id="reportLog"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
 
     <script>
         const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
@@ -213,37 +197,35 @@
         function switchMode(mode) { currentMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(mode === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none'; selectedTypeLabel = ""; }
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'setup') renderSetupGrid(); if (id === 'report') loadReport(); }
 
-        function renderSpeakerList(l) {
-            const area = document.getElementById('speakerArea');
-            if (!l.length) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
-            area.innerHTML = l.map(n => `
-                <div class="speaker-item">
-                    <div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div>
-                    <div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div>
-                </div>`).join('');
+        /* THE FIX: Initialize tally for new word immediately */
+        function addFiller() { 
+            const v = document.getElementById('newFiller').value.trim().toUpperCase(); 
+            if (v && !fillerList.includes(v)) { 
+                fillerList.push(v); 
+                localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); 
+                currentTally[v] = 0; // Fixes "undefined" bug
+                renderTally(); 
+                document.getElementById('newFiller').value = ""; 
+            } 
         }
 
-        function copyReport() {
-            const text = generateReportText(); if (!text) return;
-            navigator.clipboard.writeText(text).then(() => { openModal("Success", "Report copied to clipboard!", () => {}); });
+        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
+        function renderTally() {
+            const area = document.getElementById('tallyArea');
+            const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b));
+            area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join('');
         }
 
-        function generateReportText() {
-            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); if (!logs.length) return null;
-            const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools";
-            const date = new Date().toLocaleDateString();
-            const mdEnabled = document.getElementById('mdToggle').checked;
-            if (mdEnabled) {
-                let md = `# ${club} Report\n**Date:** ${date}\n\n| Name | Role | Result |\n| :--- | :--- | :--- |\n`;
-                logs.forEach(log => { const [n, r] = log.split(' | '); const [role, val] = r.split(': '); md += `| ${n} | ${role} | ${val} |\n`; });
-                return md;
-            } else {
-                let txt = `${club} Report - ${date}\n${'='.repeat(20)}\n\n`;
-                logs.forEach(log => txt += `• ${log}\n`); return txt;
-            }
+        function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}" from your list?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
+        
+        function saveCounterSession() { 
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            let res = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, c]) => `${f}: ${c}`).join(', ') || "0 Fillers";
+            logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${res}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            openModal("Saved", "Results recorded.", () => { showScreen('menu'); });
         }
-
-        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Meeting Report`, text: text }); }
 
         function loadReport() { 
             const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
@@ -258,63 +240,48 @@
             document.getElementById('reportPageTitle').innerText = (currentMode === 'timer' ? "Timer" : "Counter") + " Report";
         }
 
+        function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Report copied!", () => {}); }); }
+        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
+        function generateReportText() {
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); if (!logs.length) return null;
+            const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools";
+            const date = new Date().toLocaleDateString();
+            if (document.getElementById('mdToggle').checked) {
+                let md = `# ${club} Report\n**Date:** ${date}\n\n| Name | Role | Result |\n| :--- | :--- | :--- |\n`;
+                logs.forEach(log => { const [n, r] = log.split(' | '); const [role, val] = r.split(': '); md += `| ${n} | ${role} | ${val} |\n`; });
+                return md;
+            } else {
+                let txt = `${club} Report - ${date}\n${'='.repeat(20)}\n\n`;
+                logs.forEach(log => txt += `• ${log}\n`); return txt;
+            }
+        }
+
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             const vLabel = document.getElementById('versionLabel');
-            if (window.location.pathname.toLowerCase().includes('/test/')) vLabel.innerText = "Version 2.2 (TEST)";
+            if (window.location.pathname.toLowerCase().includes('/test/')) vLabel.innerText = "Version 2.3 (TEST)";
             renderSpeakerList(allSpeakers);
         }
 
-        function renderSetupGrid() {
-            const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
-            document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup';
-            if (currentMode === 'timer') {
-                TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; });
-                const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"r":7}');
-                grid.innerHTML += `<div class="role-card" style="grid-column: span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`;
-            } else {
-                COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; });
-                grid.innerHTML += `<div id="custom-card" class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
-            }
-        }
-
-        function startTimer() { 
-            elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); 
-            iv = setInterval(() => {
-                elapsed = Math.floor((Date.now() - start) / 1000);
-                let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
-                document.getElementById('timer').innerText = `${m}:${s}`;
-                if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
-                else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
-                else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
-            }, 1000); 
-        }
-
-        /* --- STABLE DATA HELPERS --- */
-        function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
-        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n) { openModal("Missing Name", "Enter a speaker.", ()=>{}); return; } if (!selectedTypeLabel) { openModal("Missing Role", "Select a role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
-        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
-        function renderTally() { const area = document.getElementById('tallyArea'); const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join(''); }
-        function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
-        function addFiller() { const v = document.getElementById('newFiller').value.trim().toUpperCase(); if (v && !fillerList.includes(v)) { fillerList.push(v); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); document.getElementById('newFiller').value = ""; } }
-        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let res = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, c]) => `${f}: ${c}`).join(', ') || "0 Fillers"; logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${res}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Results recorded.", () => { showScreen('menu'); }); }
+        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
+        function startTimer() { elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; } else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; } else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; } }, 1000); }
         function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); startTimer(); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
-        function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; document.body.style.color = "var(--text)"; showScreen('menu'); }
+        function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; showScreen('menu'); }
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Custom Role"; const body = currentMode === 'timer' ? `<div style="display:grid; gap:10px;"><label>Min: <input type="number" id="cg" value="${saved.g}"></label><label>Target: <input type="number" id="cy" value="${saved.cy}"></label><label>Max: <input type="number" id="cr" value="${saved.r}"></label></div>` : `<input type="text" id="customRole" placeholder="ROLE NAME" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
-        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'sdtm_backup.json'; a.click(); }
-        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.club) localStorage.setItem(KEY_CLUB, d.club); location.reload(); }; r.readAsText(i.files[0]); }
+        function renderSetupGrid() { const grid = document.getElementById('roleGridArea'); grid.innerHTML = ""; document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup'; if (currentMode === 'timer') { TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; }); const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"r":7}'); grid.innerHTML += `<div class="role-card" style="grid-column: span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`; } else { COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; }); grid.innerHTML += `<div id="custom-card" class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`; } }
+        function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n) { openModal("Error", "Enter speaker name.", ()=>{}); return; } if (!selectedTypeLabel) { openModal("Error", "Select a role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
+        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); location.reload(); }; r.readAsText(i.files[0]); }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
-        function askClearLogs() { openModal("Clear?", "Delete meeting logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function askClearLogs() { openModal("Clear?", "Delete logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function saveSpeaker() { const n = document.getElementById('name').value.trim().toUpperCase(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); } renderSpeakerList(allSpeakers); }
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
-        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
     </script>
 </body>
 </html>
