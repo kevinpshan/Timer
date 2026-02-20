@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.5.3</title>
+    <title>Meeting Tools v2.5.4</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +36,30 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. MAIN MENU CARDS --- */
+        /* --- 2. SETTINGS TOGGLE --- */
+        .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
+        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- 3. ROLES (3-COLUMN) --- */
+        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 15px; }
+        @media (min-width: 600px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
+        .role-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
+        .role-card h4 { margin: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; pointer-events: none; }
+        .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; font-weight: 500; pointer-events: none; }
+
+        /* --- 4. ROSTER LIST STYLING --- */
+        .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px; margin-bottom: 10px; }
+        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
+        .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
+        input[type="text"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
+
+        /* --- 5. MAIN MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -47,14 +70,15 @@
         .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 45px; color: var(--accent); }
 
-        /* --- 3. GRIDS & ROLES --- */
-        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 15px; }
-        @media (min-width: 600px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
-        .role-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-        .role-card h4 { margin: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; pointer-events: none; }
-        .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; font-weight: 500; pointer-events: none; }
+        /* --- 6. WOD CARD --- */
+        .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+        .wod-word { font-size: 55px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+        .wod-label { font-size: 14px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; }
+        .wod-def { font-size: 22px; line-height: 1.4; color: var(--text); margin-bottom: 25px; }
+        .wod-example { font-size: 20px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); }
+        .ai-indicator { font-size: 11px; color: var(--green); font-weight: 800; margin-top: 10px; display: none; }
 
+        /* --- 7. TALLY GRID --- */
         .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 15px 0; }
         @media (min-width: 600px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
         .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 10px; position: relative; min-height: 110px; cursor: pointer; }
@@ -64,30 +88,7 @@
         .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; }
         .wod-card { border: 3px solid var(--gold) !important; }
 
-        /* --- 4. ROSTER & INPUTS --- */
-        .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
-        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
-        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
-        .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
-        input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
-
-        /* --- 5. SETTINGS SWITCH --- */
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
-        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        /* --- 6. WOD CARD --- */
-        .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-        .wod-word { font-size: 55px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
-        .wod-label { font-size: 14px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; }
-        .wod-def { font-size: 22px; line-height: 1.4; color: var(--text); margin-bottom: 25px; }
-        .wod-example { font-size: 20px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); }
-        .ai-indicator { font-size: 11px; color: var(--green); font-weight: 800; margin-top: 10px; display: none; }
-
-        /* --- 7. FOOTERS & BUTTONS --- */
+        /* --- 8. FOOTERS & MODALS --- */
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
         .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 17px; border: 1px solid var(--border); text-align: center; }
@@ -144,7 +145,7 @@
 
         <div id="counterMode" class="container" style="display:none;">
             <div class="main-menu-card" onclick="showScreen('wod')">
-                <div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Find inspiration</p></div>
+                <div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Select meeting inspiration</p></div>
                 <div class="icon" style="color:var(--gold);">★</div>
             </div>
             <div class="main-menu-card" onclick="showScreen('setup')">
@@ -169,17 +170,8 @@
 
     <div id="wod" class="screen">
         <div class="header"><h1>W.O.D.</h1><div class="subtitle">Word Generator</div></div>
-        <div class="container">
-            <div id="wodDisplay" class="wod-card-big">
-                <div id="wodContent"><span class="wod-word">...</span></div>
-                <div id="aiIndicator" class="ai-indicator">● GEMINI AI ENABLED</div>
-            </div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button>
-            <button class="footer-btn secondary-btn" onclick="nextWod()">Next</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button>
-        </div>
+        <div class="container"><div id="wodDisplay" class="wod-card-big"><div id="wodContent"><span class="wod-word">...</span></div><div id="aiIndicator" class="ai-indicator">● GEMINI AI ENABLED</div></div></div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn secondary-btn" onclick="nextWod()">Next</button><button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button></div>
     </div>
 
     <div id="setup" class="screen">
@@ -210,7 +202,7 @@
                 <div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div>
             </div>
             <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;">
-                <div class="card-content"><h3>Gemini AI Key</h3><p>Enable AI usage examples</p></div>
+                <div class="card-content"><h3>Gemini AI Key</h3><p>Enable usage examples</p></div>
                 <input type="password" id="geminiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px; border: 1px solid var(--border);">
             </div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
@@ -229,7 +221,7 @@
         let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
-        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant", "Kindle", "Legacy", "Munificent", "Novel", "Opulent", "Pensive", "Quaint", "Ruminate", "Serene", "Thrive", "Urbane", "Vivid", "Wander", "Zeal", "Acumen", "Boisterous", "Cerebral", "Deferential", "Ephemeral", "Frugal"];
+        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant"];
 
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
@@ -237,16 +229,33 @@
             document.getElementById('geminiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
             const isTest = window.location.pathname.toLowerCase().includes('/test/');
-            vLabel.innerText = "Version 2.5.3" + (isTest ? " (TEST)" : "");
-            renderSpeakerList(allSpeakers);
+            vLabel.innerText = "Version 2.5.4" + (isTest ? " (TEST)" : "");
+            
+            // ROSTER INJECTION - ENSURE THIS RUNS LAST
+            refreshRoster();
             nextWod();
         }
 
-        /* --- THE FIX: RELIABLE UI REFRESH --- */
+        function refreshRoster() {
+            const area = document.getElementById('speakerArea');
+            if (!area) return;
+            if (!allSpeakers || allSpeakers.length === 0) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
+            area.innerHTML = allSpeakers.map(n => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');
+        }
+
+        function saveSpeaker() {
+            const n = document.getElementById('name').value.trim().toUpperCase();
+            if(n && !allSpeakers.includes(n)) { 
+                allSpeakers.push(n); allSpeakers.sort(); 
+                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); 
+            }
+            refreshRoster();
+        }
+
         function showScreen(id) { 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); 
-            if (id === 'setup') { selectedTypeLabel = ""; renderSetupGrid(); }
+            if (id === 'setup') { selectedTypeLabel = ""; renderSetupGrid(); refreshRoster(); }
             if (id === 'report') loadReport(); 
             if (id === 'wod') updateAiIndicator();
         }
@@ -266,11 +275,10 @@
             }
         }
 
-        /* --- STABLE HELPERS --- */
+        /* --- REST OF SYSTEM STABLE --- */
         function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
-        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); localStorage.setItem(KEY_AI_KEY, document.getElementById('geminiKey').value.trim()); }
-        function updateAiIndicator() { const hasKey = localStorage.getItem(KEY_AI_KEY); document.getElementById('aiIndicator').style.display = hasKey ? 'block' : 'none'; }
-        
+        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); localStorage.setItem(KEY_AI_KEY, document.getElementById('geminiKey').value.trim()); updateAiIndicator(); }
+        function updateAiIndicator() { const hasKey = localStorage.getItem(KEY_AI_KEY); const ind = document.getElementById('aiIndicator'); if(ind) ind.style.display = hasKey ? 'block' : 'none'; }
         let activeWodData = null;
         async function nextWod() {
             const display = document.getElementById('wodContent'); display.innerHTML = `<span class="wod-word">...</span>`;
@@ -285,7 +293,6 @@
                 display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-label">Definition</div><div class="wod-def">${definition}</div>${example ? `<div class="wod-label">Usage</div><div class="wod-example">"${example}"</div>` : ''}`;
             } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Offline.</div>`; }
         }
-
         async function fetchAiExample(word, key) {
             try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
@@ -293,8 +300,15 @@
                 const data = await resp.json(); return data.candidates[0].content.parts[0].text.trim();
             } catch (e) { return ""; }
         }
-
         function selectWod() { if(!activeWodData) return; const wordUpper = activeWodData.word.toUpperCase(); localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); if (!fillerList.includes(wordUpper)) { fillerList.push(wordUpper); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); } openModal("WOD Selected", `${wordUpper} locked.`, () => { showScreen('menu'); }); }
+        function selectSpeaker(n) { document.getElementById('name').value = n; }
+        function handleNameInput(el) { el.value = el.value.toUpperCase(); const q = el.value; const filtered = allSpeakers.filter(s => s.includes(q)); renderSpeakerList(filtered); }
+        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
+        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
+        function renderTally() { const area = document.getElementById('tallyArea'); const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join(''); }
+        function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function delFiller(e, f) { e.stopPropagation(); openModal("Delete Word?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
         function saveCounterSession() { 
             let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); const matchHeader = `${currentSpeaker} | ${selectedTypeLabel} :: `;
             let existingIdx = logs.findIndex(e => e.startsWith(matchHeader));
@@ -327,9 +341,6 @@
         }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Delete session data?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
-        function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
-        function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
-        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
         function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.gemini) localStorage.setItem(KEY_AI_KEY, d.gemini); location.reload(); }; r.readAsText(i.files[0]); }
         function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "", gemini: localStorage.getItem(KEY_AI_KEY) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
