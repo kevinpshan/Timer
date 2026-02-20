@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.6.1</title>
+    <title>Meeting Tools v2.6.2</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- CARDS & GRIDS --- */
+        /* --- MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -133,7 +133,7 @@
         <div class="header"><h1>W.O.D.</h1><div class="subtitle">Word Generator</div></div>
         <div class="container">
             <div id="wodDisplay" class="wod-card-big">
-                <div id="aiIndicator" class="ai-indicator">● GEMINI AI READY</div>
+                <div id="aiIndicator" class="ai-indicator">● AI READY</div>
                 <div id="wodContent"><span class="wod-word">...</span></div>
             </div>
         </div>
@@ -168,7 +168,7 @@
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
             <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Share reports as table code</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
-            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>Gemini AI Key</h3><p>Enable sophisticated usage examples</p></div><input type="password" id="geminiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
+            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>Gemini API Key</h3><p>Enable sophisticated usage examples</p></div><input type="password" id="geminiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
             <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
@@ -194,13 +194,13 @@
             document.getElementById('geminiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
             const isTest = window.location.pathname.toLowerCase().includes('/test/');
-            vLabel.innerText = "Version 2.6.1" + (isTest ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.6.2" + (isTest ? " (TEST)" : "");
             
             refreshRoster();
             nextWod();
         }
 
-        /* --- THE STABLE ENDPOINT FIX --- */
+        /* --- THE FINAL ENDPOINT & DIAGNOSTIC FIX --- */
         let activeWodData = null;
         async function nextWod() {
             const display = document.getElementById('wodContent');
@@ -218,10 +218,10 @@
                 const data = await resp.json();
                 let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition not found.";
                 
-                // 2. Clear state and Fetch AI Usage
+                // 2. Fetch AI Usage
                 let example = "";
                 if (aiKey) {
-                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Generating usage...</div>`;
+                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Connecting to Gemini...</div>`;
                     example = await fetchAiExample(word, aiKey);
                 }
 
@@ -232,38 +232,46 @@
                     <div class="wod-label">Definition</div>
                     <div class="wod-def">${definition}</div>
                     ${example ? `<div class="wod-label">Usage (AI Generated)</div><div class="wod-example">"${example}"</div>` : 
-                    `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">AI example unavailable. Verify Gemini Key in Settings.</div>`}
+                    `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">AI example unavailable. Add Gemini Key in Settings.</div>`}
                 `;
             } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Check internet connection.</div>`; }
         }
 
         async function fetchAiExample(word, key) {
-            try {
-                // CHANGED TO v1 STABLE ENDPOINT AND FLASH-LATEST MODEL
-                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${key}`;
-                const payload = {
-                    contents: [{ parts: [{ text: `Provide one family-friendly, professional example sentence using the word "${word}" in a Toastmasters club context. Return ONLY the sentence.` }] }]
-                };
+            // UPDATED: Production Endpoint and Simplified Model Name
+            const ENDPOINTS = [
+                `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`
+            ];
 
-                const resp = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
+            const payload = {
+                contents: [{ parts: [{ text: `Provide one family-friendly, professional example sentence using the word "${word}" in a Toastmasters club context. Return ONLY the sentence.` }] }]
+            };
 
-                if (!resp.ok) {
-                    const err = await resp.json();
-                    return `[Diagnostic Error: ${resp.status} - ${err.error?.message || 'Unknown'}]`;
+            for (let url of ENDPOINTS) {
+                try {
+                    const resp = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.candidates && data.candidates[0].content) {
+                            return data.candidates[0].content.parts[0].text.trim();
+                        }
+                    } else if (resp.status === 400 || resp.status === 404) {
+                        continue; // Try next endpoint
+                    } else {
+                        const err = await resp.json();
+                        return `[Error ${resp.status}: ${err.error?.message || 'Check Key'}]`;
+                    }
+                } catch (e) {
+                    continue;
                 }
-
-                const data = await resp.json();
-                if (data.candidates && data.candidates[0].content) {
-                    return data.candidates[0].content.parts[0].text.trim();
-                }
-                return "[No AI response]";
-            } catch (e) {
-                return "[Diagnostic Error: Connection Failed]";
             }
+            return "[AI Error: No models responded. Verify key format.]";
         }
 
         /* --- STABLE HELPERS --- */
@@ -315,7 +323,7 @@
         function togglePause() { if (iv) { clearInterval(iv); iv = null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.body.style.background = "var(--bg)"; showScreen('menu'); }
         function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `Report\nDate: ${new Date().toLocaleDateString()}\n\n`; if (wodData) dStr += `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data."; document.getElementById('reportLog').innerText = dStr; }
-        function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# Report\n` : `Meeting Report\n${'='.repeat(20)}\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
+        function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# Report\n` : `Report\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Reset logs and WOD?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
@@ -323,6 +331,8 @@
         function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "", gemini: localStorage.getItem(KEY_AI_KEY) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
         function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none'; }
         function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Missing Name or Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+        function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
+        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
     </script>
 </body>
