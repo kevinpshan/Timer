@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.4.9</title>
+    <title>Meeting Tools v2.5.0</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. SETTINGS TOGGLE (FIXED) --- */
+        /* --- 2. SETTINGS SWITCH --- */
         .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
@@ -44,32 +44,13 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- 3. ROLES (3-COLUMN & SUBTEXT FIXED) --- */
+        /* --- 3. ROLES & GRIDS --- */
         .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 10px; }
         @media (min-width: 600px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
-        .role-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.1s; }
+        .role-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-        .role-card h4, .role-card p { pointer-events: none; margin: 0; }
-        .role-card h4 { font-size: 16px; font-weight: 700; text-transform: uppercase; }
-        .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; font-weight: 500; }
-
-        /* --- 4. CARDS & WOD --- */
-        .main-menu-card { background: var(--card); border-radius: 20px; display: grid; grid-template-columns: 1fr 60px; align-items: center; padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 5px; box-sizing: border-box; }
-        .main-menu-card h3 { margin: 0; font-size: 28px; font-weight: 800; }
-        .main-menu-card p { margin: 6px 0 0; font-size: 18px; color: var(--subtext); }
-        .main-menu-card .icon { font-size: 45px; color: var(--accent); text-align: right; }
-        
-        .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-        .wod-word { font-size: 55px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
-        .wod-def { font-size: 22px; line-height: 1.4; color: var(--text); margin-bottom: 25px; }
-        .wod-example { font-size: 20px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); }
-
-        /* --- 5. TALLY & ROSTER --- */
-        .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
-        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
-        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
-        .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
-        input[type="text"], input[type="number"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
+        .role-card h4 { margin: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; pointer-events: none; }
+        .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; font-weight: 500; pointer-events: none; }
 
         .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 15px 0; }
         @media (min-width: 600px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -78,18 +59,43 @@
         .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; pointer-events: none; }
         .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; }
         .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; }
+        .wod-card { border: 3px solid var(--gold) !important; }
+
+        /* --- 4. MENU CARDS & WOD --- */
+        .main-menu-card { background: var(--card); border-radius: 20px; display: grid; grid-template-columns: 1fr 60px; align-items: center; padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 5px; box-sizing: border-box; }
+        .main-menu-card h3 { margin: 0; font-size: 28px; font-weight: 800; }
+        .main-menu-card p { margin: 6px 0 0; font-size: 18px; color: var(--subtext); }
+        .main-menu-card .icon { font-size: 45px; color: var(--accent); text-align: right; }
         
-        /* --- 6. FOOTERS --- */
-        .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
-        .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 17px; border: 1px solid var(--border); text-align: center; }
+        .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+        .wod-word { font-size: 55px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+        .wod-label { font-size: 14px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; }
+        .wod-def { font-size: 22px; line-height: 1.4; color: var(--text); margin-bottom: 25px; }
+        .wod-example { font-size: 20px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); }
+
+        /* --- 5. ROSTER & SETUP --- */
+        .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
+        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
+        .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
+        input[type="text"], input[type="number"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
+
+        /* --- 6. MODALS & FOOTERS --- */
+        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #modalBody label { display: block; text-align: left; font-weight: 700; margin: 10px 0 5px; }
+
         .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 22px; border-radius: 18px; font-size: 24px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
         
-        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
+        .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 17px; border: 1px solid var(--border); text-align: center; }
+        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
+
         #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; border: 1px solid var(--border); color: #000; white-space: pre; }
+        #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
     </style>
 </head>
 <body onload="initApp()">
@@ -132,7 +138,7 @@
                 <a href="manual.html" class="res-btn">Manual ↗</a>
             </div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag" style="display:block; font-size:12px; opacity:0.5; margin-top:6px;">Version 2.4.9</span>
+            <span id="versionLabel" class="version-tag"></span>
         </div>
     </div>
 
@@ -162,7 +168,7 @@
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn" style="background:var(--green);" onclick="saveCounterSession()">SAVE RESULTS</button></div>
     </div>
 
-    <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div><div id="timer" style="font-size:clamp(100px, 35vw, 450px); font-weight:200; text-align:center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000;">00:00</div><div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT & EXIT</button></div></div>
+    <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div><div id="timer">00:00</div><div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT & EXIT</button></div></div>
 
     <div id="report" class="screen"><div class="header"><h1 id="reportPageTitle">Report</h1></div><div class="container"><div id="reportLog"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
 
@@ -170,7 +176,7 @@
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
             <div class="main-menu-card" style="cursor: default;">
-                <div class="card-content"><h3>Markdown Export</h3><p>IOS-Style Switch logic</p></div>
+                <div class="card-content"><h3>Markdown Export</h3><p>Share reports as table code</p></div>
                 <div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div>
             </div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
@@ -194,14 +200,19 @@
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
+            
+            // VERSION TEST LOGIC
+            const vLabel = document.getElementById('versionLabel');
+            const isTest = window.location.pathname.toLowerCase().includes('/test/');
+            vLabel.innerText = "Version 2.5.0" + (isTest ? " (TEST)" : "");
+
             renderSpeakerList(allSpeakers);
             nextWod();
         }
 
-        /* --- RESTORED SUBTEXT LOGIC --- */
+        /* --- STABLE CORE FUNCTIONS --- */
         function renderSetupGrid() {
-            const grid = document.getElementById('roleGridArea'); 
-            grid.innerHTML = ""; 
+            const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
             if (currentMode === 'timer') {
                 const TIMER_PRESETS = [
                     {label:'TABLE TOPICS', sub:'1-2m', g:60, y:90, r:120},
@@ -209,25 +220,20 @@
                     {label:'SPEECH', sub:'5-7m', g:300, y:360, r:420},
                     {label:'ICE BREAKER', sub:'4-6m', g:240, y:300, r:360}
                 ];
-                TIMER_PRESETS.forEach(p => { 
-                    grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; 
-                });
+                TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; });
                 const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}');
                 grid.innerHTML += `<div class="role-card" style="grid-column: span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`;
             } else {
                 const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS"];
-                COUNTER_ROLES.forEach(r => { 
-                    grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; 
-                });
+                COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; });
                 grid.innerHTML += `<div class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
             }
         }
 
-        /* --- STABLE CORE FUNCTIONS --- */
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'setup') { selectedTypeLabel = ""; renderSetupGrid(); } if (id === 'report') loadReport(); }
         function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
-        function saveSpeaker() { const n = document.getElementById('name').value.trim().toUpperCase(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); } renderSpeakerList(allSpeakers); }
         function renderSpeakerList(list) { const area = document.getElementById('speakerArea'); if (!list || list.length === 0) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; } area.innerHTML = list.map(n => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join(''); }
+        function saveSpeaker() { const n = document.getElementById('name').value.trim().toUpperCase(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); } renderSpeakerList(allSpeakers); }
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
@@ -237,27 +243,64 @@
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function delFiller(e, f) { e.stopPropagation(); openModal("Delete Word?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
-        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); const matchHeader = `${currentSpeaker} | ${selectedTypeLabel} :: `; let existingIdx = logs.findIndex(e => e.startsWith(matchHeader)); if (existingIdx !== -1) { let merged = parseTallyString(logs[existingIdx].split(' :: ')[1]); for (let w in currentTally) if (currentTally[w] > 0) merged[w] = (merged[w] || 0) + currentTally[w]; logs[existingIdx] = matchHeader + serializeTally(merged); } else logs.push(matchHeader + serializeTally(currentTally)); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Counts updated.", () => { showScreen('menu'); }); }
+        
+        function saveCounterSession() { 
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); const matchHeader = `${currentSpeaker} | ${selectedTypeLabel} :: `;
+            let existingIdx = logs.findIndex(e => e.startsWith(matchHeader));
+            if (existingIdx !== -1) {
+                let merged = parseTallyString(logs[existingIdx].split(' :: ')[1]);
+                for (let w in currentTally) if (currentTally[w] > 0) merged[w] = (merged[w] || 0) + currentTally[w];
+                logs[existingIdx] = matchHeader + serializeTally(merged);
+            } else logs.push(matchHeader + serializeTally(currentTally));
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Counts updated.", () => { showScreen('menu'); });
+        }
         function parseTallyString(s) { let o = {}; if (s === "0 Fillers") return o; s.split(', ').forEach(p => { const [w, c] = p.split(': '); o[w] = parseInt(c); }); return o; }
         function serializeTally(o) { let r = []; for (let w in o) if (o[w] > 0) r.push(`${w}: ${o[w]}`); return r.length > 0 ? r.join(', ') : "0 Fillers"; }
+
         function startTimer() { elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; } else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; } else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; } }, 1000); }
         function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); startTimer(); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; document.body.style.color="var(--text)"; showScreen('menu'); }
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools"; const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `${club}\nDate: ${new Date().toLocaleDateString()}\n${'='.repeat(25)}\n\n`; if (wodData) dStr += `WORD OF THE DAY: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data."; document.getElementById('reportLog').innerText = dStr; }
-        function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
-        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
-        function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools"; const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# ${club} Report\n` : `${club} Report\n${'='.repeat(20)}\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (!logs.length) return r + "No data."; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
-        async function nextWod() { const display = document.getElementById('wodContent'); display.innerHTML = `<span class="wod-word">...</span>`; const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)]; try { const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`); const data = await resp.json(); if (data[0]) { activeWodData = { word, phonetic: data[0].phonetic || "", definition: data[0].meanings[0].definitions[0].definition, example: data[0].meanings[0].definitions[0].example || "" }; display.innerHTML = `<span class="wod-word">${activeWodData.word}</span><div class="wod-label">Definition</div><div class="wod-def">${activeWodData.definition}</div>${activeWodData.example ? `<div class="wod-label">Example</div><div class="wod-example">"${activeWodData.example}"</div>` : ''}`; } } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Offline.</div>`; } }
-        function selectWod() { if(!activeWodData) return; const wordUpper = activeWodData.word.toUpperCase(); localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); if (!fillerList.includes(wordUpper)) { fillerList.push(wordUpper); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); } openModal("WOD Selected", `Word locked: ${wordUpper}.`, () => { showScreen('menu'); }); }
-        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Enter Name & Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+
+        function loadReport() { 
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools"; const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
+            let dStr = `${club}\nDate: ${new Date().toLocaleDateString()}\n${'='.repeat(25)}\n\n`;
+            if (wodData) dStr += `WORD OF THE DAY: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`;
+            if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data recorded.";
+            document.getElementById('reportLog').innerText = dStr;
+        }
+
+        function generateReportText() {
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools"; const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked;
+            let r = md ? `# ${club} Report\n` : `${club} Report\n${'='.repeat(20)}\n`;
+            if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`;
+            if (!logs.length) return r + "No session data.";
+            if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); }
+            else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r;
+        }
+
+        let activeWodData = null;
+        async function nextWod() {
+            const display = document.getElementById('wodContent'); display.innerHTML = `<span class="wod-word">...</span>`; const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
+            try {
+                const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`); const data = await resp.json();
+                if (data[0]) { activeWodData = { word, phonetic: data[0].phonetic || "", definition: data[0].meanings[0].definitions[0].definition, example: data[0].meanings[0].definitions[0].example || "" };
+                    display.innerHTML = `<span class="wod-word">${activeWodData.word}</span><div class="wod-label">Definition</div><div class="wod-def">${activeWodData.definition}</div>${activeWodData.example ? `<div class="wod-label">Example</div><div class="wod-example">"${activeWodData.example}"</div>` : ''}`;
+                }
+            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Check internet connection.</div>`; }
+        }
+        function selectWod() { if(!activeWodData) return; const wordUpper = activeWodData.word.toUpperCase(); localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); if (!fillerList.includes(wordUpper)) { fillerList.push(wordUpper); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); } openModal("WOD Selected", `${wordUpper} locked in report and added to tracking.`, () => { showScreen('menu'); }); }
+        
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Missing Name or Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
         function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none'; }
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
-        function askClearLogs() { openModal("Clear?", "Reset logs and WOD?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
+        function askClearLogs() { openModal("Clear?", "Delete session data?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
         function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
         function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
         function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); location.reload(); }; r.readAsText(i.files[0]); }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
+        function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
+        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
     </script>
 </body>
 </html>
