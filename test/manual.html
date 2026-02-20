@@ -2,86 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting Tools - User Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meeting Tools Manual</title>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; color: #1c1c1e; background: #f2f2f7; margin: 0; padding: 20px; }
-        .wrap { max-width: 850px; margin: 0 auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h1 { color: #007aff; font-size: 32px; border-bottom: 2px solid #f2f2f7; padding-bottom: 10px; margin-top: 0; }
-        h2 { color: #007aff; margin-top: 35px; font-size: 24px; border-left: 4px solid #007aff; padding-left: 15px; }
-        h3 { color: #3a3a3c; margin-top: 20px; font-size: 19px; }
-        .badge { background: #BF941A; color: white; padding: 2px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; vertical-align: middle; }
-        .feature-box { background: #f8f9fa; border: 1px solid #d1d1d6; padding: 20px; border-radius: 15px; margin: 15px 0; }
-        .pro-tip { background: #fff9db; border: 1px solid #fab005; padding: 15px; border-radius: 12px; margin: 15px 0; font-size: 0.95em; }
-        .footer { text-align: center; margin-top: 50px; font-size: 13px; color: #8e8e93; border-top: 1px solid #f2f2f7; padding-top: 20px; }
-        .back-link { display: inline-block; margin-bottom: 25px; text-decoration: none; color: #007aff; font-weight: 700; font-size: 18px; }
-        li { margin-bottom: 8px; }
-        code { background: #f2f2f7; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-weight: bold; }
+        :root {
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF; 
+            --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
+            --gold: #BF941A;
+        }
+        body { 
+            margin: 0; background: var(--bg); color: var(--text); 
+            font-family: -apple-system, system-ui, sans-serif; line-height: 1.5;
+            padding: 40px 20px;
+        }
+        .content { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; color: #000; }
+        h2 { font-size: 24px; font-weight: 700; margin-top: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
+        h3 { font-size: 20px; color: var(--gold); margin-top: 25px; }
+        p { margin: 15px 0; font-size: 17px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 10px; font-size: 17px; }
+        code { background: #F2F2F7; padding: 3px 6px; border-radius: 6px; font-family: monospace; font-weight: 600; }
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 20px; font-size: 18px; }
+        .api-step { background: #F9F9FB; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; }
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <a href="index.html" class="back-link">← Back to App</a>
-        <h1>Meeting Tools Manual <span class="badge">v2.5.0</span></h1>
-        
-        <p>This application is an all-in-one suite for Toastmasters <strong>Timers</strong> and <strong>Grammarians/Ah-Counters</strong>. It works offline and saves all data locally to your device browser.</p>
 
-        <h2>1. Word of the Day (WOD)</h2>
-        <div class="feature-box">
-            <p>The Grammarian can now generate and set the <strong>Word of the Day</strong> directly within the app.</p>
-            <ul>
-                <li><strong>Generate:</strong> Tap the <strong>★ Word of the Day</strong> card. Tap <strong>Next</strong> to cycle through 1,000+ curated sophisticated words.</li>
-                <li><strong>Definitions & Usage:</strong> Definitions and example sentences are fetched automatically (requires internet during selection).</li>
-                <li><strong>Selection:</strong> Tapping <strong>Select</strong> does two things:
-                    <ol>
-                        <li>It locks the word, definition, and usage into the final <strong>Meeting Report</strong>.</li>
-                        <li>It automatically adds that word as a button in the <strong>Ah-Counter</strong> tracker.</li>
-                    </ol>
-                </li>
-            </ul>
+    <div class="content">
+        <a href="index.html" class="btn-back">← Back to App</a>
+        <h1>User Manual</h1>
+        <p>Welcome to the <strong>Southern Dutchess Toastmasters</strong> Meeting Tools suite (v2.8.7). This PWA (Progressive Web App) is designed to streamline the roles of Timer and Ah-Counter.</p>
+
+        <h2>1. The Word of the Day (W.O.D.)</h2>
+        <p>The W.O.D. feature now uses <strong>ChatGPT-4o-mini</strong> to provide intelligent, club-appropriate content.</p>
+        <ul>
+            <li><strong>Randomize:</strong> Tap "Random" to pick from a curated library of 1,000 sophisticated words.</li>
+            <li><strong>Search:</strong> Type a specific word into the search bar and tap 🔍 to fetch a custom AI definition and usage sentence for that word.</li>
+            <li><strong>Contextual AI:</strong> ChatGPT is instructed to provide "public speaking" flavored definitions and family-friendly examples.</li>
+            <li><strong>Select:</strong> Tapping "Select" pins the word to the top-left of the Ah-Counter grid with a gold "WORD OF DAY" badge for easy tracking.</li>
+        </ul>
+
+        <h2>2. Timer Functionality</h2>
+        <ul>
+            <li><strong>Presets:</strong> Quickly select 1-2m (Table Topics), 2-3m (Evaluations), or 5-7m (Speeches).</li>
+            <li><strong>Custom:</strong> Enter a custom time limit for non-standard meeting segments.</li>
+            <li><strong>Visual Cues:</strong> The background turns <code>Green</code> at the minimum time, <code>Yellow</code> at the target time, and <code>Red</code> at the maximum time.</li>
+        </ul>
+
+        <h2>3. Ah-Counter & Filler Words</h2>
+        <ul>
+            <li><strong>Tracking:</strong> Tap any card to increase the count. Tap the small "−" to decrease.</li>
+            <li><strong>Persistence:</strong> If you stop a session and start a new one for the same speaker, the app will ask to merge the counts.</li>
+            <li><strong>Customization:</strong> You can delete fillers you aren't tracking by tapping the "✕" on the card.</li>
+        </ul>
+
+        <h2 id="setup-api">4. Setting up AI Usage (ChatGPT)</h2>
+        <div class="alert">
+            <strong>Why do I need a key?</strong> For privacy and cost reasons, the app does not store a central key. By providing your own key, your meeting data stays private and you get your own dedicated AI "Assistant."
         </div>
-
-        <h2>2. Grammarian & Ah-Counter</h2>
-        <h3>Smart Count Merging</h3>
-        <p>You no longer have to worry about tracking the <code>Toastmaster</code> or <code>General Evaluator</code> in multiple segments. If you track the same person in the same role twice, the app <strong>automatically merges</strong> the counts into one single entry in the report.</p>
         
-        <h3>The Tally Interface</h3>
-        <ul>
-            <li><strong>Tap Center:</strong> Increment the count (+1).</li>
-            <li><strong>Bottom Right (minus):</strong> Correct a mistake (-1).</li>
-            <li><strong>Bottom Left (red X):</strong> Permanently delete a word from your meeting list.</li>
-            <li><strong>Add Word:</strong> Use the input at the top to add a custom crutch word on the fly.</li>
-        </ul>
-
-        <h2>3. Timer Functions</h2>
-        <p>Select a name and a speech type. The screen will change color based on the following logic:</p>
-        <ul>
-            <li><strong style="color:#34C759;">Green:</strong> Minimum time reached (e.g., 5:00 for a 5-7m speech).</li>
-            <li><strong style="color:#BF941A;">Yellow:</strong> Target time reached (e.g., 6:00).</li>
-            <li><strong style="color:#FF3B30;">Red:</strong> Maximum time reached (e.g., 7:00).</li>
-        </ul>
-        <p>Tap <strong>Commit & Exit</strong> to save the result. Tap <strong>Custom</strong> at the bottom of the grid to set unique thresholds for non-standard speeches.</p>
-
-        <h2>4. Reporting & Sharing</h2>
-        <div class="pro-tip">
-            <strong>Pro Tip:</strong> Use the <strong>Copy</strong> button if you want to paste the results into a specific Slack channel or Email. Use the <strong>Share</strong> button to send the full report directly to the Notes app.
+        <h3>How to get your OpenAI API Key:</h3>
+        <div class="api-step">
+            <strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.
         </div>
-        <ul>
-            <li><strong>Meeting Report:</strong> Shows the Word of the Day section followed by a table of all recorded times and filler counts.</li>
-            <li><strong>Markdown Export:</strong> Toggle this in <strong>Settings</strong> to generate code that creates beautiful tables in apps like GitHub, Obsidian, or professional email clients.</li>
-        </ul>
+        <div class="api-step">
+            <strong>Step 2:</strong> Navigate to the <strong>API Keys</strong> tab in the left sidebar.
+        </div>
+        <div class="api-step">
+            <strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>. Name it "Toastmasters App" and copy the key (it starts with <code>sk-...</code>).
+        </div>
+        <div class="api-step">
+            <strong>Step 4:</strong> In the Meeting Tools app, go to <strong>Settings (⚙)</strong> and paste the key into the <strong>ChatGPT API Key</strong> field.
+        </div>
+        <p><em>Note: OpenAI provides a small amount of free credit to new accounts. Even after that, <code>gpt-4o-mini</code> is extremely inexpensive—1,000 word searches will likely cost less than $0.05.</em></p>
 
         <h2>5. Data Management</h2>
         <ul>
-            <li><strong>Roster:</strong> Names are saved permanently. Use the <strong>Search</strong> bar in Setup to quickly find a member.</li>
-            <li><strong>Backup/Restore:</strong> In Settings, you can export your entire roster and filler list as a <code>.json</code> file. This is useful for moving your data to a new iPad or sharing the club list with another member.</li>
-            <li><strong>Clear Meeting Data:</strong> This clears the session logs and the Word of the Day. <em>Note: This does not delete your member roster.</em></li>
+            <li><strong>Settings:</strong> You can toggle <strong>Markdown Export</strong> for clean tables in Slack, Email, or Discord.</li>
+            <li><strong>Backup/Restore:</strong> Use the Export JSON button to save your speaker roster and settings to a file. You can import this file on a different device to sync your data.</li>
+            <li><strong>Clear Meeting Data:</strong> Resets all current logs and the selected W.O.D. for the next meeting. This <em>does not</em> delete your speaker roster.</li>
         </ul>
 
-        <div class="footer">
-            Developed for Southern Dutchess Toastmasters<br>
-            © 2026 • Optimized for Mobile Safari & Chrome
+        <div style="margin-top: 50px; text-align: center; opacity: 0.6;">
+            <p>Version 2.8.7 | Southern Dutchess Toastmasters</p>
         </div>
     </div>
+
 </body>
 </html>
