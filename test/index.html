@@ -22,7 +22,7 @@
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
-        /* --- 1. UI STRUCTURE --- */
+        /* --- 1. HEADER & TABS --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
         h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
         .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
@@ -36,18 +36,25 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. MENU CARDS --- */
+        /* --- 2. MAIN MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: grid; grid-template-columns: 1fr 60px;
             align-items: center; padding: 30px 25px; 
             border: 1px solid var(--border); color: var(--text); text-align: left; 
             width: 100%; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
-            box-sizing: border-box; margin-bottom: 10px;
+            box-sizing: border-box; margin-bottom: 5px;
         }
-        .main-menu-card h3 { margin: 0; font-size: 30px; font-weight: 800; }
-        .main-menu-card p { margin: 6px 0 0; font-size: 19px; color: var(--subtext); }
+        .main-menu-card h3 { margin: 0; font-size: 28px; font-weight: 800; }
+        .main-menu-card p { margin: 6px 0 0; font-size: 18px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 45px; color: var(--accent); text-align: right; }
+
+        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
+        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         /* --- 3. WOD DISPLAY --- */
         .wod-card-big { background: white; border-radius: 24px; padding: 40px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
@@ -55,31 +62,41 @@
         .wod-def { font-size: 22px; line-height: 1.4; color: var(--subtext); font-style: italic; }
         .wod-phonetic { font-family: monospace; font-size: 18px; color: var(--accent); margin-bottom: 10px; display: block; }
 
-        /* --- STABLE GRIDS & UI --- */
+        /* --- 4. ROSTER & GRID --- */
         .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
         .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
-        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
         .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
         input[type="text"], input[type="number"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
-        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; }
+        
+        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 10px; }
+        @media (min-width: 650px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
         .role-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); cursor: pointer; min-height: 55px; display: flex; flex-direction: column; justify-content: center; }
-        .role-card h4 { margin: 0; pointer-events: none; font-size: 16px; font-weight: 700; }
+        .role-card h4 { margin: 0; font-size: 16px; font-weight: 700; pointer-events: none; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
+
         .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 15px 0; }
         .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 10px; position: relative; min-height: 110px; cursor: pointer; }
         .tally-card .count { font-size: 48px; font-weight: 800; color: var(--accent); pointer-events: none; }
         .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; pointer-events: none; }
         .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; }
         .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; }
+        .wod-card { border: 4px solid var(--gold); }
+        .wod-card .count { color: var(--gold); }
 
+        /* --- 5. MODALS & FOOTERS --- */
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
-        .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        #modalBody label { display: block; text-align: left; font-weight: 700; margin-bottom: 5px; color: var(--subtext); font-size: 18px; }
+
+        .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 22px; border-radius: 18px; font-size: 24px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
         .commit-btn { background: var(--green); color: white; }
         .credit-footer { text-align: center; padding: 25px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
+        .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 17px; border: 1px solid var(--border); }
         .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
+        #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
         #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; border: 1px solid var(--border); color: #000; white-space: pre; }
     </style>
 </head>
@@ -125,6 +142,21 @@
         </div>
     </div>
 
+    <div id="settings" class="screen">
+        <div class="header"><h1>Settings</h1></div>
+        <div class="container">
+            <div class="main-menu-card" style="cursor: default;">
+                <div class="card-content"><h3>Markdown Export</h3><p>Format shared reports as tables</p></div>
+                <div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div>
+            </div>
+            <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export Roster & Fillers (JSON)</p></div><div class="icon">⤓</div></div>
+            <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import Roster & Fillers (JSON)</p></div><div class="icon">⤒</div></div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Delete all current logs</p></div><div class="icon">⚠</div></div>
+            <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
+        </div>
+        <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
+    </div>
+
     <div id="wod" class="screen">
         <div class="header"><h1>Word of the Day</h1><div class="subtitle">Find your inspiration</div></div>
         <div class="container">
@@ -144,7 +176,10 @@
     <div id="setup" class="screen">
         <div class="header"><h1 id="setupHeader">Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink:0;"><input type="text" id="name" placeholder="SEARCH OR ENTER NAME" style="flex:1;" oninput="handleNameInput(this)"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button></div>
+            <div style="display:flex; gap:10px; flex-shrink: 0;">
+                <input type="text" id="name" placeholder="SEARCH OR ENTER NAME" style="flex:1;" oninput="handleNameInput(this)">
+                <button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button>
+            </div>
             <div id="speakerArea" class="speaker-area"></div>
             <div id="roleGridArea" class="role-grid"></div>
         </div>
@@ -161,20 +196,11 @@
 
     <div id="timerDisplay" class="screen">
         <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div>
-        <div id="timer" style="font-size:clamp(100px, 35vw, 450px); font-weight:200; text-align:center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000;">00:00</div>
+        <div id="timer">00:00</div>
         <div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn commit-btn" onclick="commitAndExit()">COMMIT & EXIT</button></div>
     </div>
 
     <div id="report" class="screen"><div class="header"><h1 id="reportPageTitle">Report</h1></div><div class="container"><div id="reportLog"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
-
-    <div id="settings" class="screen">
-        <div class="header"><h1>Settings</h1></div>
-        <div class="container">
-            <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Reports as tables</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
-            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Delete logs</p></div><div class="icon">⚠</div></div>
-        </div>
-        <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
-    </div>
 
     <script>
         const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
@@ -184,79 +210,46 @@
         let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
-        // Toastmasters Vocabulary Seed (Expanding to 1000 in production, 20 here for logic test)
-        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious"];
+        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant"];
 
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             document.getElementById('versionLabel').innerText = "Version 2.4" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             renderSpeakerList(allSpeakers);
-            nextWod(); // Pre-load a word
+            nextWod();
         }
 
-        /* --- WORD OF THE DAY LOGIC --- */
+        /* --- WOD LOGIC --- */
         let activeWod = "";
         async function nextWod() {
             const display = document.getElementById('wodContent');
             display.innerHTML = `<span class="wod-word">...</span>`;
             activeWod = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
-            
             try {
                 const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${activeWod}`);
                 const data = await response.json();
                 if (data[0]) {
                     const entry = data[0];
-                    const phonetic = entry.phonetic || "";
-                    const definition = entry.meanings[0].definitions[0].definition;
                     display.innerHTML = `
                         <span class="wod-word">${activeWod}</span>
-                        <span class="wod-phonetic">${phonetic}</span>
-                        <span class="wod-def">${definition}</span>
+                        <span class="wod-phonetic">${entry.phonetic || ""}</span>
+                        <span class="wod-def">${entry.meanings[0].definitions[0].definition}</span>
                     `;
                 }
             } catch (e) {
-                display.innerHTML = `<span class="wod-word">${activeWod}</span><span class="wod-def">Failed to load definition. Check internet.</span>`;
+                display.innerHTML = `<span class="wod-word">${activeWod}</span><span class="wod-def">Check internet for definition.</span>`;
             }
         }
-
         function selectWod() {
             localStorage.setItem(KEY_WOD, activeWod);
             let logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
-            logs.push(`SYSTEM | WOD SET :: ${activeWod}`);
+            logs.push(`SYSTEM | WOD SET :: ${activeWod.toUpperCase()}`);
             localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            openModal("WOD Selected", `The meeting word is now "${activeWod.toUpperCase()}". It has been added to the report.`, () => { showScreen('menu'); });
+            openModal("WOD Selected", `The word of the day is now ${activeWod.toUpperCase()}.`, () => { showScreen('menu'); });
         }
 
-        /* --- CORE LOGIC --- */
-        function saveCounterSession() { 
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            let activeResults = [];
-            for (let word in currentTally) { if (currentTally[word] > 0) activeResults.push(`${word}: ${currentTally[word]}`); }
-            let resultStr = activeResults.length > 0 ? activeResults.join(', ') : "0 Fillers";
-            logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${resultStr}`); 
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            openModal("Saved", "Recorded successfully.", () => { showScreen('menu'); });
-        }
-
-        function loadReport() { 
-            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
-            const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools";
-            let displayStr = `${club}\nDate: ${new Date().toLocaleDateString()}\n\n`;
-            if (logs.length > 0) {
-                displayStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`;
-                logs.forEach(log => {
-                    if (log.includes('SYSTEM')) { displayStr += `>> ${log.split(' :: ')[1]}\n`; return; }
-                    const parts = log.split(' | '); const subParts = parts[1].split(' :: ');
-                    displayStr += `${parts[0].padEnd(16)} | ${subParts[0].padEnd(16)} | ${subParts[1]}\n`;
-                });
-            } else displayStr += "No data.";
-            document.getElementById('reportLog').innerText = displayStr;
-        }
-
-        /* STABLE UTILS */
-        const TIMER_PRESETS = [{label:'TABLE TOPICS',g:60,y:90,r:120},{label:'EVALUATION',g:120,y:150,r:180},{label:'SPEECH',g:300,y:360,r:420},{label:'ICE BREAKER',g:240,y:300,r:360}];
-        const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS"];
+        /* --- STABLE LOGIC --- */
         function switchMode(mode) { currentMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(mode === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none'; }
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'setup') renderSetupGrid(); if (id === 'report') loadReport(); }
         function renderSpeakerList(l) { const a = document.getElementById('speakerArea'); if (!l || !l.length) { a.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; } a.innerHTML = l.map(n => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join(''); }
@@ -265,21 +258,27 @@
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
+        function addFiller() { const v = document.getElementById('newFiller').value.trim().toUpperCase(); if (v && !fillerList.includes(v)) { fillerList.push(v); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); currentTally[v] = 0; renderTally(); document.getElementById('newFiller').value = ""; } }
         function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
         function renderTally() { const area = document.getElementById('tallyArea'); const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join(''); }
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
+        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let activeResults = []; for (let word in currentTally) { if (currentTally[word] > 0) activeResults.push(`${word}: ${currentTally[word]}`); } let resultStr = activeResults.length > 0 ? activeResults.join(', ') : "0 Fillers"; logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${resultStr}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Recorded successfully.", () => { showScreen('menu'); }); }
         function startTimer() { elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; } else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; } else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; } }, 1000); }
         function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); startTimer(); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; document.body.style.color="var(--text)"; showScreen('menu'); }
+        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools"; let displayStr = `${club}\nDate: ${new Date().toLocaleDateString()}\n\n`; if (logs.length > 0) { displayStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(log => { if (log.includes('SYSTEM')) { displayStr += `>> ${log.split(' :: ')[1]}\n`; return; } const parts = log.split(' | '); const subParts = parts[1].split(' :: '); displayStr += `${parts[0].padEnd(16)} | ${subParts[0].padEnd(16)} | ${subParts[1]}\n`; }); } else displayStr += "No data."; document.getElementById('reportLog').innerText = displayStr; }
         function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
         function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
         function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); if (!logs.length) return null; let res = "Meeting Report\n\n"; logs.forEach(log => res += log.replace(' :: ', ': ') + "\n"); return res; }
-        function renderSetupGrid() { const grid = document.getElementById('roleGridArea'); grid.innerHTML = ""; if (currentMode === 'timer') { TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4></div>`; }); } else { COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; }); } }
+        function renderSetupGrid() { const grid = document.getElementById('roleGridArea'); grid.innerHTML = ""; if (currentMode === 'timer') { const TIMER_PRESETS = [{label:'TABLE TOPICS',g:60,y:90,r:120},{label:'EVALUATION',g:120,y:150,r:180},{label:'SPEECH',g:300,y:360,r:420},{label:'ICE BREAKER',g:240,y:300,r:360}]; TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4></div>`; }); } else { const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS"]; COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; }); } }
         function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
         function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Missing Name or Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
         function askClearLogs() { openModal("Clear?", "Delete meeting logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
+        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); location.reload(); }; r.readAsText(i.files[0]); }
+        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
         function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
     </script>
