@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.7.3</title>
+    <title>Meeting Tools v2.8.0</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- MENU CARDS --- */
+        /* --- MAIN MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
             padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
@@ -60,7 +60,7 @@
         .wod-label { font-size: 13px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
         .wod-def { font-size: 20px; line-height: 1.4; color: var(--text); margin-bottom: 20px; }
         .wod-example { font-size: 19px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
-        .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--green); font-weight: 800; }
+        .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--accent); font-weight: 800; }
 
         /* --- INPUTS --- */
         input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
@@ -131,7 +131,7 @@
         <div class="header"><h1>W.O.D.</h1><div class="subtitle">Word Generator</div></div>
         <div class="container">
             <div id="wodDisplay" class="wod-card-big">
-                <div id="aiIndicator" class="ai-indicator">● AI READY</div>
+                <div id="aiIndicator" class="ai-indicator">● CHATGPT ACTIVE</div>
                 <div id="wodContent"><span class="wod-word">...</span></div>
             </div>
         </div>
@@ -166,7 +166,7 @@
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
             <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
-            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>Gemini API Key</h3><p>Required for sophisticated examples</p></div><input type="password" id="geminiKey" placeholder="Paste Key AIza..." onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
+            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>Requires an OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
             <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
@@ -177,7 +177,7 @@
 
     <script>
         const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
-        const KEY_LOGS = prefix + 'sdtm_logs', KEY_CLUB = prefix + 'sdtm_club_name', KEY_SPEAKERS = prefix + 'sdtm_speakers', KEY_FILLERS = prefix + 'sdtm_fillers', KEY_MD = prefix + 'sdtm_md_toggle', KEY_WOD_FULL = prefix + 'sdtm_wod_full', KEY_CUSTOM = prefix + 'sdtm_custom_limits', KEY_AI_KEY = prefix + 'sdtm_ai_key';
+        const KEY_LOGS = prefix + 'sdtm_logs', KEY_CLUB = prefix + 'sdtm_club_name', KEY_SPEAKERS = prefix + 'sdtm_speakers', KEY_FILLERS = prefix + 'sdtm_fillers', KEY_MD = prefix + 'sdtm_md_toggle', KEY_WOD_FULL = prefix + 'sdtm_wod_full', KEY_CUSTOM = prefix + 'sdtm_custom_limits', KEY_AI_KEY = prefix + 'sdtm_openai_key';
 
         let currentMode = 'timer', currentSpeaker = "", currentTally = {}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
         let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
@@ -188,14 +188,14 @@
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
-            document.getElementById('geminiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
+            document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.7.3" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.8.0" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             refreshRoster();
             nextWod();
         }
 
-        /* --- THE NUCLEAR BYPASS HANDSHAKE --- */
+        /* --- THE CHATGPT HANDLER --- */
         let activeWodData = null;
         async function nextWod() {
             const display = document.getElementById('wodContent');
@@ -208,15 +208,15 @@
             const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
             
             try {
-                // Dictionary for definition
+                // Dictionary for Definition
                 const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
                 const data = await resp.json();
-                let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition found via research.";
+                let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition via search.";
                 
                 let example = "";
                 if (aiKey) {
-                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Prompting Gemini...</div>`;
-                    example = await fetchAiExample(word, aiKey);
+                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Generating via ChatGPT...</div>`;
+                    example = await fetchChatGptExample(word, aiKey);
                 }
 
                 activeWodData = { word, definition, example };
@@ -225,38 +225,38 @@
                     <span class="wod-word">${word}</span>
                     <div class="wod-label">Definition</div>
                     <div class="wod-def">${definition}</div>
-                    ${example ? `<div class="wod-label">Usage (Family-Safe AI)</div><div class="wod-example">"${example}"</div>` : 
-                    `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">AI usage generation is disabled. Add Key in Settings.</div>`}
+                    ${example ? `<div class="wod-label">Usage (ChatGPT-4o)</div><div class="wod-example">"${example}"</div>` : 
+                    `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">Add OpenAI Key in Settings for usage examples.</div>`}
                 `;
-            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Check connection.</div>`; }
+            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Details hidden. Check connection.</div>`; }
         }
 
-        async function fetchAiExample(word, key) {
-            // Updated to use the generic production path without "models/" to bypass specific project restrictions
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+        async function fetchChatGptExample(word, key) {
+            const url = "https://api.openai.com/v1/chat/completions";
             
             try {
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${key}`
                     },
                     body: JSON.stringify({
-                        contents: [{ 
-                            parts: [{ text: `Generate one sophisticated, professional, family-friendly sentence using the word "${word}" in a Toastmasters context. Return ONLY the sentence.` }] 
-                        }]
+                        model: "gpt-4o-mini",
+                        messages: [{ role: "user", content: `Generate one professional, family-friendly sentence using the word "${word}" in a Toastmasters club context. Return ONLY the sentence.` }],
+                        temperature: 0.7
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    return data.candidates[0].content.parts[0].text.trim();
+                    return data.choices[0].message.content.trim();
                 } else {
-                    const errorJson = await response.json();
-                    return `[AI Error: ${response.status}] ${errorJson.error?.message || ''}`;
+                    const err = await response.json();
+                    return `[AI Error: ${response.status}] ${err.error?.message || ''}`;
                 }
             } catch (e) {
-                return "[Network Error: AI Access Blocked]";
+                return "[Network Error: Check Internet]";
             }
         }
 
@@ -285,7 +285,7 @@
                 grid.innerHTML += `<div class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
             }
         }
-        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); localStorage.setItem(KEY_AI_KEY, document.getElementById('geminiKey').value.trim()); }
+        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); }
         function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
         function selectWod() { if(!activeWodData) return; const wordUpper = activeWodData.word.toUpperCase(); localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); fillerList = fillerList.filter(f => f !== "WORD OF DAY"); if (!fillerList.includes(wordUpper)) { fillerList.push(wordUpper); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); } openModal("WOD Selected", `${wordUpper} is active.`, () => { showScreen('menu'); }); }
         function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
@@ -300,7 +300,6 @@
         function togglePause() { if (iv) { clearInterval(iv); iv = null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.body.style.background = "var(--bg)"; showScreen('menu'); }
         function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `Report\nDate: ${new Date().toLocaleDateString()}\n\n`; if (wodData) dStr += `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data recorded."; document.getElementById('reportLog').innerText = dStr; }
-        function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# Report\n` : `Meeting Report\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Reset logs and WOD?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
@@ -311,6 +310,7 @@
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
         function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
         function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
+        function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# Report\n` : `Meeting Report\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
     </script>
 </body>
 </html>
