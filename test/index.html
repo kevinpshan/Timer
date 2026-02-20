@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.8.0</title>
+    <title>Meeting Tools v2.8.1</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
-        /* --- UI HEADER --- */
+        /* --- UI STRUCTURE --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
         h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
         .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- MAIN MENU CARDS --- */
+        /* --- MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
             padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
@@ -64,12 +64,9 @@
 
         /* --- INPUTS --- */
         input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
-        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
+        .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
 
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; }
         .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
@@ -77,9 +74,6 @@
         
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
-        .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
-        .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
         #timer { font-size: clamp(100px, 30vw, 400px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
         #reportLog { background: var(--card); border-radius: 18px; padding: 20px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 17px; border: 1px solid var(--border); color: #000; white-space: pre; }
     </style>
@@ -116,14 +110,14 @@
         </div>
 
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Find inspiration</p></div><div class="icon" style="color:var(--gold);">★</div></div>
+            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI word selection</p></div><div class="icon" style="color:var(--gold);">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
         <div class="credit-footer">
             <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag" style="display:block; font-size:12px; opacity:0.5; margin-top:6px;"></span>
+            <span id="versionLabel" class="version-tag"></span>
         </div>
     </div>
 
@@ -131,7 +125,7 @@
         <div class="header"><h1>W.O.D.</h1><div class="subtitle">Word Generator</div></div>
         <div class="container">
             <div id="wodDisplay" class="wod-card-big">
-                <div id="aiIndicator" class="ai-indicator">● CHATGPT ACTIVE</div>
+                <div id="aiIndicator" class="ai-indicator">● CHATGPT READY</div>
                 <div id="wodContent"><span class="wod-word">...</span></div>
             </div>
         </div>
@@ -166,7 +160,7 @@
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
             <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
-            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>Requires an OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
+            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>Enter your OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
             <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
@@ -190,12 +184,12 @@
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.8.0" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.8.1" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             refreshRoster();
             nextWod();
         }
 
-        /* --- THE CHATGPT HANDLER --- */
+        /* --- THE ALL-IN-ONE CHATGPT HANDLER --- */
         let activeWodData = null;
         async function nextWod() {
             const display = document.getElementById('wodContent');
@@ -207,56 +201,52 @@
 
             const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
             
-            try {
-                // Dictionary for Definition
-                const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-                const data = await resp.json();
-                let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition via search.";
-                
-                let example = "";
-                if (aiKey) {
-                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Generating via ChatGPT...</div>`;
-                    example = await fetchChatGptExample(word, aiKey);
-                }
+            if (!aiKey) {
+                display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def" style="margin-top:20px;">Add your OpenAI Key in Settings to generate definitions and usage.</div>`;
+                return;
+            }
 
-                activeWodData = { word, definition, example };
-                
-                display.innerHTML = `
-                    <span class="wod-word">${word}</span>
-                    <div class="wod-label">Definition</div>
-                    <div class="wod-def">${definition}</div>
-                    ${example ? `<div class="wod-label">Usage (ChatGPT-4o)</div><div class="wod-example">"${example}"</div>` : 
-                    `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">Add OpenAI Key in Settings for usage examples.</div>`}
-                `;
-            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Details hidden. Check connection.</div>`; }
-        }
+            display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Consulting ChatGPT...</div>`;
 
-        async function fetchChatGptExample(word, key) {
-            const url = "https://api.openai.com/v1/chat/completions";
-            
             try {
+                const url = "https://api.openai.com/v1/chat/completions";
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${key}`
+                        "Authorization": `Bearer ${aiKey}`
                     },
                     body: JSON.stringify({
                         model: "gpt-4o-mini",
-                        messages: [{ role: "user", content: `Generate one professional, family-friendly sentence using the word "${word}" in a Toastmasters club context. Return ONLY the sentence.` }],
-                        temperature: 0.7
+                        messages: [{ 
+                            role: "system", 
+                            content: "You are a professional dictionary and speech coach. Provide output in a valid JSON format with the keys 'definition' and 'example'. Keep descriptions sophisticated, family-friendly, and oriented toward public speaking." 
+                        }, { 
+                            role: "user", 
+                            content: `Word: ${word}` 
+                        }],
+                        response_format: { type: "json_object" }
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    return data.choices[0].message.content.trim();
+                    const aiResult = JSON.parse(data.choices[0].message.content);
+                    activeWodData = { word, definition: aiResult.definition, example: aiResult.example };
+                    
+                    display.innerHTML = `
+                        <span class="wod-word">${word}</span>
+                        <div class="wod-label">Definition</div>
+                        <div class="wod-def">${activeWodData.definition}</div>
+                        <div class="wod-label">Usage</div>
+                        <div class="wod-example">"${activeWodData.example}"</div>
+                    `;
                 } else {
                     const err = await response.json();
-                    return `[AI Error: ${response.status}] ${err.error?.message || ''}`;
+                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">AI Error: ${response.status}. Check key in Settings.</div>`;
                 }
             } catch (e) {
-                return "[Network Error: Check Internet]";
+                display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Network Error. Check internet connection.</div>`;
             }
         }
 
@@ -306,7 +296,7 @@
         function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.gemini) localStorage.setItem(KEY_AI_KEY, d.gemini); location.reload(); }; r.readAsText(i.files[0]); }
         function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "", gemini: localStorage.getItem(KEY_AI_KEY) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
         function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none'; }
-        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Missing Name or Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Enter Name & Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
         function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
         function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
