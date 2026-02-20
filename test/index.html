@@ -139,7 +139,7 @@
                 <a href="manual.html" class="res-btn" style="flex:1; background:#F2F2F7; padding:12px; border-radius:10px; text-decoration:none; color:var(--accent); font-weight:700;">Manual ↗</a>
             </div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag">Version 2.0</span>
+            <span id="versionLabel" class="version-tag">Version 2.2</span>
         </div>
     </div>
 
@@ -262,7 +262,7 @@
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             const vLabel = document.getElementById('versionLabel');
-            if (window.location.pathname.toLowerCase().includes('/test/')) vLabel.innerText = "Version 2.0 (TEST)";
+            if (window.location.pathname.toLowerCase().includes('/test/')) vLabel.innerText = "Version 2.2 (TEST)";
             renderSpeakerList(allSpeakers);
         }
 
