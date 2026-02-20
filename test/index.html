@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.6.8</title>
+    <title>Meeting Tools v2.6.9</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -53,8 +53,6 @@
         .role-card h4, .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; margin: 0; pointer-events: none; }
         .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; pointer-events: none; }
         .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); pointer-events: none; line-height: 1; margin-bottom: 5px; }
-        .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; z-index: 10; }
-        .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; z-index: 10; }
 
         /* --- WOD DISPLAY --- */
         .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; position: relative; }
@@ -64,7 +62,7 @@
         .wod-example { font-size: 19px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
         .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--green); font-weight: 800; }
 
-        /* --- INPUTS --- */
+        /* --- INPUTS & BUTTONS --- */
         input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box; }
         .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -76,8 +74,7 @@
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; }
         .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
         .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 16px; border: 1px solid var(--border); }
-        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
-
+        
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
         .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
@@ -112,12 +109,14 @@
             <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
             <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
+        
         <div id="timerMode" class="container">
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
         </div>
+
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Select meeting word</p></div><div class="icon" style="color:var(--gold);">★</div></div>
+            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Find inspiration</p></div><div class="icon" style="color:var(--gold);">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
@@ -167,7 +166,7 @@
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
             <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
-            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>Gemini API Key</h3><p>Enter key for AI usage examples</p></div><input type="password" id="geminiKey" placeholder="Paste Key AIza..." onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
+            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>Gemini API Key</h3><p>Required for sophisticated examples</p></div><input type="password" id="geminiKey" placeholder="Paste AIza... Key" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
             <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
@@ -191,12 +190,12 @@
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             document.getElementById('geminiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.6.8" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.6.9" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             refreshRoster();
             nextWod();
         }
 
-        /* --- THE v1 STABLE HANDSHAKE --- */
+        /* --- THE PATHFINDER AI LOGIC --- */
         let activeWodData = null;
         async function nextWod() {
             const display = document.getElementById('wodContent');
@@ -209,10 +208,10 @@
             const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
             
             try {
-                // Dictionary
+                // Dictionary for definition
                 const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
                 const data = await resp.json();
-                let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition via search.";
+                let definition = (data[0] && data[0].meanings) ? data[0].meanings[0].definitions[0].definition : "Definition found via research.";
                 
                 let example = "";
                 if (aiKey) {
@@ -229,38 +228,45 @@
                     ${example ? `<div class="wod-label">Usage (Family-Safe AI)</div><div class="wod-example">"${example}"</div>` : 
                     `<div class="wod-def" style="font-size:14px; opacity:0.5; margin-top:20px;">AI usage generation is disabled. Add Key in Settings.</div>`}
                 `;
-            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Check connection.</div>`; }
+            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Details hidden. Check connection.</div>`; }
         }
 
         async function fetchAiExample(word, key) {
-            // UPDATED: Production Endpoint and strictly defined model path
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`;
+            // THE PATHFINDER: Google's most supported model path formats
+            const paths = [
+                "v1beta/models/gemini-1.5-flash:generateContent",
+                "v1/models/gemini-1.5-flash:generateContent",
+                "v1beta/models/gemini-pro:generateContent"
+            ];
             
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Provide one family-friendly, professional example sentence using the word "${word}" in a Toastmasters context. Return ONLY the sentence.` }] }]
-                    })
-                });
+            const payload = {
+                contents: [{ parts: [{ text: `Provide one sophisticated, family-friendly example sentence using the word "${word}" in a Toastmasters context. Return ONLY the sentence.` }] }]
+            };
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.candidates && data.candidates[0].content) {
+            for (let path of paths) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/${path}?key=${key}`;
+                    const resp = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (resp.ok) {
+                        const data = await resp.json();
                         return data.candidates[0].content.parts[0].text.trim();
+                    } else if (resp.status !== 404) {
+                        // If it's not a 404, it's a real error (like 403 or 429), stop looping
+                        const err = await resp.json();
+                        return `[AI Error: ${resp.status} - ${err.error?.message || 'Check Key'}]`;
                     }
-                } else {
-                    const err = await response.json();
-                    return `[AI Error: ${response.status} - ${err.error?.message || 'Check Key Type'}]`;
-                }
-            } catch (e) {
-                return "[Network Error: AI Access Blocked]";
+                    // If 404, continue to next path
+                } catch (e) { continue; }
             }
-            return "[AI Unavailable]";
+            return "[AI Error: No compatible model endpoint found.]";
         }
 
-        /* --- SYSTEM STABLE --- */
+        /* --- STABLE CORE --- */
         function refreshRoster() {
             const area = document.getElementById('speakerArea'); if (!area) return;
             if (!allSpeakers.length) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
@@ -299,7 +305,7 @@
         function startTimer() { elapsed = 0; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) document.body.style.background = "var(--red)"; else if(elapsed >= lims.y) document.body.style.background = "var(--yellow)"; else if(elapsed >= lims.g) document.body.style.background = "var(--green)"; }, 1000); }
         function togglePause() { if (iv) { clearInterval(iv); iv = null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.body.style.background = "var(--bg)"; showScreen('menu'); }
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `Report\nDate: ${new Date().toLocaleDateString()}\n\n`; if (wodData) dStr += `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data."; document.getElementById('reportLog').innerText = dStr; }
+        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `Report\nDate: ${new Date().toLocaleDateString()}\n\n`; if (wodData) dStr += `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data recorded."; document.getElementById('reportLog').innerText = dStr; }
         function generateReportText() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const md = document.getElementById('mdToggle').checked; let r = md ? `# Report\n` : `Meeting Report\n`; if (wodData) r += md ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\n${wodData.definition}\n\n`; if (md) { r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; }); } else logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`); return r; }
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Reset logs and WOD?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
