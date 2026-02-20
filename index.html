@@ -3,128 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Timer</title>
+    <title>Meeting Tools</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon-timer.png">
     <style>
         :root {
-            --bg: #F2F2F7; 
-            --card: #FFFFFF;
-            --accent: #007AFF; 
-            --text: #000000;
-            --subtext: #3A3A3C;
-            --red: #FF3B30;
-            --green: #34C759;
-            --yellow: #FFCC00;
-            --border: #D1D1D6;
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF; 
+            --text: #000000; --subtext: #3A3A3C; --red: #FF3B30;
+            --green: #34C759; --yellow: #FFCC00; --gold: #BF941A; --border: #D1D1D6;
         }
 
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
             font-family: -apple-system, system-ui, sans-serif; display: flex; 
             flex-direction: column; height: 100dvh; 
-            padding-bottom: env(safe-area-inset-bottom);
-            box-sizing: border-box; overflow: hidden;
-            transition: background 0.3s ease;
+            padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
+        /* --- 1. HEADER & TABS --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
         h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
         .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
+        .settings-icon { position: absolute; top: 35px; right: 20px; font-size: 32px; color: var(--accent); cursor: pointer; padding: 5px; z-index: 10; }
 
-        .settings-icon {
-            position: absolute; top: 30px; right: 20px; font-size: 32px; 
-            color: var(--accent); cursor: pointer; padding: 5px; z-index: 10;
-        }
+        .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; margin: 0 20px 15px; flex-shrink: 0; }
+        .tab { flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: var(--subtext); }
+        .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        .container { 
-            flex: 1; display: flex; flex-direction: column; padding: 0 20px; 
-            gap: 12px; overflow-y: auto; min-height: 0;
-            max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box;
-        }
-
+        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
-        .active { display: flex; }
+        .screen.active { display: flex; }
 
-        #customModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 9999; align-items: center; justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        .modal-content {
-            background: var(--card); width: 85%; max-width: 500px; padding: 25px;
-            border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
-
-        .card { 
-            background: var(--card); border-radius: 18px; padding: clamp(20px, 3.5vw, 35px); 
-            display: flex; align-items: center; justify-content: space-between; 
+        /* --- 2. MAIN MENU & CARDS --- */
+        .main-menu-card { 
+            background: var(--card); border-radius: 20px; 
+            display: grid; grid-template-columns: 1fr 60px;
+            align-items: center; padding: 30px 25px; 
             border: 1px solid var(--border); color: var(--text); text-align: left; 
-            width: 100%; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-decoration: none;
+            width: 100%; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
+            box-sizing: border-box;
         }
-        .card:active { transform: scale(0.98); background: #f9f9f9; }
-        .card-content h3 { margin: 0; font-size: clamp(24px, 3.8vw, 36px); font-weight: 700; }
-        .card-content p { margin: 4px 0 0; font-size: clamp(16px, 2.2vw, 22px); color: var(--subtext); }
+        .main-menu-card h3 { margin: 0; font-size: 30px; font-weight: 800; }
+        .main-menu-card p { margin: 6px 0 0; font-size: 19px; color: var(--subtext); }
+        .main-menu-card .icon { font-size: 45px; color: var(--accent); text-align: right; }
 
-        input { 
-            background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; 
-            border-radius: 14px; font-size: 22px; outline: none; width: 100%; box-sizing: border-box;
+        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
+        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- 3. ROSTER AREA (FIXED) --- */
+        .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
+        .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
+        .sp-del { padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 24px; cursor: pointer; }
+        
+        input[type="text"], input[type="number"] { 
+            background: var(--card); border: 2px solid var(--border); color: var(--text); 
+            padding: 15px; border-radius: 14px; font-size: 22px; outline: none; 
+            width: 100%; box-sizing: border-box; 
         }
 
-        .speaker-area {
-            background: var(--card); border-radius: 16px; padding: 2px;
-            flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px;
-        }
-        .speaker-item {
-            padding: 12px 16px; border-bottom: 1px solid var(--bg);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
-        .sp-del { padding: 5px 10px; color: var(--red); font-weight: bold; font-size: 22px; }
+        /* --- 4. SETUP ROLES & TALLY --- */
+        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 10px; }
+        @media (min-width: 650px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
+        .role-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); cursor: pointer; min-height: 55px; display: flex; flex-direction: column; justify-content: center; }
+        .role-card h4 { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.1; }
+        .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
 
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
-        .select-card { 
-            background: var(--card); border-radius: 14px; padding: 12px; 
-            text-align: center; border: 1px solid var(--border); cursor: pointer;
+        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 15px 0; }
+        @media (min-width: 650px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
+        .tally-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 22px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 20px 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); position: relative; min-height: 110px;
         }
-        .select-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-        .select-card h4 { margin: 0; font-size: 20px; color: #1C1C1E; }
+        .tally-card .count { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
+        .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; }
+        .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; cursor: pointer; }
+        .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; cursor: pointer; }
 
+        /* --- 5. FOOTERS & MODALS --- */
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .footer-btn { 
-            flex: 1; padding: 18px; border-radius: 16px; font-size: 22px; 
-            font-weight: 700; border: none; background: var(--accent); color: white; 
-        }
+        .footer-btn { flex: 1; padding: 22px; border-radius: 18px; font-size: 24px; font-weight: 700; border: none; background: var(--accent); color: white; }
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
-        .commit-btn { background: var(--green); color: white; }
+        .credit-footer { text-align: center; padding: 25px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
+        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; color: #000; font-weight: 400; }
 
-        .credit-footer { 
-            text-align: center; padding: 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card);
-        }
-        .resource-row { display: flex; gap: 10px; margin-bottom: 12px; justify-content: center; }
-        .res-btn {
-            flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none;
-            padding: 12px; border-radius: 12px; font-weight: 700; font-size: 16px;
-            border: 1px solid var(--border);
-        }
-        .credit-text { 
-            display: block; color: var(--text); font-weight: 700; font-size: 15px; margin: 0;
-        }
-        .version-tag { display: block; font-size: 12px; opacity: 0.5; font-weight: 400; margin-top: 4px; color: #000; }
-
+        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); }
         #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
-        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 22px; border: 1px solid var(--border); color: #000; }
+        #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; border: 1px solid var(--border); color: #000; white-space: pre; }
     </style>
 </head>
 <body onload="initApp()">
 
     <div id="customModal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="margin-top:0; font-size:24px; color:#000;"></h2>
-            <div id="modalBody" style="margin:20px 0; color:#333;"></div>
+            <h2 id="modalTitle" style="margin:0; font-size:24px;"></h2>
+            <div id="modalBody" style="margin:20px 0;"></div>
             <div class="button-row" style="padding:0; background:none;">
                 <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
                 <button id="modalConfirm" class="footer-btn">OK</button>
@@ -135,368 +116,205 @@
     <div id="menu" class="screen active">
         <div class="header">
             <div onclick="askClubName()">
-                <h1>Meeting Timer</h1>
+                <h1 id="modeTitle">Meeting Tools</h1>
                 <div id="clubSubtitle" class="subtitle">Tap to set club name</div>
             </div>
             <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
         </div>
-        <div class="container">
-            <button class="card" onclick="showScreen('setup')">
-                <div class="card-content"><h3>New Timer</h3><p>Select a speaker and start</p></div>
-                <div style="font-size:40px; color:var(--accent)">⊕</div>
-            </button>
-            <button class="card" onclick="showScreen('report')">
-                <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
-                <div style="font-size:35px; color:var(--accent)">☰</div>
-            </button>
-            <button class="card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red); padding: 15px;">
-                <div style="color:var(--red); font-weight:800; width:100%; text-align:center; font-size: 22px;">CLEAR MEETING LOGS</div>
-            </button>
+        <div class="tab-container">
+            <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
+            <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
-        
+        <div id="timerMode" class="container">
+            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
+            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
+        </div>
+        <div id="counterMode" class="container" style="display:none;">
+            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words per role</p></div><div class="icon">✍</div></div>
+            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View filler word totals</p></div><div class="icon">📊</div></div>
+        </div>
         <div class="credit-footer">
-            <div class="resource-row">
-                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Visit Website ↗</a>
-                <a href="manual.html" class="res-btn">User Manual ↗</a>
+            <div class="resource-row" style="display:flex; gap:10px; margin-bottom:12px;">
+                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn" style="flex:1; background:#F2F2F7; padding:12px; border-radius:10px; text-decoration:none; color:var(--accent); font-weight:700;">Website ↗</a>
+                <a href="manual.html" class="res-btn" style="flex:1; background:#F2F2F7; padding:12px; border-radius:10px; text-decoration:none; color:var(--accent); font-weight:700;">Manual ↗</a>
             </div>
-            <p class="credit-text">Created by Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag">Version 1.0</span>
+            <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
+            <span id="versionLabel" class="version-tag">Version 2.2</span>
         </div>
     </div>
 
     <div id="settings" class="screen">
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
-            <p style="font-size: 18px; color: var(--subtext); margin-bottom: 20px;">Manage your Roster and App data.</p>
-            
-            <button class="card" onclick="exportRoster()">
-                <div class="card-content"><h3>Export Roster</h3><p>Save list to a JSON file</p></div>
-                <div style="font-size:30px; color:var(--accent)">⤓</div>
-            </button>
-
-            <button class="card" onclick="document.getElementById('importFile').click()">
-                <div class="card-content"><h3>Import Roster</h3><p>Load list from a JSON file</p></div>
-                <div style="font-size:30px; color:var(--accent)">⤒</div>
-            </button>
-            
+            <div class="main-menu-card" style="cursor: default;">
+                <div class="card-content"><h3>Markdown Export</h3><p>Format shared reports as tables</p></div>
+                <div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div>
+            </div>
+            <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export Roster & Fillers</p></div><div class="icon">⤓</div></div>
+            <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import Roster & Fillers</p></div><div class="icon">⤒</div></div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Delete all current logs</p></div><div class="icon">⚠</div></div>
             <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
         </div>
-        <div class="button-row">
-            <button class="footer-btn" onclick="showScreen('menu')">Back to Menu</button>
-        </div>
+        <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
     </div>
 
     <div id="setup" class="screen">
-        <div class="header"><h1>Speech Info</h1></div>
+        <div class="header"><h1 id="setupHeader">Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink:0;">
-                <input type="text" id="name" placeholder="SEARCH OR ENTER NAME" oninput="handleNameInput(this)">
-                <button class="footer-btn" style="flex:0; padding:0 25px; font-size:18px;" onclick="saveSpeaker()">Add</button>
+            <div style="display:flex; gap:10px; flex-shrink: 0;">
+                <input type="text" id="name" placeholder="SEARCH OR ENTER NAME" style="flex:1;" oninput="handleNameInput(this)">
+                <button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button>
             </div>
             <div id="speakerArea" class="speaker-area"></div>
-            <div class="selection-grid">
-                <div class="select-card" onclick="selectType(this, 60, 90, 120, 'TABLE TOPICS')"><h4>Table Topics</h4><p>1-2m</p></div>
-                <div class="select-card" onclick="selectType(this, 120, 150, 180, 'EVALUATION')"><h4>Evaluation</h4><p>2-3m</p></div>
-                <div class="select-card" onclick="selectType(this, 300, 360, 420, 'SPEECH')"><h4>Speech</h4><p>5-7m</p></div>
-                <div class="select-card" onclick="selectType(this, 240, 300, 360, 'ICE BREAKER')"><h4>Ice Breaker</h4><p>4-6m</p></div>
-                <div id="custom-card" class="select-card" style="grid-column: span 2;" onclick="askCustomTime(this)">
-                    <h4>Custom Time</h4>
-                    <p id="customLabel">Manual Entry</p>
-                </div>
+            <div id="roleGridArea" class="role-grid"></div>
+        </div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
+    </div>
+
+    <div id="counterDisplay" class="screen">
+        <div class="header"><h1 id="counterSpeakerName">Name</h1><div id="counterSpeakerRole" class="subtitle">ROLE</div></div>
+        <div class="container">
+            <div style="display:flex; gap:10px; flex-shrink: 0;">
+                <input type="text" id="newFiller" placeholder="NEW CRUTCH WORD" style="flex:1;">
+                <button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="addFiller()">Add</button>
             </div>
+            <div id="tallyArea" class="tally-grid"></div>
         </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
-            <button class="footer-btn" onclick="startTimer()">START TIMING</button>
-        </div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn commit-btn" onclick="saveCounterSession()">SAVE RESULTS</button></div>
     </div>
 
     <div id="timerDisplay" class="screen">
-        <div id="spkName" style="font-size:clamp(30px, 5vw, 55px); color:#666; margin-top:20px; text-align:center; text-transform: uppercase;">Speaker</div>
+        <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div>
         <div id="timer">00:00</div>
-        
-        <div class="button-row">
-            <button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
-            <button class="footer-btn secondary-btn" onclick="resetCurrentTimer()">RESET</button>
-        </div>
-        <div class="button-row" style="padding-top:0;">
-            <button class="footer-btn commit-btn" onclick="commitAndExit()">COMMIT & EXIT</button>
-        </div>
+        <div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn commit-btn" onclick="commitAndExit()">COMMIT & EXIT</button></div>
     </div>
 
     <div id="report" class="screen">
-        <div class="header"><h1 id="reportTitle">Meeting Report</h1></div>
+        <div class="header"><h1 id="reportPageTitle">Report</h1></div>
         <div class="container"><div id="reportLog"></div></div>
         <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button>
             <button class="footer-btn secondary-btn" onclick="shareReport()">Share</button>
             <button class="footer-btn" onclick="showScreen('menu')">Done</button>
         </div>
     </div>
 
     <script>
-        // --- DYNAMIC STORAGE KEY LOGIC ---
-        const isTestEnv = window.location.pathname.toLowerCase().includes('/test/');
-        const prefix = isTestEnv ? 'test_' : 'prod_';
+        const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
+        const KEY_SPEAKERS = prefix + 'sdtm_speakers', KEY_LOGS = prefix + 'sdtm_logs', KEY_CLUB = prefix + 'sdtm_club_name', KEY_CUSTOM = prefix + 'sdtm_custom_limits', KEY_FILLERS = prefix + 'sdtm_fillers', KEY_MD = prefix + 'sdtm_md_toggle';
 
-        const KEY_SPEAKERS = prefix + 'sdtm_speakers';
-        const KEY_LOGS = prefix + 'sdtm_logs';
-        const KEY_CLUB = prefix + 'sdtm_club_name';
-        const KEY_CUSTOM = prefix + 'sdtm_custom_limits';
-
-        // --- APP STATE ---
-        let state="stopped", elapsed=0, start, iv, lims={}, selectedTypeLabel="";
+        let currentMode = 'timer', currentSpeaker = "", currentTally = {}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
+        let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
-        function handleNameInput(el) {
-            const startPos = el.selectionStart;
-            el.value = el.value.toUpperCase();
-            el.setSelectionRange(startPos, startPos);
-            filterSpeakers();
+        const TIMER_PRESETS = [{label:'TABLE TOPICS',sub:'1-2m',g:60,y:90,r:120},{label:'EVALUATION',sub:'2-3m',g:120,y:150,r:180},{label:'SPEECH',sub:'5-7m',g:300,y:360,r:420},{label:'ICE BREAKER',sub:'4-6m',g:240,y:300,r:360}];
+        const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "JOKE MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS", "GENERAL EVALUATOR"];
+
+        function switchMode(mode) { currentMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(mode === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none'; selectedTypeLabel = ""; }
+        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'setup') renderSetupGrid(); if (id === 'report') loadReport(); }
+
+        function renderSpeakerList(l) {
+            const area = document.getElementById('speakerArea');
+            if (!l.length) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
+            area.innerHTML = l.map(n => `
+                <div class="speaker-item">
+                    <div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div>
+                    <div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div>
+                </div>`).join('');
         }
 
-        function openModal(title, bodyHTML, onConfirm) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalBody').innerHTML = bodyHTML;
-            document.getElementById('customModal').style.display = 'flex';
-            document.getElementById('modalConfirm').onclick = () => {
-                onConfirm();
-                document.getElementById('customModal').style.display = 'none';
-            };
-            const cancelBtn = document.getElementById('modalCancel');
-            cancelBtn.style.display = 'block';
-            cancelBtn.onclick = () => {
-                document.getElementById('customModal').style.display = 'none';
-            };
+        function copyReport() {
+            const text = generateReportText(); if (!text) return;
+            navigator.clipboard.writeText(text).then(() => { openModal("Success", "Report copied to clipboard!", () => {}); });
         }
 
-        function askClubName() {
-            const cur = localStorage.getItem(KEY_CLUB) || "";
-            openModal("Set Club Name", `<input type="text" id="cNameInput" value="${cur}" style="text-transform:none;">`, () => {
-                const val = document.getElementById('cNameInput').value;
-                if(val) { 
-                    localStorage.setItem(KEY_CLUB, val); 
-                    document.getElementById('clubSubtitle').innerText = val;
-                    document.getElementById('reportTitle').innerText = val + " Report";
-                }
-            });
+        function generateReportText() {
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); if (!logs.length) return null;
+            const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools";
+            const date = new Date().toLocaleDateString();
+            const mdEnabled = document.getElementById('mdToggle').checked;
+            if (mdEnabled) {
+                let md = `# ${club} Report\n**Date:** ${date}\n\n| Name | Role | Result |\n| :--- | :--- | :--- |\n`;
+                logs.forEach(log => { const [n, r] = log.split(' | '); const [role, val] = r.split(': '); md += `| ${n} | ${role} | ${val} |\n`; });
+                return md;
+            } else {
+                let txt = `${club} Report - ${date}\n${'='.repeat(20)}\n\n`;
+                logs.forEach(log => txt += `• ${log}\n`); return txt;
+            }
         }
 
-        function askCustomTime(el) {
-            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"y":6,"r":7}');
-            openModal("Custom Thresholds", `
-                <div style="display:grid; gap:10px; text-align:left;">
-                    <label>Green (Min): <input type="number" id="cg" value="${savedCustom.g}"></label>
-                    <label>Yellow (Min): <input type="number" id="cy" value="${savedCustom.y}"></label>
-                    <label>Red (Min): <input type="number" id="cr" value="${savedCustom.r}"></label>
-                </div>`, () => {
-                const gVal = document.getElementById('cg').value;
-                const yVal = document.getElementById('cy').value;
-                const rVal = document.getElementById('cr').value;
-                lims = { g: gVal * 60, y: yVal * 60, r: rVal * 60 };
-                localStorage.setItem(KEY_CUSTOM, JSON.stringify({g: gVal, y: yVal, r: rVal}));
-                document.getElementById('customLabel').innerText = `${gVal}-${rVal}m`;
-                selectedTypeLabel = "CUSTOM";
-                document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
-                el.classList.add('selected');
-            });
-        }
+        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Meeting Report`, text: text }); }
 
-        function askClearLogs() {
-            openModal("Clear Logs?", "Wipe all recorded data?", () => {
-                localStorage.removeItem(KEY_LOGS);
-                location.reload();
-            });
+        function loadReport() { 
+            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
+            const club = localStorage.getItem(KEY_CLUB) || "Meeting Tools";
+            const date = new Date().toLocaleDateString();
+            let displayStr = `${club}\nDate: ${date}\n${'-'.repeat(20)}\n\n`;
+            if (logs.length > 0) {
+                displayStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`;
+                logs.forEach(log => { const [n, r] = log.split(' | '); const [role, val] = r.split(': '); displayStr += `${n.padEnd(16)} | ${role.padEnd(16)} | ${val}\n`; });
+            } else displayStr += "No data recorded.";
+            document.getElementById('reportLog').innerText = displayStr;
+            document.getElementById('reportPageTitle').innerText = (currentMode === 'timer' ? "Timer" : "Counter") + " Report";
         }
 
         function initApp() {
-            const savedName = localStorage.getItem(KEY_CLUB);
-            if (savedName) {
-                document.getElementById('clubSubtitle').innerText = savedName;
-                document.getElementById('reportTitle').innerText = savedName + " Report";
-            }
-            const savedCustom = JSON.parse(localStorage.getItem(KEY_CUSTOM));
-            if (savedCustom) {
-                document.getElementById('customLabel').innerText = `${savedCustom.g}-${savedCustom.r}m`;
-            }
-            const versionLabel = document.getElementById('versionLabel');
-            if (isTestEnv) {
-                versionLabel.innerText += " (TEST)";
-            }
-            renderSpeakerList(allSpeakers); 
-        }
-
-        function saveSpeaker() {
-            const nameEl = document.getElementById('name');
-            const name = nameEl.value.trim().toUpperCase();
-            if(!name) return;
-            if(!allSpeakers.includes(name)) {
-                allSpeakers.push(name); allSpeakers.sort();
-                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
-            }
+            const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
+            document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
+            const vLabel = document.getElementById('versionLabel');
+            if (window.location.pathname.toLowerCase().includes('/test/')) vLabel.innerText = "Version 2.2 (TEST)";
             renderSpeakerList(allSpeakers);
-            nameEl.focus(); 
         }
 
-        function filterSpeakers() {
-            const query = document.getElementById('name').value.toUpperCase();
-            const filtered = allSpeakers.filter(s => s.toUpperCase().includes(query));
-            renderSpeakerList(filtered);
-        }
-
-        function renderSpeakerList(listToDisplay) {
-            const area = document.getElementById('speakerArea');
-            if (listToDisplay.length === 0) {
-                area.innerHTML = `<div style="padding:15px; opacity:0.3; text-align:center;">Empty</div>`;
-                return;
-            }
-            area.innerHTML = listToDisplay.map(name => `
-                <div class="speaker-item">
-                    <div class="sp-name" onclick="selectSpeaker('${name}')">${name}</div>
-                    <div class="sp-del" onclick="askDeleteSpeaker('${name}')">✕</div>
-                </div>
-            `).join('');
-        }
-
-        function selectSpeaker(name) { document.getElementById('name').value = name.toUpperCase(); }
-
-        function askDeleteSpeaker(name) {
-            openModal("Delete?", `Remove "${name}"?`, () => {
-                allSpeakers = allSpeakers.filter(s => s !== name);
-                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
-                renderSpeakerList(allSpeakers);
-            });
-        }
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.body.style.background = "var(--bg)";
-            document.body.style.color = "var(--text)";
-            if(id === 'report') loadReport();
-        }
-
-        function selectType(el, g, y, r, label) {
-            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedTypeLabel = label;
-            lims = { g, y, r };
-        }
-
-        function startTimer() {
-            const currentName = document.getElementById('name').value.trim().toUpperCase();
-            if(!lims.g || !currentName) return;
-            document.getElementById('spkName').innerText = currentName;
-            showScreen('timerDisplay');
-            resetCurrentTimer();
-            runTimer();
-        }
-
-        function runTimer() {
-            state = "running";
-            start = Date.now() - (elapsed * 1000);
-            document.getElementById('pauseResumeBtn').innerText = "PAUSE";
-            iv = setInterval(update, 1000);
-        }
-
-        function togglePause() {
-            if (state === "running") {
-                state = "paused";
-                clearInterval(iv);
-                document.getElementById('pauseResumeBtn').innerText = "RESUME";
+        function renderSetupGrid() {
+            const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
+            document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup';
+            if (currentMode === 'timer') {
+                TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; });
+                const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"r":7}');
+                grid.innerHTML += `<div class="role-card" style="grid-column: span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`;
             } else {
-                runTimer();
+                COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; });
+                grid.innerHTML += `<div id="custom-card" class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
             }
         }
 
-        function resetCurrentTimer() {
-            clearInterval(iv);
-            elapsed = 0;
-            state = "stopped";
-            document.getElementById('timer').innerText = "00:00";
-            document.body.style.background = "var(--bg)";
-            document.body.style.color = "var(--text)";
-            document.getElementById('pauseResumeBtn').innerText = "START";
+        function startTimer() { 
+            elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); 
+            iv = setInterval(() => {
+                elapsed = Math.floor((Date.now() - start) / 1000);
+                let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
+                document.getElementById('timer').innerText = `${m}:${s}`;
+                if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
+                else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
+                else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
+            }, 1000); 
         }
 
-        function update() {
-            elapsed = Math.floor((Date.now() - start) / 1000);
-            let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0');
-            document.getElementById('timer').innerText = `${m}:${s}`;
-            if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; }
-            else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; }
-            else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; }
-        }
-
-        function commitAndExit() {
-            clearInterval(iv);
-            if (elapsed > 0) {
-                let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-                logs.push(`${document.getElementById('spkName').innerText} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`);
-                localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            }
-            document.body.style.background = "var(--bg)";
-            document.body.style.color = "var(--text)";
-            showScreen('menu');
-        }
-
-        function loadReport() {
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data.";
-        }
-
-        async function shareReport() {
-            const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            if (!logs.length) return;
-            const club = localStorage.getItem(KEY_CLUB) || "Meeting";
-            const text = club + " Timer Report:\n\n" + logs.join('\n');
-            if (navigator.share) await navigator.share({ title: 'Timer Report', text: text });
-            else { alert("Copied to clipboard!"); }
-        }
-
-        function exportRoster() {
-            const rawSpeakers = localStorage.getItem(KEY_SPEAKERS);
-            const clubName = localStorage.getItem(KEY_CLUB);
-            const backupData = { speakers: rawSpeakers ? JSON.parse(rawSpeakers) : [], club: clubName || "" };
-            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `SDTM_Roster_${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function handleImportFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    openModal("Import Roster?", "This will overwrite your current list and club name. Proceed?", () => {
-                        if (data.speakers) {
-                            localStorage.setItem(KEY_SPEAKERS, JSON.stringify(data.speakers));
-                            allSpeakers = data.speakers;
-                            renderSpeakerList(allSpeakers);
-                        }
-                        if (data.club) {
-                            localStorage.setItem(KEY_CLUB, data.club);
-                            document.getElementById('clubSubtitle').innerText = data.club;
-                        }
-                        openModal("Success", "Roster imported successfully.", () => {});
-                        document.getElementById('modalCancel').style.display = 'none';
-                    });
-                } catch (err) {
-                    openModal("Error", "Invalid roster file format.", () => {});
-                }
-            };
-            reader.readAsText(file);
-            input.value = "";
-        }
-
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        /* --- STABLE DATA HELPERS --- */
+        function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n) { openModal("Missing Name", "Enter a speaker.", ()=>{}); return; } if (!selectedTypeLabel) { openModal("Missing Role", "Select a role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
+        function renderTally() { const area = document.getElementById('tallyArea'); const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join(''); }
+        function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
+        function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
+        function addFiller() { const v = document.getElementById('newFiller').value.trim().toUpperCase(); if (v && !fillerList.includes(v)) { fillerList.push(v); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); document.getElementById('newFiller').value = ""; } }
+        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let res = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, c]) => `${f}: ${c}`).join(', ') || "0 Fillers"; logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${res}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Results recorded.", () => { showScreen('menu'); }); }
+        function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); startTimer(); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
+        function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; document.body.style.color = "var(--text)"; showScreen('menu'); }
+        function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Custom Role"; const body = currentMode === 'timer' ? `<div style="display:grid; gap:10px;"><label>Min: <input type="number" id="cg" value="${saved.g}"></label><label>Target: <input type="number" id="cy" value="${saved.cy}"></label><label>Max: <input type="number" id="cr" value="${saved.r}"></label></div>` : `<input type="text" id="customRole" placeholder="ROLE NAME" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
+        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'sdtm_backup.json'; a.click(); }
+        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.club) localStorage.setItem(KEY_CLUB, d.club); location.reload(); }; r.readAsText(i.files[0]); }
+        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
+        function askClearLogs() { openModal("Clear?", "Delete meeting logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
+        function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
+        function saveSpeaker() { const n = document.getElementById('name').value.trim().toUpperCase(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); } renderSpeakerList(allSpeakers); }
+        function selectSpeaker(n) { document.getElementById('name').value = n; }
+        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
+        function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
+        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
     </script>
 </body>
 </html>

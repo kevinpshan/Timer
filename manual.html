@@ -3,165 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting Timer - User Guide</title>
+    <title>Meeting Tools - User Manual</title>
     <style>
-        :root {
-            --bg: #F2F2F7;
-            --card: #FFFFFF;
-            --accent: #007AFF;
-            --text: #1C1C1E;
-            --subtext: #3A3A3C;
-            --border: #D1D1D6;
-            --red: #FF3B30;
-        }
-
-        body {
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--bg);
-            margin: 0;
-            padding: 0;
-        }
-
-        .wrapper {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .content-card {
-            background: var(--card);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid var(--border);
-        }
-
-        .back-btn {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        h1 { font-size: 36px; font-weight: 800; margin-top: 0; color: var(--text); }
-        h2 { font-size: 24px; font-weight: 700; border-bottom: 2px solid var(--bg); padding-bottom: 10px; margin-top: 40px; }
-        h3 { font-size: 20px; font-weight: 700; color: var(--accent); }
-
-        .warning-box {
-            background-color: #FFF9E6;
-            border-left: 5px solid #FFCC00;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 25px 0;
-        }
-
-        .warning-box h4 { margin-top: 0; color: #856404; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
-
-        ul { padding-left: 20px; }
-        li { margin-bottom: 10px; }
-
-        code {
-            background: #F2F2F7;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.9em;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: var(--subtext);
-            font-size: 14px;
-        }
-
-        .footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
-
-        @media (max-width: 600px) {
-            .wrapper { margin: 10px; padding: 10px; }
-            .content-card { padding: 25px; }
-            h1 { font-size: 28px; }
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; color: #1c1c1e; background: #f2f2f7; margin: 0; padding: 20px; }
+        .wrap { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { color: #007aff; font-size: 32px; border-bottom: 2px solid #f2f2f7; padding-bottom: 10px; }
+        h2 { color: #007aff; margin-top: 30px; font-size: 24px; }
+        h3 { color: #3a3a3c; margin-top: 20px; }
+        .badge { background: #007aff; color: white; padding: 2px 8px; border-radius: 6px; font-size: 14px; font-weight: bold; }
+        .role-box { background: #e8f2ff; border-left: 4px solid #007aff; padding: 15px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        code { background: #f2f2f7; padding: 2px 5px; border-radius: 4px; font-family: monospace; }
+        .footer { text-align: center; margin-top: 40px; font-size: 14px; color: #8e8e93; }
+        .back-link { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007aff; font-weight: bold; }
     </style>
 </head>
 <body>
+    <div class="wrap">
+        <a href="index.html" class="back-link">← Back to App</a>
+        <h1>User Manual <span class="badge">v2.2</span></h1>
+        
+        <p>This tool is designed to assist <strong>Timers</strong> and <strong>Ah-Counters</strong> during Toastmasters meetings. It is optimized for iPad but works on all modern mobile devices.</p>
 
-<div class="wrapper">
-    <a href="index.html" class="back-btn">← Return to App</a>
+        <h2>1. Switching Modes</h2>
+        <p>At the top of the main screen, use the <strong>Tabs</strong> to toggle between the <strong>Timer</strong> and the <strong>Ah-Counter</strong>. Settings and Roster data are shared between both modes.</p>
 
-    <div class="content-card">
-        <h1>Meeting Timer Guide</h1>
-        <p>This high-visibility tool is designed for timing speeches, evaluations, and impromptu sessions. It scales seamlessly across smartphones, tablets, and desktops.</p>
-
-        <div class="warning-box">
-            <h4>⚠️ Data Privacy & Storage</h4>
-            <p><strong>All data is stored locally on your device.</strong> To ensure your privacy, this app does not use a cloud database. Speaker names, club settings, and meeting logs are stored entirely within your device's web browser memory (Local Storage).</p>
-            <ul>
-                <li><strong>Device Specific:</strong> Roster data saved on a tablet will not appear on your phone.</li>
-                <li><strong>Browser Specific:</strong> Switching from Safari to Chrome on the same device requires a new setup.</li>
-                <li><strong>Clearing Cache:</strong> Clearing browser "Website Data" will delete your roster and logs.</li>
-            </ul>
-        </div>
-
-        <h2>1. Getting Started</h2>
-        <p>Upon launching the app, use the <strong>Main Menu</strong> to navigate:</p>
+        <h2>2. Managing the Roster</h2>
         <ul>
-            <li><strong>Set Your Club Name:</strong> Tap the blue subtitle to personalize the app. This name is used in your shareable reports.</li>
-            <li><strong>Meeting Report:</strong> View the log of all speakers timed during the current session.</li>
-            <li><strong>Clear Meeting Logs:</strong> Tap this at the start of a new meeting to wipe the previous session's data.</li>
+            <li><strong>Add Members:</strong> Enter a name in the "Name" field and tap <strong>Add</strong>. Names are saved permanently to your device.</li>
+            <li><strong>Quick Search:</strong> Type in the search box to filter the list.</li>
+            <li><strong>Selection:</strong> Tap a name in the list to populate the name field instantly.</li>
+            <li><strong>Delete:</strong> Tap the red <strong>✕</strong> next to a name to remove them from your permanent roster.</li>
         </ul>
-
-        <h2>2. Setting Up a Speech</h2>
-        <h3>Enter/Search Speaker</h3>
-        <ul>
-            <li>Type a name in the input box; it will automatically convert to <code>UPPERCASE</code>.</li>
-            <li><strong>The Roster:</strong> Saved members appear in a list. Tap a name to select it instantly.</li>
-            <li><strong>Adding New Names:</strong> Type a name and tap <strong>Add</strong>. It saves to your device and stays in the box so you can start timing immediately.</li>
-            <li><strong>Managing Roster:</strong> Tap the small <code>✕</code> next to a name to delete it from your local memory.</li>
-        </ul>
-
-        <h3>Select Speech Type</h3>
-        <p>Choose from the presets (Table Topics, Evaluation, etc.) or use <strong>Custom Time</strong> to enter specific Green, Yellow, and Red minute thresholds.</p>
 
         <h2>3. Using the Timer</h2>
-        <p>When you tap <strong>START TIMING</strong>, the clock begins automatically.</p>
+        <div class="role-box">
+            <strong>Timing Logic:</strong> The screen will change color automatically based on Toastmasters standards:
+            <ul>
+                <li><strong>Green:</strong> Minimum time reached.</li>
+                <li><strong>Yellow:</strong> Target time reached.</li>
+                <li><strong>Red:</strong> Maximum time reached.</li>
+            </ul>
+        </div>
+        <p>Tap <strong>Commit & Exit</strong> to save the time to the Meeting Report. The timer will automatically reset for the next speaker.</p>
+
+        <h2>4. Using the Ah-Counter</h2>
+        <p>Select a speaker and their current role. You will be taken to the Tally Screen.</p>
         <ul>
-            <li><strong>Color Transitions:</strong> The screen stays white until the <strong>Green</strong> minimum is met, turns <strong>Yellow</strong> at the midpoint, and <strong>Red</strong> at the maximum.</li>
-            <li><strong>PAUSE/RESUME:</strong> Stops the clock for interruptions without losing the current time.</li>
-            <li><strong>RESET:</strong> Zeroes the clock if the speaker needs to restart.</li>
-            <li><strong>COMMIT & EXIT:</strong> You <u>must</u> tap this green button to save the time to the meeting report.</li>
+            <li><strong>Increment:</strong> Tap the large center of any word card to add +1.</li>
+            <li><strong>Correction:</strong> Tap the gray <strong>−</strong> in the bottom-right corner to subtract -1.</li>
+            <li><strong>Custom Words:</strong> Use the input at the top to add a specific crutch word for that meeting.</li>
+            <li><strong>Permanent Delete:</strong> Tap the red <strong>✕</strong> in the bottom-left corner of a word card to remove that word from your permanent list.</li>
+            <li><strong>Word of the Day:</strong> Highlighted in gold to help you track its usage specifically.</li>
         </ul>
 
-        <h2>4. Sharing Reports</h2>
-        <p>In the <strong>Meeting Report</strong> section, tap <strong>Share Report</strong>.</p>
+        <h2>5. Reports & Sharing</h2>
+        <p>Access the <strong>Meeting Report</strong> or <strong>Counter Report</strong> from the main menu to see all recorded data for the current session.</p>
         <ul>
-            <li><strong>Mobile:</strong> Opens your device's native share menu (SMS, Email, Slack, etc.).</li>
-            <li><strong>Desktop:</strong> Automatically copies the report to your clipboard for easy pasting into an email or document.</li>
+            <li><strong>Copy:</strong> Copies the report to your clipboard. A confirmation will appear.</li>
+            <li><strong>Share:</strong> Opens the system share sheet to send data to Notes, Email, or Slack.</li>
+            <li><strong>Markdown Toggle:</strong> In <strong>Settings</strong>, enable this to export reports as structured Markdown tables—perfect for advanced users and professional formatting.</li>
         </ul>
 
-        <h2>5. Advanced Tips</h2>
-        <ul>
-            <li><strong>Large Screen Visibility:</strong> Place the device on a stand at the front of the room. The timer scales to be visible from the back row.</li>
-            <li><strong>Offline Mode:</strong> The app works without an internet connection once loaded.</li>
-            <li><strong>Install as App:</strong> Use "Add to Home Screen" in your browser settings to run the timer as a standalone, full-screen application.</li>
-        </ul>
+        <h2>6. Backup & Maintenance</h2>
+        <p>Go to <strong>Settings</strong> to Export or Import your entire Roster and Filler word list. This allows you to sync data between devices or keep a backup of your club's member list.</p>
+        <p style="color: #ff3b30;"><strong>Clear Meeting Data:</strong> This button clears the current session's logs. Use this at the start of every new meeting.</p>
 
-        <div style="margin-top: 40px; text-align: center;">
-            <a href="index.html" class="back-btn">Ready? Return to App</a>
+        <div class="footer">
+            Developed by Southern Dutchess Toastmasters<br>
+            Version 2.2 • 2026
         </div>
     </div>
-
-    <div class="footer">
-        <p>Created by <strong>Southern Dutchess Toastmasters</strong></p>
-        <p><a href="https://bit.ly/m/SDTM">Visit Our Website ↗</a></p>
-    </div>
-</div>
-
 </body>
 </html>
