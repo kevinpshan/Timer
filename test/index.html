@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. CARDS & GRID --- */
+        /* --- 2. MAIN MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: grid; grid-template-columns: 1fr 60px;
@@ -49,8 +49,7 @@
         .main-menu-card p { margin: 6px 0 0; font-size: 19px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 45px; color: var(--accent); text-align: right; }
 
-        /* SETTINGS TOGGLE STYLE */
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        /* TOGGLE SWITCH */
         .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
@@ -58,7 +57,7 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- 3. ROSTER AREA --- */
+        /* --- 3. SETUP & ROLES --- */
         .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
         .speaker-item { padding: 12px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
         .sp-name { font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; }
@@ -83,8 +82,10 @@
         .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; }
         .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
         .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
+        .wod-card { border: 4px solid var(--gold); }
+        .wod-card .count { color: var(--gold); }
 
-        /* --- 5. FOOTER & MODALS --- */
+        /* --- 5. FOOTERS & MODALS --- */
         .button-row { display: flex; gap: 15px; padding: 10px 20px 20px; flex-shrink: 0; background: transparent; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 22px; border-radius: 18px; font-size: 24px; font-weight: 700; border: none; background: var(--accent); color: white; }
         .secondary-btn { background: #E5E5EA; color: #000000; border: 1px solid var(--border); }
@@ -92,6 +93,12 @@
         .resource-row { display: flex; gap: 12px; margin-bottom: 15px; justify-content: center; }
         .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 17px; border: 1px solid var(--border); }
         .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; color: #000; font-weight: 400; }
+
+        /* MODAL FIX: Wrapped and hidden */
+        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        
+        #timer { font-size: clamp(100px, 35vw, 450px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000; }
         #reportLog { background: var(--card); border-radius: 18px; padding: 25px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 18px; border: 1px solid var(--border); color: #000; white-space: pre; }
     </style>
 </head>
@@ -141,7 +148,7 @@
             <div class="main-menu-card" style="cursor: default;">
                 <div class="card-content">
                     <h3>Markdown Export</h3>
-                    <p>Format shared reports as table code</p>
+                    <p>Format shared reports as tables</p>
                 </div>
                 <div class="icon">
                     <label class="switch">
@@ -252,9 +259,7 @@
             }
         }
 
-        function saveSettings() {
-            localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked);
-        }
+        function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
 
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
@@ -264,7 +269,6 @@
             renderSpeakerList(allSpeakers);
         }
 
-        /* --- PRESET GRID LOGIC --- */
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
             document.getElementById('setupHeader').innerText = currentMode === 'timer' ? 'Speech Info' : 'Counter Setup';
@@ -280,8 +284,8 @@
         function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
         function handleStart() {
             const n = document.getElementById('name').value.trim().toUpperCase();
-            if (!n) { openModal("Error", "Enter speaker name.", ()=>{}); return; }
-            if (!selectedTypeLabel) { openModal("Error", "Select a role.", ()=>{}); return; }
+            if (!n) { openModal("Missing Name", "Select or enter name.", ()=>{}); return; }
+            if (!selectedTypeLabel) { openModal("Missing Selection", "Select a speech type or role.", ()=>{}); return; }
             currentSpeaker = n;
             if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); }
             else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); }
