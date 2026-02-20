@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- 2. MAIN MENU CARDS --- */
+        /* --- 2. MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; 
             display: grid; grid-template-columns: 1fr 60px;
@@ -56,7 +56,7 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- 3. ROSTER DISPLAY --- */
+        /* --- 3. ROSTER --- */
         .speaker-area { background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 100px; margin-bottom: 10px; }
         .speaker-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; }
         .sp-name { font-size: 24px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer; }
@@ -68,11 +68,11 @@
             width: 100%; box-sizing: border-box; 
         }
 
-        /* --- 4. SETUP ROLES & TALLY --- */
+        /* --- 4. ROLES & TALLY --- */
         .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex-shrink: 0; padding-bottom: 10px; }
         @media (min-width: 650px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
         .role-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); cursor: pointer; min-height: 55px; display: flex; flex-direction: column; justify-content: center; }
-        .role-card h4, .role-card p { pointer-events: none; margin: 0; } /* Text won't block the button click */
+        .role-card h4, .role-card p { pointer-events: none; margin: 0; } 
         .role-card h4 { font-size: 16px; font-weight: 700; line-height: 1.1; }
         .role-card p { font-size: 12px; color: var(--subtext); margin-top: 2px; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
@@ -90,6 +90,8 @@
         .tally-card .label { font-size: 16px; font-weight: 700; color: var(--subtext); text-transform: uppercase; margin-top: 5px; }
         .tally-del { position: absolute; bottom: 8px; left: 8px; width: 38px; height: 38px; background: var(--red); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
         .tally-minus { position: absolute; bottom: 8px; right: 8px; width: 38px; height: 38px; background: #8E8E93; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer; }
+        .wod-card { border: 4px solid var(--gold); }
+        .wod-card .count { color: var(--gold); }
 
         /* --- 5. MODALS & FOOTERS --- */
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
@@ -145,7 +147,7 @@
                 <a href="manual.html" class="res-btn">Manual ↗</a>
             </div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag">Version 2.3.4</span>
+            <span id="versionLabel" class="version-tag">Version 2.3.5</span>
         </div>
     </div>
 
@@ -208,26 +210,28 @@
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.3.4" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.3.5" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             renderSpeakerList(allSpeakers);
         }
 
-        function handleStart() {
-            const n = document.getElementById('name').value.trim().toUpperCase();
-            if (!n) { openModal("Missing Name", "Please select or enter a name.", ()=>{}); return; }
-            if (!selectedTypeLabel) { openModal("Missing Role", "Please select a speech type or role.", ()=>{}); return; }
-            currentSpeaker = n;
-            if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); }
-            else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); }
+        /* --- THE FIX: BUILDING THE FULL STRING --- */
+        function saveCounterSession() { 
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            
+            // Loop through the tally object and build a combined string of all results > 0
+            let results = Object.entries(currentTally)
+                .filter(([word, count]) => count > 0)
+                .map(([word, count]) => `${word}: ${count}`)
+                .join(', ');
+
+            if (!results) results = "0 Fillers";
+
+            logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${results}`); 
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            openModal("Saved", "Full results recorded successfully.", () => { showScreen('menu'); });
         }
 
-        /* THE FIX: Re-enabling selection clicks */
-        function selectRole(el, g, y, r, label) {
-            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r };
-        }
-
-        /* --- STABLE LOGIC CONTINUED --- */
+        /* --- STABLE HELPERS --- */
         function switchMode(mode) { currentMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(mode === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = mode === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = mode === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = mode === 'counter' ? 'flex' : 'none'; selectedTypeLabel = ""; }
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'setup') renderSetupGrid(); if (id === 'report') loadReport(); }
         function renderSpeakerList(l) { const a = document.getElementById('speakerArea'); if (!l || !l.length) { a.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; } a.innerHTML = l.map(n => `<div class="speaker-item"><div class="sp-name" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join(''); }
@@ -236,13 +240,13 @@
         function handleNameInput(el) { el.value = el.value.toUpperCase(); filterSpeakers(); }
         function filterSpeakers() { const q = document.getElementById('name').value.toUpperCase(); renderSpeakerList(allSpeakers.filter(s => s.includes(q))); }
         function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); renderSpeakerList(allSpeakers); }); }
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n) { openModal("Missing Name", "Select or enter name.", ()=>{}); return; } if (!selectedTypeLabel) { openModal("Missing Selection", "Select a speech type or role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
         function addFiller() { const v = document.getElementById('newFiller').value.trim().toUpperCase(); if (v && !fillerList.includes(v)) { fillerList.push(v); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); currentTally[v] = 0; renderTally(); document.getElementById('newFiller').value = ""; } }
         function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
         function renderTally() { const area = document.getElementById('tallyArea'); const sorted = [...fillerList].sort((a,b) => a === "WORD OF DAY" ? -1 : b === "WORD OF DAY" ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => `<div class="tally-card ${f === 'WORD OF DAY' ? 'wod-card' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`).join(''); }
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
-        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let res = Object.entries(currentTally).filter(([f, c]) => c > 0).map(([f, c]) => `${f}: ${c}`).join(', ') || "0 Fillers"; logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${res}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Results recorded.", () => { showScreen('menu'); }); }
         function startTimer() { elapsed = 0; document.getElementById('timer').innerText = "00:00"; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) { document.body.style.background = "var(--red)"; document.body.style.color="white"; } else if(elapsed >= lims.y) { document.body.style.background = "var(--yellow)"; document.body.style.color="black"; } else if(elapsed >= lims.g) { document.body.style.background = "var(--green)"; document.body.style.color="white"; } }, 1000); }
         function togglePause() { if (iv) { clearInterval(iv); iv = null; document.getElementById('pauseResumeBtn').innerText = "RESUME"; } else { start = Date.now() - (elapsed*1000); startTimer(); document.getElementById('pauseResumeBtn').innerText = "PAUSE"; } }
         function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel}: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.getElementById('timer').innerText = "00:00"; document.body.style.background = "var(--bg)"; document.body.style.color="var(--text)"; showScreen('menu'); }
@@ -257,6 +261,7 @@
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Delete meeting logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
+        function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
         function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); }
     </script>
 </body>
