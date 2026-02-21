@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.20</title>
+    <title>Meeting Tools v2.9.22</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -60,7 +60,7 @@
 
         /* --- TIMER --- */
         #timerDisplay { position: relative; }
-        #timer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: clamp(100px, 30vw, 400px); font-weight: 200; font-variant-numeric: tabular-nums; }
+        #timerText { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: clamp(100px, 30vw, 400px); font-weight: 200; font-variant-numeric: tabular-nums; }
         #spkNameLabel { font-size: 30px; color: var(--subtext); margin-top: 40px; text-align: center; font-weight: 700; text-transform: uppercase; }
 
         /* --- FOOTER & BUTTONS --- */
@@ -92,7 +92,7 @@
 
     <div id="menu" class="screen active">
         <div class="header">
-            <h1>Timing Tools</h1>
+            <h1 id="mainTitle">Timing Tools</h1>
             <div class="subtitle">Southern Dutchess Toastmasters</div>
             <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
         </div>
@@ -106,8 +106,9 @@
         </div>
         <div id="counterMode" class="container" style="display:none;">
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
+            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
-        <div class="credit-footer"><p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p><p style="opacity:0.3; font-size:10px; margin-top:5px;">Version 2.9.20</p></div>
+        <div class="credit-footer"><p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p><p style="opacity:0.3; font-size:10px; margin-top:5px;">Version 2.9.22</p></div>
     </div>
 
     <div id="setup" class="screen">
@@ -122,11 +123,8 @@
 
     <div id="timerDisplay" class="screen">
         <div id="spkNameLabel">SPEAKER</div>
-        <div id="timer">00:00</div>
-        <div class="button-row">
-            <button id="pauseBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button>
-        </div>
+        <div id="timerText">00:00</div>
+        <div class="button-row"><button id="pauseBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button></div>
     </div>
 
     <div id="report" class="screen">
@@ -135,20 +133,24 @@
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
     </div>
 
+    <div id="settings" class="screen">
+        <div class="header"><h1>Settings</h1></div>
+        <div class="container">
+            <div class="main-menu-card" style="flex-direction:column; align-items:stretch; cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>Used for AI features</p></div><input type="password" id="openaiKey" onchange="saveSettings()"></div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Data</h3><p>Full meeting reset</p></div><div class="icon">⚠</div></div>
+        </div>
+        <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
+    </div>
+
     <script>
-        const prefix = 'prod_';
-        const KEY_LOGS = prefix+'sdtm_logs', KEY_SPEAKERS = prefix+'sdtm_speakers', KEY_CUSTOM = prefix+'sdtm_custom_limits';
-        
+        const KEY_LOGS = 'prod_sdtm_logs', KEY_SPEAKERS = 'prod_sdtm_speakers', KEY_CUSTOM = 'prod_sdtm_custom_limits';
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS)||"[]"), currentMode='timer', selectedRole="", iv, start, elapsed=0, lims={g:0,y:0,r:0};
 
         function initApp() { refreshRoster(); }
 
-        /* MODAL ENGINE */
         function openCustomModal(title, body, onConfirm) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalBody').innerHTML = body;
-            const modal = document.getElementById('customModal');
-            modal.style.display = 'flex';
+            document.getElementById('modalTitle').innerText = title; document.getElementById('modalBody').innerHTML = body;
+            const modal = document.getElementById('customModal'); modal.style.display = 'flex';
             document.getElementById('modalConfirm').onclick = () => { onConfirm(); modal.style.display = 'none'; };
             document.getElementById('modalCancel').onclick = () => { modal.style.display = 'none'; };
         }
@@ -161,42 +163,34 @@
         }
 
         function switchMode(m) {
-            currentMode = m;
-            document.getElementById('mainTitle').innerText = m === 'timer' ? 'Timing Tools' : 'Counter Tools';
+            currentMode = m; document.getElementById('mainTitle').innerText = m === 'timer' ? 'Timing Tools' : 'Counter Tools';
             document.getElementById('tabTimer').classList.toggle('active', m === 'timer');
             document.getElementById('tabCounter').classList.toggle('active', m === 'counter');
             document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none';
             document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none';
         }
 
-        /* ROSTER ENGINE */
-        function refreshRoster(filter = "") {
+        function refreshRoster(f = "") {
             const area = document.getElementById('speakerArea');
-            const filtered = allSpeakers.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
+            const filtered = allSpeakers.filter(n => n.toLowerCase().includes(f.toLowerCase()));
             area.innerHTML = filtered.map(n => `<div class="roster-item"><span class="roster-name" onclick="selectSpeaker('${n}')">${n}</span><span style="color:var(--red); font-weight:800; cursor:pointer; padding:10px;" onclick="delSpeaker('${n}')">✕</span></div>`).join('');
         }
         function filterRoster() { refreshRoster(document.getElementById('nameInput').value); }
-        function selectSpeaker(name) { document.getElementById('nameInput').value = name; refreshRoster(name); }
+        function selectSpeaker(n) { document.getElementById('nameInput').value = n; refreshRoster(n); }
         function saveSpeaker() {
             const n = document.getElementById('nameInput').value.trim().toUpperCase();
             if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }
         }
-        function delSpeaker(n) {
-            openCustomModal("Delete Speaker?", `Remove ${n} from roster?`, () => {
-                allSpeakers = allSpeakers.filter(s => s !== n);
-                localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster();
-            });
-        }
+        function delSpeaker(n) { openCustomModal("Delete Speaker?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
 
-        /* SETUP GRID */
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
             if(currentMode === 'timer') {
                 const roles = [
-                    {l:"1-2M",s:"Table Topics",g:60,y:90,r:120},
-                    {l:"2-3M",s:"Evaluation",g:120,y:150,r:180},
-                    {l:"5-7M",s:"Speech",g:300,y:360,r:420},
-                    {l:"4-6M",s:"Ice Breaker",g:240,y:300,r:360},
+                    {l:"TABLE TOPICS",s:"1-2m",g:60,y:90,r:120},
+                    {l:"EVALUATION",s:"2-3m",g:120,y:150,r:180},
+                    {l:"SPEECH",s:"5-7m",g:300,y:360,r:420},
+                    {l:"ICE BREAKER",s:"4-6m",g:240,y:300,r:360},
                     {l:"CUSTOM",s:"Custom Time", isCustom: true}
                 ];
                 roles.forEach(r => {
@@ -206,7 +200,7 @@
                     grid.appendChild(card);
                 });
             } else {
-                ["AH COUNTER", "GRAMMARIAN"].forEach(r => {
+                ["AH COUNTER", "GRAMMARIAN", "SPEAKER"].forEach(r => {
                     grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r}', 0,0,0)"><h4>${r}</h4></div>`;
                 });
             }
@@ -216,8 +210,8 @@
             el.classList.add('selected'); selectedRole = r; lims = {g,y,r:rt};
         }
         function askCustomTime(el) {
-            const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"y":6,"r":7}');
-            const body = `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Mid):</label><input type="number" id="cy" value="${saved.y}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">`;
+            const s = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"y":6,"r":7}');
+            const body = `<label>Green (min):</label><input type="number" id="cg" value="${s.g}"><label>Yellow (mid):</label><input type="number" id="cy" value="${s.y}"><label>Red (max):</label><input type="number" id="cr" value="${s.r}">`;
             openCustomModal("Custom Thresholds", body, () => {
                 const g=document.getElementById('cg').value, y=document.getElementById('cy').value, r=document.getElementById('cr').value;
                 localStorage.setItem(KEY_CUSTOM, JSON.stringify({g,y,r}));
@@ -225,16 +219,14 @@
             });
         }
 
-        /* TIMER PROCESS */
         function handleStart() {
-            const n = document.getElementById('nameInput').value;
-            if(!n || !selectedRole) return;
+            const n = document.getElementById('nameInput').value; if(!n || !selectedRole) return;
             showScreen('timerDisplay'); document.getElementById('spkNameLabel').innerText = n;
             elapsed = 0; start = Date.now();
             iv = setInterval(() => {
                 elapsed = Math.floor((Date.now()-start)/1000);
                 let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0');
-                document.getElementById('timer').innerText=`${m}:${s}`;
+                document.getElementById('timerText').innerText=`${m}:${s}`;
                 if(lims.g > 0) {
                     if(elapsed >= lims.r) document.body.style.background = "var(--red)";
                     else if(elapsed >= lims.y) document.body.style.background = "var(--yellow)";
@@ -244,14 +236,14 @@
         }
         function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); handleStart(); } }
         function commitAndExit() { 
-            clearInterval(iv);
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            logs.push(`${document.getElementById('nameInput').value} | ${selectedRole} :: ${document.getElementById('timer').innerText}`);
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            document.body.style.background = "var(--bg)"; showScreen('menu');
+            clearInterval(iv); let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            logs.push(`${document.getElementById('nameInput').value} | ${selectedRole} :: ${document.getElementById('timerText').innerText}`);
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); document.body.style.background = "var(--bg)"; showScreen('menu');
         }
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data."; }
+        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); document.getElementById('reportLog').innerText = logs.length ? logs.join('\n') : "No data recorded."; }
         function copyReport() { navigator.clipboard.writeText(document.getElementById('reportLog').innerText); alert("Report Copied"); }
+        function saveSettings() { localStorage.setItem('prod_sdtm_openai_key', document.getElementById('openaiKey').value.trim()); }
+        function askClearLogs() { openCustomModal("Clear?", "Delete meeting data?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
     </script>
 </body>
 </html>
