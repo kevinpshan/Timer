@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.18</title>
+    <title>Meeting Tools v2.9.19</title>
     <style>
         :root {
             --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF; 
@@ -14,7 +14,8 @@
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
             font-family: -apple-system, system-ui, sans-serif; display: flex; 
-            flex-direction: column; height: 100dvh; box-sizing: border-box; overflow: hidden;
+            flex-direction: column; height: 100dvh; padding-bottom: env(safe-area-inset-bottom); 
+            box-sizing: border-box; overflow: hidden;
         }
 
         /* --- UI STRUCTURE --- */
@@ -30,42 +31,76 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- CARDS & SETUP --- */
+        /* --- CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
-            padding: 30px 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
+            padding: 30px 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px;
         }
         .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
         .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
         
+        /* --- ROSTER & GRID --- */
         #speakerArea { background: white; border-radius: 18px; border: 1px solid var(--border); overflow-y: auto; flex: 1; min-height: 120px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         .roster-item { padding: 15px 18px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .roster-name { font-weight: 700; flex: 1; font-size: 20px; color: var(--accent); cursor: pointer; }
 
-        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 20px; }
+        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; padding-bottom: 20px; }
         .role-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
         .role-card h4 { font-size: 16px; font-weight: 800; margin: 0; text-transform: uppercase; }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER & MODAL --- */
         .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 20px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
+
+        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); width: 85%; max-width: 450px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body onload="initApp()">
 
+    <div id="customModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin:0;">Confirm</h2>
+            <div id="modalBody" style="margin:20px 0; font-size: 18px; color: var(--subtext);"></div>
+            <div class="button-row" style="padding:0;">
+                <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
+                <button id="modalConfirm" class="footer-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
     <div id="menu" class="screen active">
-        <div class="header"><h1>Meeting Tools</h1><div class="subtitle">Southern Dutchess Toastmasters</div></div>
+        <div class="header">
+            <h1 id="mainTitle">Timing Tools</h1>
+            <div class="subtitle">Southern Dutchess Toastmasters</div>
+        </div>
         <div class="tab-container">
             <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
             <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
+        
         <div id="timerMode" class="container">
-            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div style="font-size:40px; color:var(--accent);">⊕</div></div>
+            <div class="main-menu-card" onclick="showScreen('setup')">
+                <div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div>
+                <div style="font-size:40px; color:var(--accent);">⊕</div>
+            </div>
+            <div class="main-menu-card" onclick="showScreen('report')">
+                <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
+                <div style="font-size:40px; color:var(--accent);">☰</div>
+            </div>
         </div>
+
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div style="font-size:40px; color:var(--accent);">✍</div></div>
+            <div class="main-menu-card" onclick="showScreen('setup')">
+                <div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div>
+                <div style="font-size:40px; color:var(--accent);">✍</div>
+            </div>
+            <div class="main-menu-card" onclick="showScreen('report')">
+                <div class="card-content"><h3>Counter Report</h3><p>View totals</p></div>
+                <div style="font-size:40px; color:var(--accent);">📊</div>
+            </div>
         </div>
     </div>
 
@@ -85,12 +120,38 @@
         </div>
     </div>
 
+    <div id="report" class="screen">
+        <div class="header"><h1>Report</h1></div>
+        <div class="container">
+            <div style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); flex:1; font-family:monospace;">Meeting data will appear here...</div>
+        </div>
+        <div class="button-row">
+            <button class="footer-btn" onclick="showScreen('menu')">Done</button>
+        </div>
+    </div>
+
     <script>
         const KEY_SPEAKERS = 'prod_sdtm_speakers';
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
         let currentMode = 'timer', selectedRole = "";
 
         function initApp() { refreshRoster(); }
+
+        /* MODAL ENGINE */
+        function openCustomModal(title, body, onConfirm) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerText = body;
+            const modal = document.getElementById('customModal');
+            modal.style.display = 'flex';
+            
+            document.getElementById('modalConfirm').onclick = () => {
+                onConfirm();
+                modal.style.display = 'none';
+            };
+            document.getElementById('modalCancel').onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -104,17 +165,16 @@
 
         function switchMode(m) {
             currentMode = m;
+            document.getElementById('mainTitle').innerText = m === 'timer' ? 'Timing Tools' : 'Counter Tools';
             document.getElementById('tabTimer').classList.toggle('active', m === 'timer');
             document.getElementById('tabCounter').classList.toggle('active', m === 'counter');
             document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none';
             document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none';
         }
 
-        /* ROSTER ENGINE (PRODUCTION LOGIC) */
         function refreshRoster(filter = "") {
             const area = document.getElementById('speakerArea');
             const filtered = allSpeakers.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
-            
             area.innerHTML = filtered.map(n => `
                 <div class="roster-item">
                     <span class="roster-name" onclick="selectSpeaker('${n}')">${n}</span>
@@ -123,21 +183,17 @@
             `).join('');
         }
 
-        function filterRoster() {
-            const val = document.getElementById('nameInput').value;
-            refreshRoster(val);
-        }
+        function filterRoster() { refreshRoster(document.getElementById('nameInput').value); }
 
         function selectSpeaker(name) {
             document.getElementById('nameInput').value = name;
-            refreshRoster(name); // Snap list to just this name
+            refreshRoster(name);
         }
 
         function saveSpeaker() {
             const n = document.getElementById('nameInput').value.trim().toUpperCase();
             if(n && !allSpeakers.includes(n)) {
-                allSpeakers.push(n);
-                allSpeakers.sort();
+                allSpeakers.push(n); allSpeakers.sort();
                 localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
                 document.getElementById('nameInput').value = "";
                 refreshRoster();
@@ -145,11 +201,11 @@
         }
 
         function delSpeaker(n) {
-            if(confirm(`Remove ${n}?`)) {
+            openCustomModal("Delete Speaker?", `Are you sure you want to remove ${n} from the roster?`, () => {
                 allSpeakers = allSpeakers.filter(s => s !== n);
                 localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers));
                 refreshRoster();
-            }
+            });
         }
 
         function renderSetupGrid() {
@@ -168,11 +224,7 @@
             el.classList.add('selected'); selectedRole = r;
         }
 
-        function handleStart() {
-            const name = document.getElementById('nameInput').value;
-            if(!name || !selectedRole) { alert("Select Name & Role"); return; }
-            alert(`Ready to start ${selectedRole} for ${name}`);
-        }
+        function handleStart() { alert("Starting..."); }
     </script>
 </body>
 </html>
