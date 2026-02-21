@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.5</title>
+    <title>Meeting Tools v2.9.6</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -20,6 +20,7 @@
             font-family: -apple-system, system-ui, sans-serif; display: flex; 
             flex-direction: column; height: 100dvh; 
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
+            transition: background 0.5s ease;
         }
 
         /* --- UI STRUCTURE --- */
@@ -36,7 +37,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- CARDS & GRIDS --- */
+        /* --- MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
             padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
@@ -45,34 +46,29 @@
         .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 45px; color: var(--accent); }
 
+        /* --- TIMER SCREEN (FIXED FOR PIXEL MATCH) --- */
+        #timerDisplay { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; text-align: center; }
+        #timerDisplay.active { display: flex; }
+        #spkName { font-size: 30px; color: var(--subtext); margin-top: 40px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        #timer { font-size: clamp(100px, 30vw, 400px); font-weight: 200; font-variant-numeric: tabular-nums; flex-grow: 1; display: flex; align-items: center; color: #000; }
+
+        /* --- TALLY GRID --- */
         .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
         @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
-        
         .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-
         .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 5px; }
         .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; }
-        .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
 
         /* --- BUTTONS & FOOTER --- */
-        .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+        .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; width: 100%; box-sizing: border-box; max-width: 900px; margin: 0 auto; }
         .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); width: 100%; box-sizing: border-box; }
 
-        /* --- SPECIAL UI --- */
+        /* --- MODAL --- */
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
-        .rec-dot { width: 12px; height: 12px; background: var(--red); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
-        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
 
         input[type="text"], input[type="password"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 22px; width: 100%; box-sizing: border-box; outline: none; }
     </style>
@@ -107,7 +103,6 @@
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
         </div>
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3>Word of the Day</h3><p>AI word selection</p></div><div class="icon">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
@@ -119,75 +114,52 @@
         <div class="container">
             <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SPEAKER NAME"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:18px;" onclick="saveSpeaker()">Add</button></div>
             <div id="speakerArea" style="background:white; border-radius:18px; border:1px solid var(--border); overflow-y:auto; flex:1; min-height: 120px;"></div>
-            
-            <div id="aiToggleRow" class="main-menu-card" style="margin:0; padding:20px 25px; display:none; cursor:default;">
-                <div class="card-content"><h3>AI Audio Analysis</h3><p style="font-size:14px;">Whisper Transcription</p></div>
-                <label class="switch"><input type="checkbox" id="aiModeToggle"><span class="slider"></span></label>
-            </div>
-
             <div id="roleGridArea" class="role-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
     </div>
 
+    <div id="timerDisplay" class="screen">
+        <div id="spkName">SPEAKER</div>
+        <div id="timer">00:00</div>
+        <div class="button-row">
+            <button id="pauseBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
+            <button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT & EXIT</button>
+        </div>
+    </div>
+
     <div id="counterDisplay" class="screen">
         <div class="header">
             <h1 id="counterSpeakerName">Name</h1>
-            <div id="recIndicator" style="display:none; color:var(--red); font-weight:800; font-size:14px; margin-top:5px;"><span class="rec-dot"></span>RECORDING LIVE</div>
             <div id="counterSpeakerRole" class="subtitle">ROLE</div>
         </div>
         <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button id="saveTallyBtn" class="footer-btn" style="background:var(--green);" onclick="finishCounterSession()">SAVE RESULTS</button></div>
-    </div>
-
-    <div id="aiReview" class="screen">
-        <div class="header"><h1>AI Analysis</h1><div class="subtitle">Reviewing Transcript</div></div>
-        <div class="container">
-            <div id="aiReviewText" style="background:white; border-radius:18px; padding:25px; border:1px solid var(--border); overflow-y:auto; font-size:18px; line-height:1.6; flex:1;"></div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Ignore</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="applyAiResults()">Apply AI Counts</button>
-        </div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" style="background:var(--green);" onclick="saveCounterSession()">SAVE RESULTS</button></div>
     </div>
 
     <div id="settings" class="screen">
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
-            <div class="main-menu-card" style="cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>Paste sk-... key here</p></div><input type="password" id="openaiKey" onchange="saveSettings()"></div>
-            <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
-            <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
-            <div class="main-menu-card" onclick="askClearMeetingData()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Data</h3><p>Full meeting reset</p></div><div class="icon">⚠</div></div>
-            <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
+            <div class="main-menu-card" style="cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>sk-...</p></div><input type="password" id="openaiKey" onchange="saveSettings()"></div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full reset</p></div><div class="icon">⚠</div></div>
         </div>
         <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
     </div>
 
-    <div id="timerDisplay" class="screen">
-        <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; font-weight:700; text-transform:uppercase;"></div>
-        <div id="timer" style="font-size: clamp(100px,30vw,400px); text-align:center; margin:auto 0; font-variant-numeric: tabular-nums;">00:00</div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button>
-        </div>
-    </div>
-
     <script>
         const prefix = 'prod_';
-        const KEY_LOGS = prefix+'sdtm_logs', KEY_CLUB = prefix+'sdtm_club_name', KEY_SPEAKERS = prefix+'sdtm_speakers', KEY_FILLERS = prefix+'sdtm_fillers', KEY_AI_KEY = prefix+'sdtm_openai_key', KEY_WOD_FULL = prefix+'sdtm_wod_full';
+        const KEY_LOGS = prefix+'sdtm_logs', KEY_CLUB = prefix+'sdtm_club_name', KEY_SPEAKERS = prefix+'sdtm_speakers', KEY_AI_KEY = prefix+'sdtm_openai_key';
 
         let currentMode = 'timer', currentSpeaker = "", currentTally = {}, allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS)||"[]");
-        let mediaRecorder, audioChunks = [], isAiMode = false, aiTally = {};
+        let iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedRoleLabel="";
 
         function initApp() {
-            const key = localStorage.getItem(KEY_AI_KEY);
-            document.getElementById('openaiKey').value = key || "";
-            if(key) document.getElementById('aiToggleRow').style.display = 'flex';
+            document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             refreshRoster();
         }
 
-        /* UI CORE */
+        /* UI LOGIC */
         function openModal(t, b, c) {
             document.getElementById('modalTitle').innerText = t;
             document.getElementById('modalBody').innerHTML = b;
@@ -208,51 +180,7 @@
             document.getElementById('counterMode').style.display = m==='counter'?'flex':'none';
         }
 
-        /* AI LOGIC */
-        async function startRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream); audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = processAi;
-                mediaRecorder.start();
-                document.getElementById('recIndicator').style.display = 'block';
-            } catch(e) { alert("Mic Access Denied."); isAiMode = false; }
-        }
-        function finishCounterSession() {
-            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); } 
-            else { saveCounterSession(); }
-        }
-        async function processAi() {
-            showScreen('aiReview');
-            document.getElementById('aiReviewText').innerText = "AI is analyzing speech... (Wait ~15s)";
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append("file", blob, "speech.webm");
-            formData.append("model", "whisper-1");
-            formData.append("prompt", "Capture literal speech with ums, ahs, and repeats.");
-            const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-                method: "POST", headers: { "Authorization": `Bearer ${localStorage.getItem(KEY_AI_KEY)}` }, body: formData
-            });
-            const data = await resp.json();
-            runGrammarian(data.text);
-        }
-        function runGrammarian(text) {
-            const fillers = ["UM", "AH", "ER", "UH", "LIKE", "SO", "BUT", "YOU KNOW"];
-            let html = text; aiTally = {};
-            fillers.forEach(f => {
-                const regex = new RegExp(`\\b${f}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) { aiTally[f] = matches.length; html = html.replace(regex, `<span class="highlight-filler">$&</span>`); }
-            });
-            document.getElementById('aiReviewText').innerHTML = `<strong>Detections:</strong> ${JSON.stringify(aiTally)}<hr>${html}`;
-        }
-        function applyAiResults() {
-            for (let k in aiTally) { currentTally[k.toUpperCase()] = (currentTally[k.toUpperCase()] || 0) + aiTally[k]; }
-            saveCounterSession();
-        }
-
-        /* CORE FUNCTIONS */
+        /* CORE OPS */
         function refreshRoster() {
             const area = document.getElementById('speakerArea');
             area.innerHTML = allSpeakers.map(n => `<div style="padding:18px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1; font-size:22px;">${n}</span><span onclick="confirmDelSpeaker('${n}')" style="color:var(--red); padding:10px; font-weight:bold; font-size:24px;">✕</span></div>`).join('');
@@ -263,23 +191,67 @@
         }
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function confirmDelSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s=>s!==n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
+
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
-            const roles = currentMode==='timer'?[{l:"TT 1-2M",s:"Table Topics"},{l:"EVAL 2-3M",s:"Evaluation"},{l:"SPEECH 5-7M",s:"Ice Breaker"}]:[{l:"AH COUNTER"},{l:"GRAMMARIAN"},{l:"SPEAKER"},{l:"EVALUATOR"}];
-            roles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r.l}')"><h4>${r.l}</h4>${r.s?`<p>${r.s}</p>`:''}</div>`; });
+            const timerRoles = [{l:"TT 1-2M",g:60,y:90,r:120},{l:"EVAL 2-3M",g:120,y:150,r:180},{l:"SPEECH 5-7M",g:300,y:360,r:420}];
+            const counterRoles = ["AH COUNTER","GRAMMARIAN","SPEAKER","EVALUATOR"];
+            
+            if(currentMode==='timer') {
+                timerRoles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r.l}', ${r.g}, ${r.y}, ${r.r})"><h4>${r.l}</h4></div>`; });
+            } else {
+                counterRoles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r}', 0,0,0)"><h4>${r}</h4></div>`; });
+            }
         }
-        let selectedRoleLabel = "";
-        function selectRole(el, r) { document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); selectedRoleLabel = r; }
+        function selectRole(el, r, g, y, rTime) {
+            document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedRoleLabel = r;
+            lims = {g, y, r:rTime};
+        }
+
         function handleStart() {
             const n = document.getElementById('name').value.toUpperCase().trim();
             if (!n || !selectedRoleLabel) { alert("Select Name & Role"); return; }
-            currentSpeaker = n; isAiMode = document.getElementById('aiModeToggle').checked;
+            currentSpeaker = n;
             if (currentMode === 'counter') {
-                showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedRoleLabel;
-                currentTally = {}; ["AH","UM","ER","SO","LIKE","YOU KNOW"].forEach(f=>currentTally[f]=0); renderTally();
-                if (isAiMode) startRecording();
-            } else { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); }
+                showScreen('counterDisplay');
+                document.getElementById('counterSpeakerName').innerText = n;
+                document.getElementById('counterSpeakerRole').innerText = selectedRoleLabel;
+                currentTally = {"AH":0,"UM":0,"ER":0,"SO":0,"LIKE":0,"YOU KNOW":0};
+                renderTally();
+            } else {
+                showScreen('timerDisplay');
+                document.getElementById('spkName').innerText = n;
+                startTimer();
+            }
         }
+
+        /* TIMER LOGIC */
+        function startTimer() {
+            elapsed = 0; start = Date.now();
+            iv = setInterval(() => {
+                elapsed = Math.floor((Date.now()-start)/1000);
+                let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0');
+                document.getElementById('timer').innerText=`${m}:${s}`;
+                if(lims.g > 0) {
+                    if(elapsed >= lims.r) document.body.style.background = "var(--red)";
+                    else if(elapsed >= lims.y) document.body.style.background = "var(--yellow)";
+                    else if(elapsed >= lims.g) document.body.style.background = "var(--green)";
+                }
+            }, 1000);
+        }
+        function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
+        function commitAndExit() { 
+            clearInterval(iv);
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            logs.push(`${currentSpeaker} | ${selectedRoleLabel} :: ${document.getElementById('timer').innerText}`);
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            document.body.style.background = "var(--bg)";
+            showScreen('menu');
+        }
+
+        /* AH COUNTER LOGIC */
         function renderTally() {
             const area = document.getElementById('tallyArea');
             area.innerHTML = Object.keys(currentTally).map(f => `<div class="tally-card" onclick="incTally('${f}')"><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`).join('');
@@ -290,17 +262,13 @@
             let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
             const res = Object.entries(currentTally).filter(([k,v])=>v>0).map(([k,v])=>`${k}: ${v}`).join(', ') || "0 Fillers";
             logs.push(`${currentSpeaker} | ${selectedRoleLabel} :: ${res}`);
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); showScreen('menu');
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            showScreen('menu');
         }
-        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); location.reload(); }
-        function askClearMeetingData() { openModal("Reset?", "Clear meeting logs?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
-        function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
 
-        /* TIMER */
-        let iv, start, elapsed=0;
-        function startTimer() { start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now()-start)/1000); let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText=`${m}:${s}`; }, 1000); }
-        function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
-        function commitAndExit() { clearInterval(iv); saveCounterSession(); }
+        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); }
+        function askClearLogs() { openModal("Clear Logs?", "Delete all data?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
     </script>
 </body>
 </html>
