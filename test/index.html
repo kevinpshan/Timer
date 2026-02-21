@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.0</title>
+    <title>Meeting Tools v2.9.1</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,70 +22,67 @@
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
-        /* --- UI STRUCTURE --- */
+        /* --- UI CORE (PINNED ELEMENTS) --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
-        h1 { margin: 0; font-size: clamp(30px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
-        .subtitle { font-size: clamp(16px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
+        h1 { margin: 0; font-size: clamp(30px, 5vw, 50px); font-weight: 800; color: #1C1C1E; }
+        .subtitle { font-size: 18px; margin-top: 5px; color: var(--accent); font-weight: 700; }
         .settings-icon { position: absolute; top: 35px; right: 20px; font-size: 32px; color: var(--accent); cursor: pointer; padding: 5px; z-index: 10; }
 
         .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; margin: 0 20px 15px; flex-shrink: 0; }
         .tab { flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: var(--subtext); }
         .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; width: 100%; box-sizing: border-box; }
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- MENU CARDS --- */
+        /* --- MENU & CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
-            padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
+            padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px;
         }
-        .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
-        .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
-        .main-menu-card .icon { font-size: 45px; color: var(--accent); }
+        .card-content h3 { margin: 0; font-size: 24px; font-weight: 800; }
+        .card-content p { margin: 5px 0 0; font-size: 16px; color: var(--subtext); }
+        .main-menu-card .icon { font-size: 40px; color: var(--accent); }
 
         /* --- TALLY GRID --- */
-        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
+        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 15px; }
         @media (min-width: 600px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
         .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
         .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
-        .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); pointer-events: none; line-height: 1; margin-bottom: 5px; }
-        .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; z-index: 10; }
-        .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; z-index: 10; }
-
-        /* --- RECORDING UI --- */
-        .rec-indicator { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 10px; }
-        .dot-red { width: 12px; height: 12px; background: var(--red); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* --- TRANSCRIPT REVIEW --- */
-        #transcriptReviewArea { background: white; border-radius: 18px; padding: 25px; border: 1px solid var(--border); font-size: 19px; line-height: 1.6; overflow-y: auto; flex: 1; }
-        .highlight-filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; color: #FF3B30; font-weight: 700; padding: 0 2px; border-radius: 4px; }
-        .highlight-repeat { background: #E8F2FF; border-bottom: 2px solid #007AFF; color: #007AFF; font-weight: 700; padding: 0 2px; border-radius: 4px; }
+        .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 5px; }
+        .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
+        .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
 
         /* --- FOOTER & BUTTONS --- */
-        .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; width: 100%; box-sizing: border-box; }
         .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 20px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
+        .credit-footer { text-align: center; padding: 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
+
+        /* --- AI ELEMENTS --- */
+        .rec-dot { display: inline-block; width: 10px; height: 10px; background: var(--red); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .highlight-filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; color: #FF3B30; font-weight: 700; }
+        .highlight-repeat { background: #E8F2FF; border-bottom: 2px solid #007AFF; color: #007AFF; font-weight: 700; }
+
+        input[type="text"], input[type="password"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 18px; width: 100%; box-sizing: border-box; }
+        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
         .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
-
-        .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); width: 100%; box-sizing: border-box; }
     </style>
 </head>
 <body onload="initApp()">
 
     <div id="customModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
-        <div class="modal-content" style="background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border);">
-            <h2 id="modalTitle" style="margin:0;"></h2>
-            <div id="modalBody" style="margin:20px 0;"></div>
-            <div class="button-row" style="padding:0; background:none; margin:0; width:100%;">
+        <div class="modal-content" style="background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center;">
+            <h2 id="modalTitle"></h2>
+            <div id="modalBody" style="margin: 20px 0;"></div>
+            <div class="button-row" style="padding:0;">
                 <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
                 <button id="modalConfirm" class="footer-btn">OK</button>
             </div>
@@ -110,26 +107,28 @@
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
         </div>
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI Definition & Search</p></div><div class="icon" style="color:var(--gold);">★</div></div>
+            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Search or Random</p></div><div class="icon" style="color:var(--gold);">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
         <div class="credit-footer">
-            <div style="margin-bottom:10px; opacity:0.5; font-size:12px;" id="versionLabel">Version 2.9.0</div>
-            <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
+            <p style="margin:0; font-weight:700; font-size:14px;">Southern Dutchess Toastmasters</p>
+            <div style="opacity:0.3; font-size:10px; margin-top:5px;">Version 2.9.1</div>
         </div>
     </div>
 
     <div id="setup" class="screen">
         <div class="header"><h1>Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink: 0;"><input type="text" id="name" placeholder="SPEAKER NAME" oninput="handleNameInput(this)"><button class="footer-btn" style="flex:0; padding:15px 25px;" onclick="saveSpeaker()">Add</button></div>
-            <div id="speakerArea" style="background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px;"></div>
-            <div class="main-menu-card" style="margin-top:10px; cursor:default;">
-                <div class="card-content"><h3>AI Audio Analysis</h3><p>Whisper transcription</p></div>
+            <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SPEAKER NAME"><button class="footer-btn" style="flex:0; padding:0 20px; font-size:16px;" onclick="saveSpeaker()">Add</button></div>
+            <div id="speakerArea" style="background:white; border-radius:12px; border:1px solid var(--border); overflow-y:auto; flex:1; min-height: 100px;"></div>
+            
+            <div id="aiToggleRow" class="main-menu-card" style="margin: 10px 0; display:none;">
+                <div class="card-content"><h3>AI Audio Analysis</h3><p>Whisper Transcription</p></div>
                 <label class="switch"><input type="checkbox" id="aiModeToggle"><span class="slider"></span></label>
             </div>
-            <div id="roleGridArea" class="role-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:10px;"></div>
+
+            <div id="roleGridArea" class="role-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
     </div>
@@ -137,29 +136,30 @@
     <div id="counterDisplay" class="screen">
         <div class="header">
             <h1 id="counterSpeakerName">Name</h1>
-            <div id="recStatus" class="rec-indicator" style="display:none;"><div class="dot-red"></div><span style="font-size:12px; font-weight:800; color:var(--red);">RECORDING...</span></div>
+            <div id="recIndicator" style="display:none; color:var(--red); font-weight:800; font-size:12px;"><span class="rec-dot"></span>RECORDING LIVE</div>
             <div id="counterSpeakerRole" class="subtitle">ROLE</div>
         </div>
         <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
-            <button id="saveCounterBtn" class="footer-btn" style="background:var(--green);" onclick="finishCounterSession()">SAVE RESULTS</button>
-        </div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button id="saveTallyBtn" class="footer-btn" style="background:var(--green);" onclick="finishCounterSession()">SAVE RESULTS</button></div>
     </div>
 
     <div id="aiReview" class="screen">
-        <div class="header"><h1>AI Analysis</h1><div class="subtitle">Reviewing Transcript</div></div>
-        <div class="container"><div id="transcriptReviewArea">Processing...</div></div>
+        <div class="header"><h1>AI Analysis</h1><div class="subtitle">Transcript Review</div></div>
+        <div class="container">
+            <div id="aiReviewText" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; font-size:18px; line-height:1.6; flex:1;"></div>
+        </div>
         <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('counterDisplay')">Ignore AI</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="applyAiResults()">Apply AI Counts</button>
+            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Ignore AI</button>
+            <button class="footer-btn" style="background:var(--green);" onclick="applyAiResults()">Apply Results</button>
         </div>
     </div>
+
+    <div id="report" class="screen"><div class="header"><h1>Report</h1></div><div class="container"><div id="reportLog" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; white-space:pre-wrap; font-family:monospace;"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
 
     <div id="settings" class="screen">
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
-            <div class="main-menu-card" style="cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>For WOD and AI Analysis</p></div><input type="password" id="openaiKey" placeholder="sk-..." onchange="saveSettings()"></div>
+            <div class="main-menu-card" style="cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>sk-...</p></div><input type="password" id="openaiKey" onchange="saveSettings()"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
             <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
@@ -168,10 +168,8 @@
     </div>
 
     <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; font-weight:700;"></div><div id="timer" style="font-size: clamp(100px,30vw,400px); text-align:center; margin:auto 0; font-variant-numeric: tabular-nums;">00:00</div><div class="button-row"><button class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button></div></div>
-    
-    <div id="wod" class="screen"><div class="header"><h1>W.O.D.</h1></div><div class="container"><div class="wod-search-row"><input type="text" id="wodManualInput" placeholder="SEARCH WORD..."><button onclick="searchWod()">🔍</button></div><div id="wodDisplay" class="wod-card-big"><div id="wodContent">...</div></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn secondary-btn" onclick="nextWod()">Random</button><button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button></div></div>
 
-    <div id="report" class="screen"><div class="header"><h1>Report</h1></div><div class="container"><div id="reportLog" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; white-space:pre-wrap; font-family:monospace;"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
+    <div id="wod" class="screen"><div class="header"><h1>W.O.D.</h1></div><div class="container"><div style="display:flex; gap:8px;"><input type="text" id="wodManualInput" placeholder="SEARCH WORD..."><button style="padding:10px;" onclick="searchWod()">🔍</button></div><div id="wodContent" style="background:white; border:4px solid var(--gold); border-radius:20px; padding:20px; margin-top:10px; text-align:center;">...</div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn secondary-btn" onclick="nextWod()">Random</button><button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button></div></div>
 
     <script>
         const prefix = 'prod_';
@@ -184,90 +182,97 @@
             document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             refreshRoster();
-            nextWod();
+            
+            // Only show AI Toggle if Key exists
+            if (localStorage.getItem(KEY_AI_KEY)) document.getElementById('aiToggleRow').style.display = 'flex';
         }
 
-        /* --- THE AI RECORDING ENGINE --- */
+        /* --- STABLE HELPERS --- */
+        function showScreen(id) { 
+            document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            if(id==='setup') renderSetupGrid(); 
+            if(id==='report') loadReport();
+        }
+
+        function switchMode(m) { 
+            currentMode = m; 
+            document.getElementById('tabTimer').classList.toggle('active', m==='timer'); 
+            document.getElementById('tabCounter').classList.toggle('active', m==='counter'); 
+            document.getElementById('timerMode').style.display = m==='timer'?'flex':'none'; 
+            document.getElementById('counterMode').style.display = m==='counter'?'flex':'none'; 
+        }
+
+        function handleStart() {
+            const n = document.getElementById('name').value.toUpperCase().trim();
+            if (!n || !selectedTypeLabel) { alert("Enter Name & Role"); return; }
+            currentSpeaker = n;
+            isAiMode = document.getElementById('aiModeToggle').checked;
+
+            if (currentMode === 'counter') {
+                showScreen('counterDisplay');
+                document.getElementById('counterSpeakerName').innerText = n;
+                document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
+                document.getElementById('recIndicator').style.display = isAiMode ? 'block' : 'none';
+                currentTally = {};
+                JSON.parse(localStorage.getItem(KEY_FILLERS)||'["AH","UM","ER","SO","LIKE","YOU KNOW"]').forEach(f=>currentTally[f.toUpperCase()]=0);
+                renderTally();
+                if (isAiMode) startRecording();
+            } else {
+                showScreen('timerDisplay');
+                document.getElementById('spkName').innerText = n;
+                startTimer();
+            }
+        }
+
+        /* --- AI TRANSCRIPTION LOGIC --- */
         async function startRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = processAiTranscription;
-                mediaRecorder.start();
-                document.getElementById('recStatus').style.display = 'flex';
-            } catch (e) {
-                alert("Microphone Access Denied. Standard tally will still work.");
-                isAiMode = false;
-            }
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = processAi;
+            mediaRecorder.start();
         }
 
-        async function processAiTranscription() {
-            const key = localStorage.getItem(KEY_AI_KEY);
-            if (!key) return;
-            
+        function finishCounterSession() {
+            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); } 
+            else { saveCounterSession(); }
+        }
+
+        async function processAi() {
             showScreen('aiReview');
-            document.getElementById('transcriptReviewArea').innerText = "AI is analyzing speech... (Wait ~15s)";
-            
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            document.getElementById('aiReviewText').innerText = "AI is analyzing speech... Please wait ~15s.";
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
             const formData = new FormData();
-            formData.append("file", audioBlob, "speech.webm");
+            formData.append("file", blob, "speech.webm");
             formData.append("model", "whisper-1");
-            formData.append("prompt", "Capture every um, ah, er, repeat, and crutch word literally.");
-
-            try {
-                const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-                    method: "POST", headers: { "Authorization": `Bearer ${key}` }, body: formData
-                });
-                const data = await resp.json();
-                runGrammarianEngine(data.text);
-            } catch (e) {
-                document.getElementById('transcriptReviewArea').innerText = "AI Analysis failed. Checking internet...";
-            }
+            formData.append("prompt", "Capture all umms, ahhs, and repetitions literals.");
+            
+            const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+                method: "POST", headers: { "Authorization": `Bearer ${localStorage.getItem(KEY_AI_KEY)}` }, body: formData
+            });
+            const data = await resp.json();
+            runGrammarian(data.text);
         }
 
-        function runGrammarianEngine(text) {
-            const fillers = ["UM", "AH", "ER", "UH", "LIKE", "SO", "BUT", "YOU KNOW", "BASICALLY"];
-            let html = text;
-            aiTally = {};
-
-            // Count Fillers
+        function runGrammarian(text) {
+            const fillers = ["UM", "AH", "ER", "UH", "LIKE", "SO", "BUT", "YOU KNOW"];
+            let html = text; aiTally = {};
             fillers.forEach(f => {
                 const regex = new RegExp(`\\b${f}\\b`, 'gi');
                 const matches = text.match(regex);
-                if (matches) {
-                    aiTally[f] = matches.length;
-                    html = html.replace(regex, `<span class="highlight-filler">$&</span>`);
-                }
+                if (matches) { aiTally[f] = matches.length; html = html.replace(regex, `<span class="highlight-filler">$&</span>`); }
             });
-
-            // Count Repeats
             const repeatRegex = /\b(\w+)\s+\1\b/gi;
             const repeats = text.match(repeatRegex);
-            if (repeats) {
-                aiTally["REPEATS"] = repeats.length;
-                html = html.replace(repeatRegex, `<span class="highlight-repeat">$&</span>`);
-            }
-
-            document.getElementById('transcriptReviewArea').innerHTML = `<strong>Auto-Detected:</strong><br>${Object.entries(aiTally).map(([k,v])=>`${k}: ${v}`).join(', ')}<hr>${html}`;
+            if (repeats) { aiTally["REPEATS"] = repeats.length; html = html.replace(repeatRegex, `<span class="highlight-repeat">$&</span>`); }
+            document.getElementById('aiReviewText').innerHTML = `<strong>Detections:</strong> ${JSON.stringify(aiTally)}<hr>${html}`;
         }
 
         function applyAiResults() {
-            for (let word in aiTally) {
-                let upper = word.toUpperCase();
-                currentTally[upper] = (currentTally[upper] || 0) + aiTally[word];
-            }
+            for (let k in aiTally) { currentTally[k.toUpperCase()] = (currentTally[k.toUpperCase()] || 0) + aiTally[k]; }
             saveCounterSession();
-        }
-
-        /* --- STABLE CORE FUNCTIONS --- */
-        function finishCounterSession() {
-            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") {
-                mediaRecorder.stop();
-            } else {
-                saveCounterSession();
-            }
         }
 
         function saveCounterSession() {
@@ -278,68 +283,47 @@
             showScreen('menu');
         }
 
-        function handleStart() {
-            const n = document.getElementById('name').value.toUpperCase().trim();
-            if (!n || !selectedTypeLabel) { alert("Select Name & Role"); return; }
-            currentSpeaker = n;
-            isAiMode = document.getElementById('aiModeToggle').checked;
-
-            if (currentMode === 'counter') {
-                showScreen('counterDisplay');
-                document.getElementById('counterSpeakerName').innerText = n;
-                document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
-                currentTally = {};
-                JSON.parse(localStorage.getItem(KEY_FILLERS)||'[]').forEach(f=>currentTally[f]=0);
-                renderTally();
-                if (isAiMode) startRecording();
-            } else {
-                showScreen('timerDisplay');
-                document.getElementById('spkName').innerText = n;
-                startTimer();
-            }
-        }
-
-        /* Helper Logic (Settings, WOD, Roster) Kept for completeness */
-        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); }
-        function showScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id==='setup') renderSetupGrid(); }
-        function refreshRoster() { const area = document.getElementById('speakerArea'); area.innerHTML = allSpeakers.map(n => `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1;">${n}</span><span onclick="delSpeaker('${n}')" style="color:red; padding:0 10px;">✕</span></div>`).join(''); }
+        /* --- STABLE REMAINDER --- */
+        function refreshRoster() { document.getElementById('speakerArea').innerHTML = allSpeakers.map(n => `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1;">${n}</span><span onclick="delSpeaker('${n}')" style="color:red; padding:0 10px;">✕</span></div>`).join(''); }
         function saveSpeaker() { const n = document.getElementById('name').value.toUpperCase().trim(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); } }
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function delSpeaker(n) { allSpeakers = allSpeakers.filter(s=>s!==n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }
-        function switchMode(m) { currentMode = m; document.getElementById('tabTimer').classList.toggle('active', m==='timer'); document.getElementById('tabCounter').classList.toggle('active', m==='counter'); document.getElementById('timerMode').style.display = m==='timer'?'flex':'none'; document.getElementById('counterMode').style.display = m==='counter'?'flex':'none'; }
+        function handleNameInput(el) { el.value = el.value.toUpperCase(); }
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
-            const roles = currentMode==='timer'?["TT 1-2m","EVAL 2-3m","SPEECH 5-7m","ICE 4-6m"]:["TOASTMASTER","TIMER","AH COUNTER","GRAMMARIAN","SPEAKER","EVALUATOR"];
-            roles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r}')"><h4>${r}</h4></div>`; });
+            const roles = currentMode==='timer'?["TT 1-2m","EVAL 2-3m","SPEECH 5-7m"]:["AH COUNTER","GRAMMARIAN","SPEAKER","EVALUATOR"];
+            roles.forEach(r => { grid.innerHTML += `<div class="role-card" style="padding:15px; border:1px solid #ddd; text-align:center; border-radius:10px;" onclick="selectRole(this, '${r}')"><h4>${r}</h4></div>`; });
         }
         let selectedTypeLabel = "";
-        function selectRole(el, r) { document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = r; }
-        function renderTally() {
+        function selectRole(el, r) { document.querySelectorAll('.role-card').forEach(c=>c.style.borderColor='#ddd'); el.style.borderColor='var(--accent)'; selectedTypeLabel = r; }
+        function renderTally() { 
             const area = document.getElementById('tallyArea');
             const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
             const activeWod = wodData ? wodData.word.toUpperCase() : null;
-            const fillers = JSON.parse(localStorage.getItem(KEY_FILLERS)||'["AH","UM","ER","SO","LIKE","YOU KNOW"]');
-            const sorted = [...fillers].sort((a,b)=> a===activeWod?-1:b===activeWod?1:0);
-            area.innerHTML = sorted.map(f => `<div class="tally-card ${f===activeWod?'wod-active':''}" onclick="incTally('${f}')">${f===activeWod?'<div class="wod-mini-label">WOD</div>':''}<div class="count" id="ct-${f}">${currentTally[f]||0}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`).join('');
+            area.innerHTML = Object.keys(currentTally).sort((a,b)=>a===activeWod?-1:b===activeWod?1:0).map(f => `<div class="tally-card ${f===activeWod?'wod-active':''}" onclick="incTally('${f}')">${f===activeWod?'<div class="wod-mini-label">WOD</div>':''}<div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`).join('');
         }
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e,f) { e.stopPropagation(); if(currentTally[f]>0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        
-        /* TIMER LOGIC */
+        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); location.reload(); }
         let iv, start, elapsed=0;
         function startTimer() { start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now()-start)/1000); let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText=`${m}:${s}`; }, 1000); }
         function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
         function commitAndExit() { clearInterval(iv); saveCounterSession(); }
-        
-        /* WOD LOGIC */
-        let activeWodData;
-        async function nextWod() { const word = "ELOQUENT"; fetchWordDetails(word); }
+        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let d = "Meeting Report\n" + "-".repeat(20) + "\n"; logs.forEach(l=> d += l + "\n"); document.getElementById('reportLog').innerText = d; }
+        function copyReport() { navigator.clipboard.writeText(document.getElementById('reportLog').innerText); alert("Report Copied"); }
+        function exportData() { const d = { speakers: allSpeakers, club: localStorage.getItem(KEY_CLUB)||"", openai: localStorage.getItem(KEY_AI_KEY)||"" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)])); a.download = 'backup.json'; a.click(); }
+        function handleImportFile(i) { const r = new FileReader(); r.onload = e => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.club) localStorage.setItem(KEY_CLUB, d.club); if(d.openai) localStorage.setItem(KEY_AI_KEY, d.openai); location.reload(); }; r.readAsText(i.files[0]); }
+        function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
+        async function nextWod() { fetchWordDetails("ELOQUENT"); }
         async function searchWod() { fetchWordDetails(document.getElementById('wodManualInput').value); }
-        async function fetchWordDetails(word) { const key = localStorage.getItem(KEY_AI_KEY); if(!key) return; const resp = await fetch("https://api.openai.com/v1/chat/completions", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${key}`}, body: JSON.stringify({ model:"gpt-4o-mini", messages:[{role:"system",content:"Dictionary JSON mode."}, {role:"user",content:word}], response_format:{type:"json_object"}}) }); const d = await resp.json(); activeWodData={word, ...JSON.parse(d.choices[0].message.content)}; document.getElementById('wodContent').innerHTML=`<span class="wod-word">${word}</span><p>${activeWodData.definition}</p>`; }
+        async function fetchWordDetails(word) { 
+            const key = localStorage.getItem(KEY_AI_KEY); if(!key) return;
+            const resp = await fetch("https://api.openai.com/v1/chat/completions", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${key}`}, body: JSON.stringify({ model:"gpt-4o-mini", messages:[{role:"system",content:"Dictionary mode JSON."}, {role:"user",content:word}], response_format:{type:"json_object"}}) });
+            const d = await resp.json(); const aiData = JSON.parse(d.choices[0].message.content);
+            activeWodData = {word, definition: aiData.definition};
+            document.getElementById('wodContent').innerHTML = `<h3>${word}</h3><p>${aiData.definition}</p>`;
+        }
         function selectWod() { localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); showScreen('menu'); }
-
-        function copyReport() { navigator.clipboard.writeText(document.getElementById('reportLog').innerText); }
-        function askClubName() { let n = prompt("Club Name?"); localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; }
     </script>
 </body>
 </html>
