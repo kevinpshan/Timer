@@ -1,38 +1,152 @@
-<div id="menu" class="screen active">
-    <div class="header">
-        <h1 id="mainTitle">Timing Tools</h1>
-        <div id="clubSubtitle" class="subtitle">Southern Dutchess Toastmasters</div>
-        <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
-    </div>
-    <div class="tab-container">
-        <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
-        <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Meeting Tools v3.0.2</title>
     
-    <div id="timerMode" class="container">
-        <div class="main-menu-card" onclick="showScreen('setup')">
-            <div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div>
-            <div class="icon">⊕</div>
-        </div>
-        <div class="main-menu-card" onclick="showScreen('report')">
-            <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
-            <div class="icon">☰</div>
+    <link rel="stylesheet" href="styles.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="icon-timer.png">
+</head>
+<body onload="initApp()">
+
+    <div id="customModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Confirm</h2>
+            <div id="modalBody"></div>
+            <div class="button-row" style="padding:0; margin-top:20px;">
+                <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
+                <button id="modalConfirm" class="footer-btn">OK</button>
+            </div>
         </div>
     </div>
 
-    <div id="counterMode" class="container" style="display:none;">
-        <div class="main-menu-card" onclick="showScreen('setup')">
-            <div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div>
-            <div class="icon">✍</div>
+    <div id="menu" class="screen active">
+        <div class="header">
+            <h1 id="mainTitle">Timing Tools</h1>
+            <div id="clubSubtitle" class="subtitle">Southern Dutchess Toastmasters</div>
+            <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
+        </div>
+
+        <div class="tab-container">
+            <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
+            <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
+        </div>
+        
+        <div id="timerMode" class="container">
+            <div class="main-menu-card" onclick="showScreen('setup')">
+                <div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div>
+                <div class="icon">⊕</div>
+            </div>
+            <div class="main-menu-card" onclick="showScreen('report')">
+                <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
+                <div class="icon">☰</div>
+            </div>
+        </div>
+
+        <div id="counterMode" class="container" style="display:none;">
+            <div class="main-menu-card" onclick="showScreen('wod')">
+                <div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI definition & search</p></div>
+                <div class="icon" style="color:var(--gold);">★</div>
+            </div>
+            <div class="main-menu-card" onclick="showScreen('setup')">
+                <div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div>
+                <div class="icon">✍</div>
+            </div>
+            <div class="main-menu-card" onclick="showScreen('report')">
+                <div class="card-content"><h3>Counter Report</h3><p>View totals</p></div>
+                <div class="icon">📊</div>
+            </div>
+        </div>
+
+        <div class="credit-footer">
+            <div class="resource-row">
+                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a>
+                <a href="manual.html" class="res-btn">Manual ↗</a>
+            </div>
+            <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
+            <div class="version-tag">Version 3.0.2</div>
         </div>
     </div>
 
-    <div class="credit-footer">
-        <div class="resource-row">
-            <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a>
-            <a href="manual.html" class="res-btn">Manual ↗</a>
+    <div id="setup" class="screen">
+        <div class="header"><h1>Setup</h1></div>
+        <div class="container">
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="nameInput" placeholder="SPEAKER NAME" oninput="filterRoster()">
+                <button class="footer-btn" style="flex:0; padding:0 25px; font-size:16px;" onclick="saveSpeaker()">Add</button>
+            </div>
+            <div id="speakerArea"></div>
+            
+            <div id="aiToggleRow" class="main-menu-card" style="margin:0; padding:20px 25px; display:none; cursor:default;">
+                <div class="card-content"><h3>AI Audio Analysis</h3><p style="font-size:14px;">Whisper Transcription</p></div>
+                <label class="switch"><input type="checkbox" id="aiModeToggle"><span class="slider"></span></label>
+            </div>
+
+            <div id="roleGridArea" class="role-grid"></div>
         </div>
-        <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-        <div class="version-tag">Version 3.0.1 (Modular)</div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
+            <button class="footer-btn" onclick="handleStart()">START</button>
+        </div>
     </div>
-</div>
+
+    <div id="report" class="screen">
+        <div class="header"><h1>Report</h1></div>
+        <div class="container">
+            <div id="reportLog" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; flex:1; white-space:pre-wrap; font-family:monospace; font-size:16px;"></div>
+        </div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button>
+            <button class="footer-btn" onclick="showScreen('menu')">Done</button>
+        </div>
+    </div>
+
+    <div id="settings" class="screen">
+        <div class="header"><h1>Settings</h1></div>
+        <div class="container">
+            <div class="main-menu-card" style="flex-direction:column; align-items:stretch; cursor:default;">
+                <div class="card-content"><h3>OpenAI Key</h3><p>Used for AI analysis</p></div>
+                <input type="password" id="openaiKey" onchange="saveSettings()" placeholder="sk-...">
+            </div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);">
+                <div class="card-content"><h3 style="color:var(--red);">Clear All Data</h3><p>Reset logs</p></div>
+                <div class="icon">⚠</div>
+            </div>
+        </div>
+        <div class="button-row">
+            <button class="footer-btn" onclick="showScreen('menu')">Done</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" class="screen">
+        <div id="spkNameLabel">SPEAKER</div>
+        <div id="timerText">00:00</div>
+        <div class="button-row">
+            <button id="pauseBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
+            <button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button>
+        </div>
+    </div>
+
+    <div id="counterDisplay" class="screen">
+        <div class="header">
+            <h1 id="counterName">Name</h1>
+            <div id="counterRole" class="subtitle">ROLE</div>
+        </div>
+        <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button>
+            <button class="footer-btn" style="background:var(--green);" onclick="saveCounterSession()">SAVE RESULTS</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="roster.js"></script>
+    <script src="timer.js"></script>
+    <script src="counter.js"></script>
+</body>
+</html>
