@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.1</title>
+    <title>Meeting Tools v2.9.2</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
-        /* --- UI CORE (PINNED ELEMENTS) --- */
+        /* --- UI CORE --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
         h1 { margin: 0; font-size: clamp(30px, 5vw, 50px); font-weight: 800; color: #1C1C1E; }
         .subtitle { font-size: 18px; margin-top: 5px; color: var(--accent); font-weight: 700; }
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- MENU & CARDS --- */
+        /* --- CARDS & GRIDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
             padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px;
@@ -45,12 +45,14 @@
         .card-content p { margin: 5px 0 0; font-size: 16px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 40px; color: var(--accent); }
 
-        /* --- TALLY GRID --- */
-        .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 15px; }
-        @media (min-width: 600px) { .tally-grid { grid-template-columns: repeat(3, 1fr); } }
-        .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 15px; }
+        @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
         .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
         .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
+
         .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 5px; }
         .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
         .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
@@ -61,27 +63,31 @@
         .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
         .credit-footer { text-align: center; padding: 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
 
-        /* --- AI ELEMENTS --- */
-        .rec-dot { display: inline-block; width: 10px; height: 10px; background: var(--red); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        .highlight-filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; color: #FF3B30; font-weight: 700; }
-        .highlight-repeat { background: #E8F2FF; border-bottom: 2px solid #007AFF; color: #007AFF; font-weight: 700; }
-
-        input[type="text"], input[type="password"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 18px; width: 100%; box-sizing: border-box; }
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
+        /* --- INPUTS --- */
+        input[type="text"], input[type="password"], input[type="number"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 18px; width: 100%; box-sizing: border-box; }
+        .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
         .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- MODAL --- */
+        #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
+
+        .highlight-filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; color: #FF3B30; font-weight: 700; }
+        .highlight-repeat { background: #E8F2FF; border-bottom: 2px solid #007AFF; color: #007AFF; font-weight: 700; }
+        .rec-dot { display: inline-block; width: 10px; height: 10px; background: var(--red); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body onload="initApp()">
 
-    <div id="customModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
-        <div class="modal-content" style="background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center;">
-            <h2 id="modalTitle"></h2>
-            <div id="modalBody" style="margin: 20px 0;"></div>
+    <div id="customModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin:0;"></h2>
+            <div id="modalBody" style="margin:20px 0;"></div>
             <div class="button-row" style="padding:0;">
                 <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
                 <button id="modalConfirm" class="footer-btn">OK</button>
@@ -101,7 +107,6 @@
             <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
             <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
-        
         <div id="timerMode" class="container">
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
@@ -111,23 +116,19 @@
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
-        <div class="credit-footer">
-            <p style="margin:0; font-weight:700; font-size:14px;">Southern Dutchess Toastmasters</p>
-            <div style="opacity:0.3; font-size:10px; margin-top:5px;">Version 2.9.1</div>
-        </div>
+        <div class="credit-footer"><p style="margin:0; font-weight:700; font-size:14px;">Southern Dutchess Toastmasters</p><div style="opacity:0.3; font-size:10px; margin-top:5px;">Version 2.9.2</div></div>
     </div>
 
     <div id="setup" class="screen">
         <div class="header"><h1>Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SPEAKER NAME"><button class="footer-btn" style="flex:0; padding:0 20px; font-size:16px;" onclick="saveSpeaker()">Add</button></div>
+            <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SPEAKER NAME" oninput="handleNameInput(this)"><button class="footer-btn" style="flex:0; padding:0 20px;" onclick="saveSpeaker()">Add</button></div>
             <div id="speakerArea" style="background:white; border-radius:12px; border:1px solid var(--border); overflow-y:auto; flex:1; min-height: 100px;"></div>
             
-            <div id="aiToggleRow" class="main-menu-card" style="margin: 10px 0; display:none;">
+            <div id="aiToggleRow" class="main-menu-card" style="margin: 10px 0; display:none; cursor:default;">
                 <div class="card-content"><h3>AI Audio Analysis</h3><p>Whisper Transcription</p></div>
                 <label class="switch"><input type="checkbox" id="aiModeToggle"><span class="slider"></span></label>
             </div>
-
             <div id="roleGridArea" class="role-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
@@ -136,7 +137,7 @@
     <div id="counterDisplay" class="screen">
         <div class="header">
             <h1 id="counterSpeakerName">Name</h1>
-            <div id="recIndicator" style="display:none; color:var(--red); font-weight:800; font-size:12px;"><span class="rec-dot"></span>RECORDING LIVE</div>
+            <div id="recIndicator" style="display:none; color:var(--red); font-weight:800; font-size:12px; margin-top:5px;"><span class="rec-dot"></span>RECORDING LIVE</div>
             <div id="counterSpeakerRole" class="subtitle">ROLE</div>
         </div>
         <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
@@ -146,7 +147,7 @@
     <div id="aiReview" class="screen">
         <div class="header"><h1>AI Analysis</h1><div class="subtitle">Transcript Review</div></div>
         <div class="container">
-            <div id="aiReviewText" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; font-size:18px; line-height:1.6; flex:1;"></div>
+            <div id="aiReviewText" style="background:white; border-radius:18px; padding:25px; border:1px solid var(--border); overflow-y:auto; font-size:18px; line-height:1.6; flex:1;"></div>
         </div>
         <div class="button-row">
             <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Ignore AI</button>
@@ -154,7 +155,14 @@
         </div>
     </div>
 
-    <div id="report" class="screen"><div class="header"><h1>Report</h1></div><div class="container"><div id="reportLog" style="background:white; border-radius:18px; padding:20px; border:1px solid var(--border); overflow-y:auto; white-space:pre-wrap; font-family:monospace;"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
+    <div id="timerDisplay" class="screen">
+        <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; font-weight:700; text-transform:uppercase;"></div>
+        <div id="timer" style="font-size: clamp(100px,30vw,400px); text-align:center; margin:auto 0; font-variant-numeric: tabular-nums;">00:00</div>
+        <div class="button-row">
+            <button class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button>
+            <button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button>
+        </div>
+    </div>
 
     <div id="settings" class="screen">
         <div class="header"><h1>Settings</h1></div>
@@ -162,14 +170,11 @@
             <div class="main-menu-card" style="cursor:default;"><div class="card-content"><h3>OpenAI Key</h3><p>sk-...</p></div><input type="password" id="openaiKey" onchange="saveSettings()"></div>
             <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
             <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
+            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear All Data</h3><p>Reset logs</p></div><div class="icon">⚠</div></div>
             <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
         </div>
         <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
     </div>
-
-    <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; font-weight:700;"></div><div id="timer" style="font-size: clamp(100px,30vw,400px); text-align:center; margin:auto 0; font-variant-numeric: tabular-nums;">00:00</div><div class="button-row"><button class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button></div></div>
-
-    <div id="wod" class="screen"><div class="header"><h1>W.O.D.</h1></div><div class="container"><div style="display:flex; gap:8px;"><input type="text" id="wodManualInput" placeholder="SEARCH WORD..."><button style="padding:10px;" onclick="searchWod()">🔍</button></div><div id="wodContent" style="background:white; border:4px solid var(--gold); border-radius:20px; padding:20px; margin-top:10px; text-align:center;">...</div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn secondary-btn" onclick="nextWod()">Random</button><button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button></div></div>
 
     <script>
         const prefix = 'prod_';
@@ -181,51 +186,47 @@
         function initApp() {
             document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
-            refreshRoster();
-            
-            // Only show AI Toggle if Key exists
             if (localStorage.getItem(KEY_AI_KEY)) document.getElementById('aiToggleRow').style.display = 'flex';
+            refreshRoster();
         }
 
-        /* --- STABLE HELPERS --- */
-        function showScreen(id) { 
-            document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); 
-            document.getElementById(id).classList.add('active'); 
-            if(id==='setup') renderSetupGrid(); 
-            if(id==='report') loadReport();
+        /* --- UI HELPERS --- */
+        function openModal(t, b, c) {
+            document.getElementById('modalTitle').innerText = t;
+            document.getElementById('modalBody').innerHTML = b;
+            document.getElementById('customModal').style.display = 'flex';
+            document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; };
+            document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; };
         }
 
-        function switchMode(m) { 
-            currentMode = m; 
-            document.getElementById('tabTimer').classList.toggle('active', m==='timer'); 
-            document.getElementById('tabCounter').classList.toggle('active', m==='counter'); 
-            document.getElementById('timerMode').style.display = m==='timer'?'flex':'none'; 
-            document.getElementById('counterMode').style.display = m==='counter'?'flex':'none'; 
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id==='setup') renderSetupGrid();
         }
 
-        function handleStart() {
+        function switchMode(m) {
+            currentMode = m;
+            document.getElementById('tabTimer').classList.toggle('active', m==='timer');
+            document.getElementById('tabCounter').classList.toggle('active', m==='counter');
+            document.getElementById('timerMode').style.display = m==='timer'?'flex':'none';
+            document.getElementById('counterMode').style.display = m==='counter'?'flex':'none';
+        }
+
+        /* --- ROSTER --- */
+        function refreshRoster() {
+            const area = document.getElementById('speakerArea');
+            area.innerHTML = allSpeakers.map(n => `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1; font-size:18px;">${n}</span><span onclick="confirmDelSpeaker('${n}')" style="color:red; padding:10px; font-weight:bold;">✕</span></div>`).join('');
+        }
+        function saveSpeaker() {
             const n = document.getElementById('name').value.toUpperCase().trim();
-            if (!n || !selectedTypeLabel) { alert("Enter Name & Role"); return; }
-            currentSpeaker = n;
-            isAiMode = document.getElementById('aiModeToggle').checked;
-
-            if (currentMode === 'counter') {
-                showScreen('counterDisplay');
-                document.getElementById('counterSpeakerName').innerText = n;
-                document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
-                document.getElementById('recIndicator').style.display = isAiMode ? 'block' : 'none';
-                currentTally = {};
-                JSON.parse(localStorage.getItem(KEY_FILLERS)||'["AH","UM","ER","SO","LIKE","YOU KNOW"]').forEach(f=>currentTally[f.toUpperCase()]=0);
-                renderTally();
-                if (isAiMode) startRecording();
-            } else {
-                showScreen('timerDisplay');
-                document.getElementById('spkName').innerText = n;
-                startTimer();
-            }
+            if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }
         }
+        function selectSpeaker(n) { document.getElementById('name').value = n; }
+        function confirmDelSpeaker(n) { openModal("Delete Speaker?", `Remove ${n} from roster?`, () => { allSpeakers = allSpeakers.filter(s=>s!==n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
+        function handleNameInput(el) { el.value = el.value.toUpperCase(); }
 
-        /* --- AI TRANSCRIPTION LOGIC --- */
+        /* --- AI ENGINE --- */
         async function startRecording() {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorder = new MediaRecorder(stream);
@@ -236,18 +237,18 @@
         }
 
         function finishCounterSession() {
-            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); } 
+            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); }
             else { saveCounterSession(); }
         }
 
         async function processAi() {
             showScreen('aiReview');
-            document.getElementById('aiReviewText').innerText = "AI is analyzing speech... Please wait ~15s.";
+            document.getElementById('aiReviewText').innerText = "AI is analyzing speech... please wait.";
             const blob = new Blob(audioChunks, { type: 'audio/webm' });
             const formData = new FormData();
             formData.append("file", blob, "speech.webm");
             formData.append("model", "whisper-1");
-            formData.append("prompt", "Capture all umms, ahhs, and repetitions literals.");
+            formData.append("prompt", "Capture all umms, ahhs, and repetitions literally.");
             
             const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
                 method: "POST", headers: { "Authorization": `Bearer ${localStorage.getItem(KEY_AI_KEY)}` }, body: formData
@@ -275,55 +276,64 @@
             saveCounterSession();
         }
 
-        function saveCounterSession() {
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            const res = Object.entries(currentTally).filter(([k,v])=>v>0).map(([k,v])=>`${k}: ${v}`).join(', ') || "0 Fillers";
-            logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${res}`);
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            showScreen('menu');
-        }
-
-        /* --- STABLE REMAINDER --- */
-        function refreshRoster() { document.getElementById('speakerArea').innerHTML = allSpeakers.map(n => `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1;">${n}</span><span onclick="delSpeaker('${n}')" style="color:red; padding:0 10px;">✕</span></div>`).join(''); }
-        function saveSpeaker() { const n = document.getElementById('name').value.toUpperCase().trim(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); } }
-        function selectSpeaker(n) { document.getElementById('name').value = n; }
-        function delSpeaker(n) { allSpeakers = allSpeakers.filter(s=>s!==n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }
-        function handleNameInput(el) { el.value = el.value.toUpperCase(); }
+        /* --- SETUP GRID --- */
+        let selectedRoleLabel = "";
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
             const roles = currentMode==='timer'?["TT 1-2m","EVAL 2-3m","SPEECH 5-7m"]:["AH COUNTER","GRAMMARIAN","SPEAKER","EVALUATOR"];
-            roles.forEach(r => { grid.innerHTML += `<div class="role-card" style="padding:15px; border:1px solid #ddd; text-align:center; border-radius:10px;" onclick="selectRole(this, '${r}')"><h4>${r}</h4></div>`; });
+            roles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r}')"><h4>${r}</h4></div>`; });
         }
-        let selectedTypeLabel = "";
-        function selectRole(el, r) { document.querySelectorAll('.role-card').forEach(c=>c.style.borderColor='#ddd'); el.style.borderColor='var(--accent)'; selectedTypeLabel = r; }
-        function renderTally() { 
+        function selectRole(el, r) {
+            document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedRoleLabel = r;
+        }
+
+        function handleStart() {
+            const n = document.getElementById('name').value.toUpperCase().trim();
+            if (!n || !selectedRoleLabel) { alert("Select Name & Role"); return; }
+            currentSpeaker = n;
+            isAiMode = document.getElementById('aiModeToggle').checked;
+            if (currentMode === 'counter') {
+                showScreen('counterDisplay');
+                document.getElementById('counterSpeakerName').innerText = n;
+                document.getElementById('counterSpeakerRole').innerText = selectedRoleLabel;
+                document.getElementById('recIndicator').style.display = isAiMode ? 'block' : 'none';
+                currentTally = {};
+                ["AH","UM","ER","SO","LIKE","YOU KNOW"].forEach(f=>currentTally[f]=0);
+                renderTally();
+                if (isAiMode) startRecording();
+            } else {
+                showScreen('timerDisplay');
+                document.getElementById('spkName').innerText = n;
+                startTimer();
+            }
+        }
+
+        function renderTally() {
             const area = document.getElementById('tallyArea');
-            const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
-            const activeWod = wodData ? wodData.word.toUpperCase() : null;
-            area.innerHTML = Object.keys(currentTally).sort((a,b)=>a===activeWod?-1:b===activeWod?1:0).map(f => `<div class="tally-card ${f===activeWod?'wod-active':''}" onclick="incTally('${f}')">${f===activeWod?'<div class="wod-mini-label">WOD</div>':''}<div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`).join('');
+            area.innerHTML = Object.keys(currentTally).map(f => `<div class="tally-card" onclick="incTally('${f}')"><div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`).join('');
         }
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e,f) { e.stopPropagation(); if(currentTally[f]>0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); location.reload(); }
+
+        /* --- TIMER --- */
         let iv, start, elapsed=0;
         function startTimer() { start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now()-start)/1000); let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText=`${m}:${s}`; }, 1000); }
         function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
         function commitAndExit() { clearInterval(iv); saveCounterSession(); }
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let d = "Meeting Report\n" + "-".repeat(20) + "\n"; logs.forEach(l=> d += l + "\n"); document.getElementById('reportLog').innerText = d; }
-        function copyReport() { navigator.clipboard.writeText(document.getElementById('reportLog').innerText); alert("Report Copied"); }
-        function exportData() { const d = { speakers: allSpeakers, club: localStorage.getItem(KEY_CLUB)||"", openai: localStorage.getItem(KEY_AI_KEY)||"" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)])); a.download = 'backup.json'; a.click(); }
-        function handleImportFile(i) { const r = new FileReader(); r.onload = e => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.club) localStorage.setItem(KEY_CLUB, d.club); if(d.openai) localStorage.setItem(KEY_AI_KEY, d.openai); location.reload(); }; r.readAsText(i.files[0]); }
-        function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
-        async function nextWod() { fetchWordDetails("ELOQUENT"); }
-        async function searchWod() { fetchWordDetails(document.getElementById('wodManualInput').value); }
-        async function fetchWordDetails(word) { 
-            const key = localStorage.getItem(KEY_AI_KEY); if(!key) return;
-            const resp = await fetch("https://api.openai.com/v1/chat/completions", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${key}`}, body: JSON.stringify({ model:"gpt-4o-mini", messages:[{role:"system",content:"Dictionary mode JSON."}, {role:"user",content:word}], response_format:{type:"json_object"}}) });
-            const d = await resp.json(); const aiData = JSON.parse(d.choices[0].message.content);
-            activeWodData = {word, definition: aiData.definition};
-            document.getElementById('wodContent').innerHTML = `<h3>${word}</h3><p>${aiData.definition}</p>`;
+
+        /* --- PERSISTENCE --- */
+        function saveCounterSession() {
+            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
+            const res = Object.entries(currentTally).filter(([k,v])=>v>0).map(([k,v])=>`${k}: ${v}`).join(', ') || "0 Fillers";
+            logs.push(`${currentSpeaker} | ${selectedRoleLabel} :: ${res}`);
+            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+            showScreen('menu');
         }
-        function selectWod() { localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); showScreen('menu'); }
+        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); location.reload(); }
+        function askClearLogs() { openModal("Clear Logs?", "This will delete all meeting data.", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
     </script>
 </body>
 </html>
