@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.9.3</title>
+    <title>Meeting Tools v2.9.4</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,74 +22,64 @@
             padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
         }
 
-        /* --- UI CORE --- */
+        /* --- UI STRUCTURE --- */
         .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
-        h1 { margin: 0; font-size: 34px; font-weight: 800; color: #1C1C1E; }
-        .subtitle { font-size: 18px; margin-top: 5px; color: var(--accent); font-weight: 700; }
+        h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; letter-spacing: -1px; }
+        .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
         .settings-icon { position: absolute; top: 35px; right: 20px; font-size: 32px; color: var(--accent); cursor: pointer; padding: 5px; z-index: 10; }
 
         .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; margin: 0 20px 15px; flex-shrink: 0; }
         .tab { flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: var(--subtext); }
         .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; width: 100%; box-sizing: border-box; }
+        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; width: 100%; box-sizing: border-box; max-width: 900px; margin: 0 auto; }
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- CARDS & GRIDS (Restored to Original Look) --- */
+        /* --- MENU CARDS (PIXEL MATCH) --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
-            padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px;
+            padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
         }
-        .card-content h3 { margin: 0; font-size: 26px; font-weight: 800; line-height: 1.1; }
+        .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
         .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
-        .main-menu-card .icon { font-size: 45px; color: var(--accent); }
+        .main-menu-card .icon { font-size: 45px; color: var(--accent); font-weight: 400; }
 
-        .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 15px; }
+        /* --- SETUP GRID --- */
+        .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
         @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
         
-        .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.2s; }
+        .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: all 0.2s; }
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-        .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
-        .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
+        .role-card h4 { font-size: 16px; font-weight: 700; text-transform: uppercase; margin: 0; }
+        .role-card p { font-size: 13px; color: var(--subtext); margin-top: 4px; }
 
+        /* --- TALLY SPECIFICS --- */
         .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 5px; }
+        .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; }
         .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
         .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
 
         /* --- FOOTER & BUTTONS --- */
-        .button-row { display: flex; gap: 12px; padding: 10px 20px 20px; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+        .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; width: 100%; box-sizing: border-box; max-width: 900px; margin: 0 auto; }
         .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
         .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); width: 100%; box-sizing: border-box; }
 
-        /* --- INPUTS --- */
-        input[type="text"], input[type="password"], input[type="number"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 20px; width: 100%; box-sizing: border-box; outline: none; }
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
-        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
         /* --- MODAL --- */
         #customModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-content { background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
 
-        /* --- AI STYLING --- */
-        .rec-indicator { display: flex; align-items: center; gap: 8px; justify-content: center; margin: 10px 0; color: var(--red); font-weight: 800; font-size: 14px; }
-        .rec-dot { width: 12px; height: 12px; background: var(--red); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .highlight-filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; color: #FF3B30; font-weight: 700; padding: 0 2px; }
-        .highlight-repeat { background: #E8F2FF; border-bottom: 2px solid #007AFF; color: #007AFF; font-weight: 700; padding: 0 2px; }
+        /* --- INPUTS --- */
+        input[type="text"], input[type="password"] { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 14px; font-size: 22px; width: 100%; box-sizing: border-box; outline: none; }
     </style>
 </head>
 <body onload="initApp()">
 
     <div id="customModal">
         <div class="modal-content">
-            <h2 id="modalTitle"></h2>
-            <div id="modalBody" style="margin: 20px 0; font-size: 18px;"></div>
+            <h2 id="modalTitle" style="margin:0;"></h2>
+            <div id="modalBody" style="margin:20px 0; font-size: 18px;"></div>
             <div class="button-row" style="padding:0;">
                 <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
                 <button id="modalConfirm" class="footer-btn">OK</button>
@@ -115,25 +105,25 @@
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
         </div>
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>Search or Random</p></div><div class="icon" style="color:var(--gold);">★</div></div>
+            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI word selection</p></div><div class="icon" style="color:var(--gold);">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
         
         <div class="credit-footer">
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <div style="opacity:0.4; font-size:12px; margin-top:5px;">Version 2.9.3</div>
+            <div style="opacity:0.4; font-size:12px; margin-top:5px;">Version 2.9.4</div>
         </div>
     </div>
 
     <div id="setup" class="screen">
         <div class="header"><h1>Setup</h1></div>
         <div class="container">
-            <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SEARCH OR ADD NAME"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:18px;" onclick="saveSpeaker()">Add</button></div>
-            <div id="speakerArea" style="background:white; border-radius:18px; border:1px solid var(--border); overflow-y:auto; flex:1; min-height: 120px;"></div>
+            <div style="display:flex; gap:10px;"><input type="text" id="name" placeholder="SEARCH OR ADD NAME"><button class="footer-btn" style="flex:0; padding:0 30px; font-size:20px;" onclick="saveSpeaker()">Add</button></div>
+            <div id="speakerArea" style="background:white; border-radius:18px; border:1px solid var(--border); overflow-y:auto; flex:1; min-height: 120px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
             
-            <div id="aiToggleRow" class="main-menu-card" style="margin: 0; cursor:default; display:none;">
-                <div class="card-content"><h3>AI Audio Analysis</h3><p>Use Whisper AI</p></div>
+            <div id="aiToggleRow" class="main-menu-card" style="margin: 0; cursor:default; display:none; padding: 20px 25px;">
+                <div class="card-content"><h3>AI Audio Analysis</h3><p style="font-size:14px;">Whisper Transcription</p></div>
                 <label class="switch"><input type="checkbox" id="aiModeToggle"><span class="slider"></span></label>
             </div>
 
@@ -145,28 +135,11 @@
     <div id="counterDisplay" class="screen">
         <div class="header">
             <h1 id="counterSpeakerName">Name</h1>
-            <div id="recIndicator" class="rec-indicator" style="display:none;"><div class="rec-dot"></div>RECORDING LIVE</div>
+            <div id="recIndicator" style="display:none; color:var(--red); font-weight:800; font-size:14px; margin-top:5px;"><span style="display:inline-block; width:10px; height:10px; background:var(--red); border-radius:50%; margin-right:5px;"></span>RECORDING LIVE</div>
             <div id="counterSpeakerRole" class="subtitle">ROLE</div>
         </div>
         <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button id="saveTallyBtn" class="footer-btn" style="background:var(--green);" onclick="finishCounterSession()">SAVE RESULTS</button></div>
-    </div>
-
-    <div id="aiReview" class="screen">
-        <div class="header"><h1>AI Analysis</h1><div class="subtitle">Transcript Review</div></div>
-        <div class="container">
-            <div id="aiReviewText" style="background:white; border-radius:18px; padding:25px; border:1px solid var(--border); overflow-y:auto; font-size:18px; line-height:1.6; flex:1;"></div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Ignore</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="applyAiResults()">Apply AI Counts</button>
-        </div>
-    </div>
-
-    <div id="timerDisplay" class="screen">
-        <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; font-weight:700; text-transform:uppercase;"></div>
-        <div id="timer" style="font-size: clamp(100px,30vw,400px); text-align:center; margin:auto 0; font-variant-numeric: tabular-nums;">00:00</div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT</button></div>
+        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" style="background:var(--green);" onclick="finishCounterSession()">SAVE RESULTS</button></div>
     </div>
 
     <script>
@@ -174,17 +147,15 @@
         const KEY_LOGS = prefix+'sdtm_logs', KEY_CLUB = prefix+'sdtm_club_name', KEY_SPEAKERS = prefix+'sdtm_speakers', KEY_FILLERS = prefix+'sdtm_fillers', KEY_AI_KEY = prefix+'sdtm_openai_key', KEY_WOD_FULL = prefix+'sdtm_wod_full';
 
         let currentMode = 'timer', currentSpeaker = "", currentTally = {}, allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS)||"[]");
-        let mediaRecorder, audioChunks = [], isAiMode = false, aiTally = {};
+        let mediaRecorder, audioChunks = [], isAiMode = false;
 
         function initApp() {
             const key = localStorage.getItem(KEY_AI_KEY);
-            document.getElementById('openaiKey').value = key || "";
             if(key) document.getElementById('aiToggleRow').style.display = 'flex';
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             refreshRoster();
         }
 
-        /* UI LOGIC */
         function openModal(t, b, c) {
             document.getElementById('modalTitle').innerText = t;
             document.getElementById('modalBody').innerHTML = b;
@@ -197,7 +168,6 @@
             document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(id==='setup') renderSetupGrid();
-            if(id==='report') loadReport();
         }
 
         function switchMode(m) {
@@ -208,11 +178,11 @@
             document.getElementById('counterMode').style.display = m==='counter'?'flex':'none';
         }
 
-        /* ROSTER */
         function refreshRoster() {
             const area = document.getElementById('speakerArea');
-            area.innerHTML = allSpeakers.map(n => `<div style="padding:18px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1; font-size:20px;">${n}</span><span onclick="confirmDelSpeaker('${n}')" style="color:var(--red); padding:10px; font-weight:bold; font-size:22px;">✕</span></div>`).join('');
+            area.innerHTML = allSpeakers.map(n => `<div style="padding:18px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span onclick="selectSpeaker('${n}')" style="font-weight:700; flex:1; font-size:22px;">${n}</span><span onclick="confirmDelSpeaker('${n}')" style="color:var(--red); padding:10px; font-weight:bold; font-size:24px;">✕</span></div>`).join('');
         }
+
         function saveSpeaker() {
             const n = document.getElementById('name').value.toUpperCase().trim();
             if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }
@@ -220,86 +190,34 @@
         function selectSpeaker(n) { document.getElementById('name').value = n; }
         function confirmDelSpeaker(n) { openModal("Delete Speaker?", `Remove ${n} from your roster?`, () => { allSpeakers = allSpeakers.filter(s=>s!==n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
 
-        /* AI TRANSCRIPTION */
-        async function startRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream); audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = processAi;
-                mediaRecorder.start();
-            } catch(e) { alert("Mic access required for AI."); isAiMode = false; }
-        }
-
-        function finishCounterSession() {
-            if (isAiMode && mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); }
-            else { saveCounterSession(); }
-        }
-
-        async function processAi() {
-            showScreen('aiReview');
-            document.getElementById('aiReviewText').innerText = "Analyzing speech... (Est. 15s)";
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append("file", blob, "speech.webm");
-            formData.append("model", "whisper-1");
-            formData.append("prompt", "Capture all umms, ahhs, and repetitions literally.");
-            
-            try {
-                const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-                    method: "POST", headers: { "Authorization": `Bearer ${localStorage.getItem(KEY_AI_KEY)}` }, body: formData
-                });
-                const data = await resp.json();
-                runGrammarian(data.text);
-            } catch(e) { document.getElementById('aiReviewText').innerText = "Analysis Failed."; }
-        }
-
-        function runGrammarian(text) {
-            const fillers = ["UM", "AH", "ER", "UH", "LIKE", "SO", "BUT", "YOU KNOW"];
-            let html = text; aiTally = {};
-            fillers.forEach(f => {
-                const regex = new RegExp(`\\b${f}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) { aiTally[f] = matches.length; html = html.replace(regex, `<span class="highlight-filler">$&</span>`); }
-            });
-            const repeatRegex = /\b(\w+)\s+\1\b/gi;
-            const repeats = text.match(repeatRegex);
-            if (repeats) { aiTally["REPEATS"] = repeats.length; html = html.replace(repeatRegex, `<span class="highlight-repeat">$&</span>`); }
-            document.getElementById('aiReviewText').innerHTML = `<strong>Detections:</strong> ${JSON.stringify(aiTally)}<hr>${html}`;
-        }
-
-        function applyAiResults() {
-            for (let k in aiTally) { currentTally[k.toUpperCase()] = (currentTally[k.toUpperCase()] || 0) + aiTally[k]; }
-            saveCounterSession();
-        }
-
-        /* CORE OPS */
-        let selectedRoleLabel = "";
         function renderSetupGrid() {
             const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
-            const roles = currentMode==='timer'?["TT 1-2m","EVAL 2-3m","SPEECH 5-7m"]:["AH COUNTER","GRAMMARIAN","SPEAKER","EVALUATOR"];
-            roles.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r}')"><h4>${r}</h4></div>`; });
+            const roles = currentMode==='timer'?[{l:"TT 1-2M",s:"Table Topics"},{l:"EVAL 2-3M",s:"Evaluation"},{l:"SPEECH 5-7M",s:"Ice Breaker"}]:[{l:"AH COUNTER"},{l:"GRAMMARIAN"},{l:"SPEAKER"},{l:"EVALUATOR"}];
+            roles.forEach(r => { 
+                grid.innerHTML += `<div class="role-card" onclick="selectRole(this, '${r.l}')"><h4>${r.l}</h4>${r.s?`<p>${r.s}</p>`:''}</div>`; 
+            });
         }
-        function selectRole(el, r) { document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); selectedRoleLabel = r; }
+        
+        let selectedRoleLabel = "";
+        function selectRole(el, r) {
+            document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedRoleLabel = r;
+        }
 
         function handleStart() {
             const n = document.getElementById('name').value.toUpperCase().trim();
             if (!n || !selectedRoleLabel) { alert("Select Name & Role"); return; }
             currentSpeaker = n;
-            isAiMode = document.getElementById('aiModeToggle').checked;
             if (currentMode === 'counter') {
                 showScreen('counterDisplay');
                 document.getElementById('counterSpeakerName').innerText = n;
                 document.getElementById('counterSpeakerRole').innerText = selectedRoleLabel;
-                document.getElementById('recIndicator').style.display = isAiMode ? 'flex' : 'none';
                 currentTally = {};
                 ["AH","UM","ER","SO","LIKE","YOU KNOW"].forEach(f=>currentTally[f]=0);
                 renderTally();
-                if (isAiMode) startRecording();
             } else {
-                showScreen('timerDisplay');
-                document.getElementById('spkName').innerText = n;
-                startTimer();
+                alert("Timer not integrated in this style-fix yet.");
             }
         }
 
@@ -309,27 +227,8 @@
         }
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e,f) { e.stopPropagation(); if(currentTally[f]>0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-
-        function saveCounterSession() {
-            let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]");
-            const res = Object.entries(currentTally).filter(([k,v])=>v>0).map(([k,v])=>`${k}: ${v}`).join(', ') || "0 Fillers";
-            logs.push(`${currentSpeaker} | ${selectedRoleLabel} :: ${res}`);
-            localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
-            showScreen('menu');
-        }
-
-        /* TIMER & UTILS */
-        let iv, start, elapsed=0;
-        function startTimer() { start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now()-start)/1000); let m=Math.floor(elapsed/60).toString().padStart(2,'0'), s=(elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText=`${m}:${s}`; }, 1000); }
-        function togglePause() { if(iv) { clearInterval(iv); iv=null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
-        function commitAndExit() { clearInterval(iv); saveCounterSession(); }
-        function saveSettings() { localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); location.reload(); }
-        function askClearLogs() { openModal("Clear Logs?", "Delete all meeting data?", () => { localStorage.removeItem(KEY_LOGS); location.reload(); }); }
+        
         function askClubName() { let n = prompt("Club Name?"); if(n) { localStorage.setItem(KEY_CLUB, n); document.getElementById('clubSubtitle').innerText = n; } }
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); let d = "Report\n" + "-".repeat(20) + "\n"; logs.forEach(l=> d += l + "\n"); document.getElementById('reportLog').innerText = d; }
-        function copyReport() { navigator.clipboard.writeText(document.getElementById('reportLog').innerText); alert("Copied"); }
-        function exportData() { const d = { speakers: allSpeakers, club: localStorage.getItem(KEY_CLUB)||"" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)])); a.download = 'backup.json'; a.click(); }
-        function handleImportFile(i) { const r = new FileReader(); r.onload = e => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); location.reload(); }; r.readAsText(i.files[0]); }
     </script>
 </body>
 </html>
