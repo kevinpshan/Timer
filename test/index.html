@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.8.7</title>
+    <title>Meeting Tools v2.8.8</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +36,7 @@
         .screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .screen.active { display: flex; }
 
-        /* --- CARDS & GRIDS --- */
+        /* --- MENU CARDS --- */
         .main-menu-card { 
             background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
             padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
@@ -52,7 +52,7 @@
         .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
         .role-card h4, .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; margin: 0; pointer-events: none; }
         
-        /* --- SPECIAL WOD TALLY STYLE --- */
+        /* --- WOD TALLY --- */
         .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
         .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
 
@@ -66,6 +66,7 @@
         .wod-word { font-size: 44px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; flex-shrink: 0; }
         .wod-def { font-size: 19px; line-height: 1.4; color: var(--text); margin-bottom: 20px; }
         .wod-example { font-size: 18px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
+        .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--accent); font-weight: 800; }
 
         /* --- FOOTER & BUTTONS --- */
         .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
@@ -75,7 +76,8 @@
         .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; }
         .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
         .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 16px; border: 1px solid var(--border); }
-        
+        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
+
         input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 20px; outline: none; width: 100%; box-sizing: border-box; }
     </style>
 </head>
@@ -119,19 +121,19 @@
         <div class="credit-footer">
             <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag" style="display:block; font-size:12px; opacity:0.5; margin-top:6px;"></span>
+            <span id="versionLabel" class="version-tag"></span>
         </div>
     </div>
 
     <div id="wod" class="screen">
         <div class="header"><h1>W.O.D.</h1><div class="subtitle">Search or Generate</div></div>
         <div class="container">
-            <div class="wod-search-row" style="display:flex; gap:8px; margin-bottom:10px; flex-shrink:0;">
-                <input type="text" id="wodManualInput" style="flex:1; padding:12px 15px; border-radius:12px; border:2px solid var(--border); font-size:18px; outline:none; text-transform:uppercase;" placeholder="ENTER CUSTOM WORD..." onkeydown="if(event.key==='Enter') searchWod()">
-                <button style="background:var(--accent); border:none; color:white; padding:0 18px; border-radius:12px; font-size:20px; cursor:pointer;" onclick="searchWod()">🔍</button>
+            <div class="wod-search-row">
+                <input type="text" id="wodManualInput" placeholder="ENTER CUSTOM WORD..." onkeydown="if(event.key==='Enter') searchWod()">
+                <button class="wod-search-btn" style="background:var(--accent); border:none; color:white; padding:0 18px; border-radius:12px; font-size:20px; cursor:pointer;" onclick="searchWod()">🔍</button>
             </div>
             <div id="wodDisplay" class="wod-card-big">
-                <div id="aiIndicator" class="ai-indicator" style="position:absolute; top:15px; right:15px; font-size:10px; color:var(--accent); font-weight:800;">● CHATGPT READY</div>
+                <div id="aiIndicator" class="ai-indicator">● CHATGPT READY</div>
                 <div id="wodContent"><span class="wod-word">...</span></div>
             </div>
         </div>
@@ -191,14 +193,15 @@
         let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
-        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant", "Kindle", "Legacy", "Munificent", "Novel", "Opulent", "Pensive", "Quaint", "Ruminate", "Serene", "Thrive", "Urbane", "Vivid", "Wander", "Zeal", "Acumen", "Boisterous", "Cerebral", "Deferential", "Ephemeral", "Frugal"];
+        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant", "Kindle", "Legacy", "Munificent", "Novel", "Opulent", "Pensive", "Quaint", "Ruminate", "Serene", "Thrive", "Urbane", "Vivid", "Wander", "Zeal", "Acumen", "Boisterous", "Cerebral", "Deferential", "Ephemeral", "Frugal", "Acquiesce", "Alacrity", "Ameliorate", "Anachronism", "Anomaly", "Antipathy", "Archaic", "Assiduous", "Atrophy", "Auspicious", "Austere", "Belligerent", "Banal", "Benevolent", "Boisterous", "Brusque", "Cajole", "Callous", "Candor", "Capricious", "Castigate", "Caustic", "Censure", "Cerebral", "Churlish", "Circumspect", "Clandestine", "Coalesce", "Cogent", "Collusion", "Complacent", "Conciliatory", "Concise", "Condone", "Conspicuous", "Conundrum", "Copious", "Cordial", "Corroborate", "Cryptic", "Culpable", "Cursory", "Dearth", "Debacle", "Debilitate", "Decorum", "Deference", "Deleterious", "Demagogue", "Demure", "Denigrate", "Depravity", "Deride", "Despot", "Destitute", "Diatribe", "Didactic", "Diffident", "Dilatory", "Diligence", "Disparate", "Disseminate", "Dissonance", "Divergent", "Dogmatic", "Dormant", "Duplicity", "Ebullient", "Eclectic", "Edify", "Efface", "Efficacious", "Effrontery", "Egregious", "Elated", "Elegy", "Elicit", "Elucidate", "Elusive", "Emaciated", "Embellish", "Emulate", "Enervate", "Engender", "Enigma", "Enmity", "Ennui", "Ephemeral", "Epitome", "Equanimity", "Equivocal", "Eradicate", "Erudite", "Esoteric", "Espouse", "Ethereal", "Euphoric", "Evanescent", "Exacerbate", "Exalt", "Exasperate", "Execrable", "Exemplary", "Exhort", "Exigent", "Exonerate", "Exorbitant", "Expedient", "Expedite", "Expunge", "Extant", "Extol", "Extraneous", "Extricate", "Exult", "Fabricate", "Facade", "Facetious", "Facilitate", "Fallacious", "Fastidious", "Fathom", "Fatuous", "Feasible", "Felicitous", "Fervent", "Fetter", "Fickle", "Fidelity", "Figurative", "Flabbergasted", "Flagrant", "Flamboyant", "Flattery", "Flaunt", "Fledgling", "Flout", "Fluctuate", "Foil", "Forage", "Forbearance", "Forestall", "Forlorn", "Forsake", "Fortitude", "Fortuitous", "Foster", "Fractious", "Fraught", "Frugal", "Furtive", "Futile", "Garrulous", "Genial", "Germane", "Gesticulate", "Glib", "Gluttony", "Goad", "Gourmet", "Grandiloquent", "Grandiose", "Gratitous", "Gregarious", "Guile", "Gullible", "Hackneyed", "Hallowed", "Hapless", "Harangue", "Harass", "Harbinger", "Hardy", "Haughty", "Hedonist", "Heinous", "Hermetic", "Heterogeneous", "Hiatus", "Hierarchy", "Hidebound", "Hilarity", "Histrionic", "Holistic", "Homage", "Hubris", "Hypocrisy", "Hypothetical", "Iconoclast", "Idiosyncratic", "Ignominious", "Immutable", "Impassive", "Impeccable", "Impecunious", "Imperative", "Imperious", "Impertinent", "Impervious", "Impetuous", "Impinge", "Implacable", "Implausible", "Implicit", "Implore", "Impose", "Impromptu", "Imprudent", "Impudence", "Impugn", "Impunity", "Inadvertent", "Inane", "Inarticulate", "Inaugurate", "Incapacitate", "Incendiary", "Incessant", "Inchoate", "Incisive", "Incite", "Inclination", "Incognito", "Incoherent", "Incongruous", "Incorrigible", "Incredulous", "Inculcate", "Incumbent", "Incursion", "Indefatigable", "Indict", "Indigenous", "Indigent", "Indignant", "Indomitable", "Indubitable", "Induce", "Indulgent", "Ineffable", "Inept", "Inert", "Inevitable", "Inexorable", "Infamy", "Infuriate", "Ingenious", "Ingenuous", "Ingratiate", "Inherent", "Inhibit", "Inimical", "Iniquity", "Initiate", "Innate", "Innocuous", "Innovate", "Innuendo", "Inordinate", "Insatiable", "Inscrutable", "Insidious", "Insinuate", "Insipid", "Insolent", "Instigate", "Insular", "Intangible", "Integrity", "Intelligible", "Intercede", "Interminable", "Intermittent", "Intractable", "Intransigent", "Intrepid", "Intrinsic", "Inundate", "Inure", "Invective", "Inveterate", "Invidious", "Invincible", "Inviolable", "Irascible", "Iridescent", "Irrevocable", "Iteration", "Itinerant", "Jaded", "Jargon", "Jettison", "Jocular", "Jovial", "Judicious", "Juxtaposition", "Kindle", "Knotty", "Labyrinth", "Laceration", "Lachrymose", "Laconic", "Lament", "Lampoon", "Languid", "Larceny", "Largess", "Lassitude", "Latent", "Laudatory", "Lavish", "Legacy", "Legerdemain", "Lenient", "Lethargic", "Levity", "Liability", "Licentious", "Lithe", "Litigate", "Lofty", "Logistics", "Loquacious", "Lucid", "Lucrative", "Ludicrous", "Lugubrious", "Luminescent", "Lurid", "Lush", "Machination", "Magnanimous", "Malediction", "Malevolent", "Malleable", "Mandate", "Manifest", "Manifold", "Maverick", "Mawkish", "Maxim", "Meager", "Mediate", "Melancholy", "Meliorate", "Mellifluous", "Mendacious", "Mercurial", "Meritorious", "Metaphor", "Meticulous", "Mettle", "Misanthrope", "Mitigate", "Modicum", "Modulate", "Mollify", "Momentous", "Monotony", "Morose", "Multifarious", "Munificent", "Mutability", "Myriad", "Nadir", "Narrative", "Nascent", "Nebulous", "Nefarious", "Negligence", "Neophyte", "Nexus", "Nocturnal", "Nomadic", "Nominal", "Nonchalant", "Nondescript", "Notoriety", "Novice", "Noxious", "Nuance", "Nurture", "Obdurate", "Obfuscate", "Objective", "Oblivious", "Obscure", "Obsequious", "Obsolete", "Obstinate", "Obstreperous", "Obtrusive", "Obtuse", "Obviate", "Odious", "Officious", "Ominous", "Omnipotent", "Omniscient", "Opaque", "Opulent", "Oration", "Ornate", "Orthodox", "Oscillate", "Ossify", "Ostensible", "Ostentatious", "Ostracism", "Pacific", "Palatable", "Palette", "Palliate", "Pallid", "Panacea", "Paradigm", "Paradox", "Paragon", "Paramount", "Pariah", "Parity", "Parody", "Parsimony", "Partisan", "Pastoral", "Pathos", "Paucity", "Peccadillo", "Peculiar", "Pedantic", "Pedestrian", "Pejorative", "Penchant", "Penitent", "Pensive", "Penurious", "Perceptive", "Perdition", "Perfunctory", "Peripheral", "Pernicious", "Perpetual", "Perplexity", "Perspicacity", "Pertinent", "Perturb", "Pervasive", "Petulant", "Philanthropic", "Phlegmatic", "Pinnacle", "Pious", "Pithy", "Placate", "Placid", "Platitude", "Plausible", "Plethora", "Pliable", "Poignant", "Polemic", "Portent", "Postulate", "Potent", "Pragmatic", "Precarious", "Precedent", "Precept", "Precipice", "Preclude", "Precocious", "Precursor", "Predatory", "Predilection", "Preeminent", "Preempt", "Prepossessing", "Presage", "Prescience", "Presumptuous", "Pretext", "Prevalent", "Prevaricate", "Pristine", "Probity", "Proclivity", "Procure", "Prodigious", "Profane", "Profligate", "Profuse", "Prolific", "Promulgate", "Propensity", "Propitious", "Propriety", "Prosaic", "Proscribe", "Prosperity", "Protagonist", "Protean", "Prowess", "Prudence", "Prurient", "Puerile", "Pugnacious", "Pulchritude", "Punctilious", "Pungent", "Punitive", "Putrid", "Quaint", "Quandary", "Quell", "Querulous", "Quiescent", "Quintessential", "Quixotic", "Quotidian", "Radiant", "Rancor", "Rapport", "Ratify", "Raucous", "Raze", "Rebuke", "Recalcitrant", "Recant", "Recapitulate", "Reciprocal", "Recluse", "Recondite", "Rectitude", "Redoubtable", "Refract", "Refurbish", "Refute", "Regurgitate", "Reiterate", "Rejoinder", "Relentless", "Relevant", "Remiss", "Remit", "Remnant", "Renovate", "Renounce", "Repentant", "Replenish", "Replete", "Reprehensible", "Reprieve", "Reproach", "Reprobate", "Reprove", "Repudiate", "Repulse", "Rescind", "Resilient", "Resolute", "Resonance", "Respite", "Resplendent", "Restive", "Retract", "Retribution", "Revel", "Revere", "Revoke", "Rhapsodize", "Rhetoric", "Rife", "Rigor", "Ruminate", "Ruse", "Rustic", "Sacrosanct", "Sagacious", "Salient", "Salutation", "Sanctimonious", "Sanguine", "Satiate", "Scanty", "Scrupulous", "Scurrilous", "Sedate", "Sedentary", "Sedulous", "Seminal", "Sensual", "Serendipity", "Serene", "Servile", "Sinuous", "Sobriety", "Solace", "Solicitous", "Solvent", "Somnolent", "Sophomoric", "Soporific", "Specious", "Speculative", "Spurious", "Squalid", "Stagnate", "Staid", "Steadfast", "Stifle", "Stigma", "Stoic", "Stolid", "Strenuous", "Strident", "Stupefy", "Subjugate", "Sublime", "Submissive", "Subsequent", "Subservient", "Subside", "Substantiate", "Subterfuge", "Subtle", "Subversive", "Succinct", "Succumb", "Sullen", "Sumptuous", "Supercilious", "Superficial", "Superfluous", "Surfeit", "Surmise", "Surreptitious", "Surrogate", "Susceptible", "Sycophant", "Symbiotic", "Tacit", "Taciturn", "Tangential", "Tangible", "Tantamount", "Tedious", "Temerity", "Temperance", "Tenable", "Tenacious", "Tenuous", "Tepid", "Terse", "Theocracy", "Timorous", "Tirade", "Toady", "Tome", "Torpid", "Torrid", "Tortuous", "Tractable", "Tranquil", "Transgress", "Transient", "Translucent", "Transmute", "Traverse", "Treachery", "Tremulous", "Trenchant", "Trepidation", "Trite", "Truculent", "Truncate", "Turgid", "Turpitude", "Ubiquitous", "Umbrage", "Uncanny", "Unctuous", "Undulate", "Upbraid", "Usurp", "Utilitarian", "Utopia", "Vacillate", "Vacuous", "Valiant", "Valid", "Vanquish", "Vapid", "Variegated", "Vehement", "Veneer", "Venerable", "Venerate", "Veracity", "Verbose", "Verdant", "Verge", "Verify", "Veritable", "Vernacular", "Versatile", "Vestige", "Vex", "Vicarious", "Vicissitude", "Vigilant", "Vignette", "Vilify", "Vindicate", "Vindictive", "Virtuoso", "Virulent", "Viscous", "Visionary", "Vital", "Vituperate", "Vivacious", "Vivid", "Vociferous", "Volatility", "Volition", "Voluble", "Voracious", "Vulnerable", "Wane", "Wanderlust", "Warrant", "Wary", "Waver", "Whet", "Whimsical", "Wily", "Winsome", "Wistful", "Wizened", "Wrath", "Yoke", "Zeal", "Zealot", "Zenith", "Zephyr"
+        ];
 
         function initApp() {
             const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
             document.getElementById('mdToggle').checked = localStorage.getItem(KEY_MD) === 'true';
             document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.8.7" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.8.8" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             refreshRoster();
             nextWod();
         }
@@ -267,7 +270,7 @@
             }
         }
 
-        /* --- STABLE CORE --- */
+        /* --- STABLE HELPERS --- */
         function refreshRoster() {
             const area = document.getElementById('speakerArea'); if (!area) return;
             if (!allSpeakers.length) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
@@ -310,8 +313,6 @@
             const area = document.getElementById('tallyArea'); 
             const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); 
             const activeWod = wodData ? wodData.word.toUpperCase() : null; 
-            
-            // PINS WOD TO TOP-LEFT
             const sorted = [...fillerList].sort((a,b) => a === activeWod ? -1 : b === activeWod ? 1 : a.localeCompare(b));
             
             area.innerHTML = sorted.map(f => {
@@ -331,6 +332,32 @@
         function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
         function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
+        
+        function exportData() { 
+            const d = { 
+                speakers: allSpeakers, 
+                fillers: fillerList, 
+                club: localStorage.getItem(KEY_CLUB) || "", 
+                openai: localStorage.getItem(KEY_AI_KEY) || "" 
+            }; 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); 
+            a.download = 'meeting-backup.json'; 
+            a.click(); 
+        }
+        function handleImportFile(i) { 
+            const r = new FileReader(); 
+            r.onload = (e) => { 
+                const d = JSON.parse(e.target.result); 
+                if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); 
+                if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); 
+                if(d.club) localStorage.setItem(KEY_CLUB, d.club);
+                if(d.openai) localStorage.setItem(KEY_AI_KEY, d.openai); 
+                location.reload(); 
+            }; 
+            r.readAsText(i.files[0]); 
+        }
+
         function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); const matchHeader = `${currentSpeaker} | ${selectedTypeLabel} :: `; let existingIdx = logs.findIndex(e => e.startsWith(matchHeader)); if (existingIdx !== -1) { let merged = parseTallyString(logs[existingIdx].split(' :: ')[1]); for (let w in currentTally) if (currentTally[w] > 0) merged[w] = (merged[w] || 0) + currentTally[w]; logs[existingIdx] = matchHeader + serializeTally(merged); } else logs.push(matchHeader + serializeTally(currentTally)); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Counts merged.", () => { showScreen('menu'); }); }
         function parseTallyString(s) { let o = {}; if (s === "0 Fillers") return o; s.split(', ').forEach(p => { const [w, c] = p.split(': '); o[w] = parseInt(c); }); return o; }
         function serializeTally(o) { let r = []; for (let w in o) if (o[w] > 0) r.push(`${w}: ${o[w]}`); return r.length > 0 ? r.join(', ') : "0 Fillers"; }
@@ -341,10 +368,8 @@
         function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
         function askClearLogs() { openModal("Clear?", "Reset logs and WOD?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); location.reload(); }); }
         function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
-        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.gemini) localStorage.setItem(KEY_AI_KEY, d.gemini); location.reload(); }; r.readAsText(i.files[0]); }
-        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "", gemini: localStorage.getItem(KEY_AI_KEY) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'backup.json'; a.click(); }
         function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none'; }
-        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Enter Name & Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
+        function handleStart() { const n = document.getElementById('name').value.trim().toUpperCase(); if (!n || !selectedTypeLabel) { openModal("Error", "Missing Name or Role.", ()=>{}); return; } currentSpeaker = n; if (currentMode === 'timer') { showScreen('timerDisplay'); document.getElementById('spkName').innerText = n; startTimer(); } else { showScreen('counterDisplay'); document.getElementById('counterSpeakerName').innerText = n; document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel; initTally(); } }
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
         function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
         function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
