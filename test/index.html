@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v3.0.3-TEST</title>
-    
-    <link rel="stylesheet" href="styles.css?v=1.1">
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="icon-timer.png">
+    <title>Meeting Tools v3.0.4-TEST</title>
+    <link rel="stylesheet" href="styles.css?v=1.2">
+    <style>
+        /* Fail-safe for tab stretching */
+        .tab-container { display: flex !important; width: calc(100% - 40px) !important; margin: 10px auto !important; }
+        .tab { flex: 1 !important; }
+    </style>
 </head>
 <body onload="initApp()">
 
     <div id="customModal">
         <div class="modal-content">
             <h2 id="modalTitle">Confirm</h2>
-            <div id="modalBody"></div>
-            <div class="button-row" style="padding:0; margin-top:20px;">
+            <div id="modalBody" style="margin:20px 0; font-size:18px;"></div>
+            <div class="button-row" style="padding:0;">
                 <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
                 <button id="modalConfirm" class="footer-btn">OK</button>
             </div>
@@ -31,37 +30,21 @@
             <div id="clubSubtitle" class="subtitle">Southern Dutchess Toastmasters</div>
             <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
         </div>
-
         <div class="tab-container">
             <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
             <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
-        
         <div id="timerMode" class="container">
-            <div class="main-menu-card" onclick="showScreen('setup')">
-                <div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div>
-                <div class="icon">⊕</div>
-            </div>
-            <div class="main-menu-card" onclick="showScreen('report')">
-                <div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div>
-                <div class="icon">☰</div>
-            </div>
+            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div style="font-size:40px; color:var(--accent);">⊕</div></div>
+            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div style="font-size:40px; color:var(--accent);">☰</div></div>
         </div>
-
         <div id="counterMode" class="container" style="display:none;">
-            <div class="main-menu-card" onclick="showScreen('setup')">
-                <div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div>
-                <div class="icon">✍</div>
-            </div>
+            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div style="font-size:40px; color:var(--accent);">✍</div></div>
         </div>
-
         <div class="credit-footer">
-            <div class="resource-row">
-                <a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a>
-                <a href="manual.html" class="res-btn">Manual ↗</a>
-            </div>
+            <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <div class="version-tag">Version 3.0.3-TEST</div>
+            <div class="version-tag">Version 3.0.4-TEST</div>
         </div>
     </div>
 
@@ -81,9 +64,9 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.1"></script>
-    <script src="roster.js?v=1.1"></script>
-    <script src="timer.js?v=1.1"></script>
-    <script src="counter.js?v=1.1"></script>
+    <script src="app.js?v=1.2"></script>
+    <script src="roster.js?v=1.2"></script>
+    <script src="timer.js?v=1.2"></script>
+    <script src="counter.js?v=1.2"></script>
 </body>
 </html>
