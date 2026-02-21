@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Transcription Lab v1.0</title>
+    <title>Transcription Lab v1.1</title>
     <style>
         body { 
             font-family: -apple-system, system-ui, sans-serif; 
@@ -16,8 +16,8 @@
             padding: 20px; overflow-y: auto; font-size: 19px; line-height: 1.6;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
-        .interim { color: #8E8E93; font-style: italic; }
-        .final { color: #000; font-weight: 400; }
+        .interim { color: #007AFF; font-style: italic; } /* Blue for words currently being processed */
+        .final-chunk { color: #000; font-weight: 400; }
         .controls { padding: 20px 0; display: flex; gap: 10px; }
         .btn { 
             flex: 1; padding: 20px; border-radius: 14px; border: none; 
@@ -26,92 +26,99 @@
         .btn-start { background: #007AFF; color: white; }
         .btn-stop { background: #FF3B30; color: white; display: none; }
         .status { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #8E8E93; margin-top: 10px; text-align: center; }
-        .filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; }
+        .filler { background: #FFE6E6; border-bottom: 2px solid #FF3B30; border-radius: 4px; padding: 0 2px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" style="text-decoration: none; color: #007AFF; font-weight: 600;">← Back to App</a>
-        <h1 style="margin: 10px 0 0;">Transcription Lab</h1>
-        <p style="margin: 5px 0; color: #3A3A3C;">Testing iOS Native Speech Engine</p>
+        <h1 style="margin: 10px 0 0;">Transcription Lab v1.1</h1>
+        <p style="margin: 5px 0; color: #3A3A3C;">Long-form Accumulation Test</p>
     </div>
 
-    <div id="transcript" class="transcript-box">
-        <p style="color: #8E8E93;">Tap "Start" and speak. The iPad will attempt to transcribe your voice in real-time.</p>
+    <div id="transcriptArea" class="transcript-box">
+        <p id="placeholder" style="color: #8E8E93;">Tap "Start" to begin recording. The transcript will be saved here even during long speeches.</p>
     </div>
 
     <div id="statusLabel" class="status">Microphone Ready</div>
 
     <div class="controls">
-        <button id="startBtn" class="btn btn-start" onclick="startListening()">Start Listening</button>
-        <button id="stopBtn" class="btn btn-stop" onclick="stopListening()">Stop & Copy</button>
+        <button id="startBtn" class="btn btn-start" onclick="startListening()">Start Speech</button>
+        <button id="stopBtn" class="btn btn-stop" onclick="stopListening()">Stop & Copy All</button>
     </div>
 
     <script>
         let recognition;
-        const transcriptDiv = document.getElementById('transcript');
+        let finalTranscript = ""; // THE MASTER STORAGE: This will not disappear.
+        
+        const transcriptArea = document.getElementById('transcriptArea');
         const statusLabel = document.getElementById('statusLabel');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
 
-        // Crutch words to watch for
         const fillers = ["LIKE", "SO", "UM", "AH", "ER", "ACTUALLY", "BASICALLY", "YOU KNOW"];
 
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            transcriptDiv.innerHTML = "<p style='color:red;'>Error: This browser does not support the Web Speech API. Please use Safari on iOS.</p>";
+            transcriptArea.innerHTML = "<p style='color:red;'>Error: Browser not supported.</p>";
         } else {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             
-            // KEY SETTINGS FOR TOASTMASTERS
-            recognition.continuous = true; // Keep listening during pauses
-            recognition.interimResults = true; // Show text as you talk
+            recognition.continuous = true;
+            recognition.interimResults = true;
             recognition.lang = 'en-US';
 
             recognition.onstart = () => {
-                statusLabel.innerText = "● Recording Live...";
+                statusLabel.innerText = "● RECORDING LIVE...";
                 statusLabel.style.color = "#FF3B30";
                 startBtn.style.display = "none";
                 stopBtn.style.display = "block";
-                transcriptDiv.innerHTML = ""; 
+                finalTranscript = ""; // Reset for new speech
+                transcriptArea.innerHTML = ""; 
             };
 
             recognition.onresult = (event) => {
-                let finalTranscript = '';
                 let interimTranscript = '';
 
+                // We loop starting from the current resultIndex
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    let text = event.results[i][0].transcript;
+                    let chunk = event.results[i][0].transcript;
                     
-                    // Highlight fillers
+                    // Grammarian Highlight logic
                     fillers.forEach(word => {
                         const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                        text = text.replace(regex, `<span class="filler">$&</span>`);
+                        chunk = chunk.replace(regex, `<span class="filler">$&</span>`);
                     });
 
                     if (event.results[i].isFinal) {
-                        finalTranscript += `<span class="final">${text} </span>`;
+                        // If it's final, add it to our PERMANENT variable
+                        finalTranscript += `<span class="final-chunk">${chunk} </span>`;
                     } else {
-                        interimTranscript += `<span class="interim">${text}</span>`;
+                        // If it's still being guessed, hold it in a TEMPORARY variable
+                        interimTranscript += `<span class="interim">${chunk}</span>`;
                     }
                 }
 
-                transcriptDiv.innerHTML = finalTranscript + interimTranscript;
-                transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
+                // Render both: The permanent history + the current active guess
+                transcriptArea.innerHTML = finalTranscript + interimTranscript;
+                
+                // Auto-scroll to keep the newest text in view
+                transcriptArea.scrollTop = transcriptArea.scrollHeight;
             };
 
             recognition.onerror = (event) => {
-                statusLabel.innerText = "Error: " + event.error;
-                stopListening();
+                console.error("Speech Error: ", event.error);
+                if(event.error === 'no-speech') statusLabel.innerText = "Waiting for sound...";
             };
 
             recognition.onend = () => {
+                // Safari often kills the mic after 60 seconds of silence. 
+                // This auto-restarts it if the Stop button hasn't been pressed.
                 if (stopBtn.style.display === "block") {
-                    // Auto-restart if it cuts out (common Safari behavior)
                     recognition.start();
                 } else {
-                    statusLabel.innerText = "Speech Ended";
+                    statusLabel.innerText = "Speech Captured";
                     statusLabel.style.color = "#8E8E93";
                 }
             };
@@ -126,12 +133,10 @@
             startBtn.style.display = "block";
             stopBtn.style.display = "none";
             
-            // Copy transcript to clipboard
-            const text = transcriptDiv.innerText;
-            if (text.length > 10) {
-                navigator.clipboard.writeText(text);
-                alert("Transcript copied to clipboard!");
-            }
+            // Clean HTML tags to get raw text for clipboard
+            const rawText = transcriptArea.innerText;
+            navigator.clipboard.writeText(rawText);
+            alert("Full transcript copied to clipboard!");
         }
     </script>
 </body>
