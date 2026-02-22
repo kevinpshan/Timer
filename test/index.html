@@ -44,6 +44,9 @@
         .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
         .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
         .main-menu-card .icon { font-size: 45px; color: var(--accent); }
+        .settings-card { padding: 16px 20px !important; margin-bottom: 8px !important; }
+        .settings-card h3 { font-size: 20px !important; }
+        .settings-card p { font-size: 15px !important; margin-top: 4px !important; }
 
         .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
         @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -209,16 +212,16 @@
     <div id="settings" class="screen">
         <div class="header"><h1>Settings</h1></div>
         <div class="container">
-            <div class="main-menu-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon">
+            <div class="main-menu-card settings-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon">
                 <label class="switch">
                     <input type="checkbox" id="mdToggle" onchange="saveSettings()">
                     <span class="slider"></span>
                 </label>
             </div></div>
-            <div class="main-menu-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:15px; font-size: 16px;"></div>
-            <div class="main-menu-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
-            <div class="main-menu-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
-            <div class="main-menu-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
+            <div class="main-menu-card settings-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:12px; font-size: 16px;"></div>
+            <div class="main-menu-card settings-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
+            <div class="main-menu-card settings-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
+            <div class="main-menu-card settings-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
             <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
         </div>
         <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
