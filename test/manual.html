@@ -8,425 +8,119 @@
         :root {
             --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF; 
             --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
-            --gold: #BF941A; --red: #FF3B30; --green: #34C759;
+            --gold: #BF941A;
         }
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
-            font-family: -apple-system, system-ui, sans-serif; line-height: 1.6;
+            font-family: -apple-system, system-ui, sans-serif; line-height: 1.5;
             padding: 40px 20px;
         }
-        .content { max-width: 800px; margin: 0 auto; }
-
-        /* --- HEADER --- */
-        .manual-header { background: var(--card); border-radius: 20px; padding: 30px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .manual-header h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px 0; color: #000; }
-        .manual-header .version { font-size: 14px; color: #8E8E93; font-weight: 600; margin-bottom: 12px; }
-        .manual-header p { margin: 0; font-size: 17px; color: var(--subtext); }
-
-        /* --- NAV --- */
-        .toc { background: var(--card); border-radius: 20px; padding: 25px 30px; margin-bottom: 25px; border: 1px solid var(--border); }
-        .toc h2 { font-size: 13px; font-weight: 800; color: #8E8E93; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 15px 0; }
-        .toc ol { margin: 0; padding-left: 20px; }
-        .toc li { margin-bottom: 8px; }
-        .toc a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 16px; }
-        .toc a:hover { text-decoration: underline; }
-
-        /* --- SECTIONS --- */
-        .section { background: var(--card); border-radius: 20px; padding: 30px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h2.section-title { font-size: 26px; font-weight: 800; margin: 0 0 5px 0; color: var(--accent); }
-        .section-subtitle { font-size: 14px; font-weight: 700; color: #8E8E93; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: block; }
-        h3 { font-size: 19px; color: var(--gold); margin: 25px 0 10px 0; font-weight: 700; }
-        h3.red { color: var(--red); }
-        h3.green { color: var(--green); }
-        p { margin: 0 0 15px 0; font-size: 17px; }
-        ul, ol { padding-left: 22px; margin: 0 0 15px 0; }
+        .content { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; color: #000; }
+        h2 { font-size: 24px; font-weight: 700; margin-top: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
+        h3 { font-size: 20px; color: var(--gold); margin-top: 25px; }
+        p { margin: 15px 0; font-size: 17px; }
+        ul, ol { padding-left: 20px; }
         li { margin-bottom: 10px; font-size: 17px; }
-        strong { font-weight: 700; }
+        code { background: #F2F2F7; padding: 3px 6px; border-radius: 6px; font-family: monospace; font-weight: 600; }
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 20px; font-size: 18px; }
+        .api-step { background: #F9F9FB; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; }
 
-        /* --- CALLOUT BOXES --- */
-        .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0; font-size: 16px; }
-        .callout-tip { background: #E8F4E8; border-left: 4px solid var(--green); }
-        .callout-warn { background: #FFF9E6; border-left: 4px solid var(--gold); }
-        .callout-info { background: #E8F2FF; border-left: 4px solid var(--accent); }
-        .callout-important { background: #FFF0EF; border-left: 4px solid var(--red); }
-        .callout strong { display: block; margin-bottom: 5px; }
-
-        /* --- STEP BOXES --- */
-        .steps { margin: 15px 0; }
-        .step { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 15px; }
-        .step-num { background: var(--accent); color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
-        .step-body { flex: 1; font-size: 17px; }
-        .step-body strong { display: block; margin-bottom: 4px; }
-
-        /* --- INLINE CODE / BADGES --- */
-        code { background: #F2F2F7; padding: 3px 8px; border-radius: 6px; font-family: monospace; font-weight: 700; font-size: 15px; color: var(--accent); }
-        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 13px; font-weight: 800; margin: 0 2px; }
-        .badge-green { background: #E3F9EB; color: #1A8F3A; }
-        .badge-yellow { background: #FFF8DC; color: #9A7000; }
-        .badge-red { background: #FFE8E6; color: #C0392B; }
-        .badge-gold { background: #FFF3CD; color: var(--gold); }
-        .badge-blue { background: #E8F2FF; color: var(--accent); }
-
-        /* --- COLOR DEMO --- */
-        .color-demo { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
-        .color-swatch { border-radius: 10px; padding: 12px 20px; font-weight: 700; font-size: 15px; text-align: center; flex: 1; min-width: 100px; }
-
-        /* --- DIVIDER --- */
-        .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-
-        /* --- FOOTER --- */
-        .manual-footer { text-align: center; padding: 30px 20px; opacity: 0.5; font-size: 14px; }
-
-        /* --- BACK BUTTON --- */
-        .btn-back { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--accent); font-weight: 700; font-size: 18px; margin-bottom: 20px; }
-        .back-to-top { display: block; text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 14px; font-weight: 700; color: #8E8E93; text-decoration: none; letter-spacing: 0.5px; }
-        .back-to-top:hover { color: var(--accent); }
+        .tech-ref-card {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #F0F6FF; border: 2px solid var(--accent); border-radius: 14px;
+            padding: 18px 22px; margin: 25px 0; text-decoration: none; color: var(--text);
+        }
+        .tech-ref-card:hover { background: #E3EEFF; }
+        .tech-ref-card .label { font-size: 18px; font-weight: 700; color: var(--accent); }
+        .tech-ref-card .desc { font-size: 14px; color: var(--subtext); margin-top: 3px; }
+        .tech-ref-card .arrow { font-size: 28px; color: var(--accent); }
     </style>
 </head>
 <body>
 
+    <div class="content">
+        <a href="index.html" class="btn-back">← Back to App</a>
+        <h1>User Manual</h1>
+        <p>Welcome to the <strong>Southern Dutchess Toastmasters</strong> Meeting Tools suite (v2.9.0). This PWA (Progressive Web App) is designed to streamline the roles of Timer, Ah-Counter, and Grammarian.</p>
 
-    <a href="index.html" class="btn-back" id="top">← Back to App</a>
+        <a href="technical-reference.html" class="tech-ref-card">
+            <div>
+                <div class="label">Technical Reference</div>
+                <div class="desc">Developer contract — all screens, functions, keys, and CSS classes</div>
+            </div>
+            <div class="arrow">⟩</div>
+        </a>
 
-    <div class="manual-header">
-        <h1>Meeting Tools</h1>
-        <div class="version">Version 2.9.0 &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
-        <p>A complete guide to using the Meeting Tools app — from first-time setup through every feature. No technical experience required.</p>
-    </div>
-
-    <!-- TABLE OF CONTENTS -->
-    <div class="toc">
-        <h2>Contents</h2>
-        <ol>
-            <li><a href="#getting-started">Getting Started — First Time Setup</a></li>
-            <li><a href="#api-key">Setting Up Your OpenAI API Key</a></li>
-            <li><a href="#timer">The Timer</a></li>
-            <li><a href="#ah-counter">The Ah-Counter</a></li>
-            <li><a href="#wod">Word of the Day</a></li>
-            <li><a href="#transcription">Record Speech & Auto-Transcription</a></li>
-            <li><a href="#report">Meeting Report</a></li>
-            <li><a href="#settings">Settings & Data Management</a></li>
-            <li><a href="#faq">Frequently Asked Questions</a></li>
-        </ol>
-    </div>
-
-    <!-- 1. GETTING STARTED -->
-    <div class="section" id="getting-started">
-        <h2 class="section-title">1. Getting Started</h2>
-        <span class="section-subtitle">First Time Setup</span>
-
-        <p>Meeting Tools is a <strong>PWA</strong> — a Progressive Web App. This means it works like a normal website but can also be installed on your phone or tablet's home screen so it behaves exactly like a native app, even working offline once it's been loaded.</p>
-
-        <h3>Opening the App for the First Time</h3>
-        <div class="steps">
-            <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Open the link in your browser.</strong> Safari on iPhone/iPad and Chrome on Android give the best experience.</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Add it to your Home Screen</strong> so it's always one tap away. On iPhone: tap the Share button (the box with an arrow) → tap "Add to Home Screen." On Android: tap the three-dot menu → "Add to Home Screen" or "Install App."</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Set your club name.</strong> On the main screen, tap the title area where it says "Tap to set club name." Type your club name and tap OK. It will appear every time you open the app.</div></div>
-            <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Add your OpenAI API key</strong> (optional but recommended — enables AI features). See Section 2 below for full instructions.</div></div>
-            <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Build your Speaker Roster.</strong> Go to Timer or Ah-Counter → tap any "Start" option → type a name in the search box and tap "Add." Repeat for all your regular members. This roster is saved permanently and you only need to do this once.</div></div>
-        </div>
-
-        <div class="callout callout-tip">
-            <strong>💡 Tip</strong>
-            All your data — roster, settings, logs — is saved automatically on your device. Nothing is stored on a server. You won't lose anything if you close the app, but if you clear your browser data you will lose it. Use the <strong>Backup Data</strong> feature in Settings regularly to keep a safe copy.
-        </div>
-
-        <h3>Understanding the Two Modes</h3>
-        <p>At the top of the main screen you'll see two tabs: <strong>Timer</strong> and <strong>Ah-Counter</strong>. These are the two core tools in the app. You can switch between them at any time from the main screen.</p>
+        <h2>1. The Word of the Day (W.O.D.)</h2>
+        <p>The W.O.D. feature uses <strong>ChatGPT-4o-mini</strong> to provide intelligent, club-appropriate content.</p>
         <ul>
-            <li><strong>Timer</strong> — Used by the meeting Timer role. Tracks how long a speaker has been talking and signals with color when they hit their time limits.</li>
-            <li><strong>Ah-Counter</strong> — Used by the Ah-Counter or Grammarian role. Tracks filler words, hosts the Word of the Day, and includes the speech recording/transcription feature.</li>
-        </ul>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 2. API KEY -->
-    <div class="section" id="api-key">
-        <h2 class="section-title">2. Setting Up Your OpenAI API Key</h2>
-        <span class="section-subtitle">Required for AI Features</span>
-
-        <p>Several features in this app — the Word of the Day definitions and the speech transcription — use OpenAI's AI services. To use these features, you need to provide your own OpenAI API key. This takes about 5 minutes to set up and costs almost nothing to use.</p>
-
-        <div class="callout callout-info">
-            <strong>Why do I need my own key?</strong>
-            The app does not have a shared key built in. This is intentional — it keeps your meeting data completely private, and it means you control your own usage and costs. OpenAI charges a tiny fraction of a cent per use, so even heavy use at a Toastmasters meeting will cost less than a dollar per year.
-        </div>
-
-        <h3>Step-by-Step: Getting Your Key</h3>
-        <div class="steps">
-            <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Go to platform.openai.com</strong> in a web browser. Create a free account if you don't have one, or log in.</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click on "API Keys"</strong> in the left sidebar. If you don't see the sidebar, look for your account icon or name in the upper right corner and find a menu.</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Click "+ Create new secret key."</strong> Give it a name like "Toastmasters App" so you remember what it's for. Then click "Create secret key."</div></div>
-            <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Copy the key immediately.</strong> It starts with <code>sk-...</code> and is a long string of letters and numbers. This is the only time OpenAI will show you the full key, so copy it now.</div></div>
-            <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Open Meeting Tools → tap the ⚙ Settings icon</strong> in the top right corner of the main screen.</div></div>
-            <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Paste your key</strong> into the "ChatGPT API Key" field and tap outside the field to save. The app will remember it from now on.</div></div>
-        </div>
-
-        <div class="callout callout-warn">
-            <strong>⚠ Add a spending limit</strong>
-            In your OpenAI account, go to Settings → Billing and set a monthly spending limit of $1 or $2. This guarantees you'll never be surprised by an unexpected charge, even if something goes wrong.
-        </div>
-
-        <h3>What Happens Without a Key?</h3>
-        <p>The app works fine without an API key — the Timer and manual Ah-Counter both work fully. The Word of the Day screen will show the word but won't be able to fetch a definition or usage example. The speech recording/transcription feature will not be available without a key.</p>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 3. TIMER -->
-    <div class="section" id="timer">
-        <h2 class="section-title">3. The Timer</h2>
-        <span class="section-subtitle">Timing Speeches and Segments</span>
-
-        <p>The Timer is used by the person in the Timer role during a Toastmasters meeting. It tracks how long a speaker has been talking and uses color to signal when they've reached their time thresholds — without anyone needing to watch a clock.</p>
-
-        <h3>Starting a Timer</h3>
-        <div class="steps">
-            <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Make sure you're on the Timer tab</strong> on the main screen. Tap "New Timer."</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the speaker.</strong> Type their name in the search box or tap their name from the roster list below. Their name will appear in the search box when selected.</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Select the speech type</strong> from the grid — Table Topics, Evaluation, Speech, Ice Breaker, or Custom.</div></div>
-            <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Tap START.</strong> The timer begins immediately.</div></div>
-        </div>
-
-        <h3>The Color Signal System</h3>
-        <p>Once the timer is running, the entire screen background changes color to signal timing milestones. This is visible from across the room.</p>
-
-        <div class="color-demo">
-            <div class="color-swatch" style="background:#E3F9EB; color:#1A8F3A;">GREEN<br><span style="font-weight:400; font-size:13px;">Minimum time reached</span></div>
-            <div class="color-swatch" style="background:#FFF8DC; color:#9A7000;">YELLOW<br><span style="font-weight:400; font-size:13px;">Target time reached</span></div>
-            <div class="color-swatch" style="background:#FFE8E6; color:#C0392B;">RED<br><span style="font-weight:400; font-size:13px;">Maximum time reached</span></div>
-        </div>
-
-        <p>For example, for a <strong>5-7 minute Speech</strong>: the screen turns green at 5 minutes, yellow at 6 minutes, and red at 7 minutes. The speaker should aim to finish between green and yellow.</p>
-
-        <h3>Time Presets</h3>
-        <ul>
-            <li><strong>Table Topics</strong> — 1 to 2 minutes</li>
-            <li><strong>Evaluation</strong> — 2 to 3 minutes</li>
-            <li><strong>Speech</strong> — 5 to 7 minutes</li>
-            <li><strong>Ice Breaker</strong> — 4 to 6 minutes</li>
-            <li><strong>Custom</strong> — You set the Green, Yellow, and Red thresholds yourself in minutes</li>
+            <li><strong>Randomize:</strong> Tap "Random" to pick from a curated library of 1,000 sophisticated words.</li>
+            <li><strong>Search:</strong> Type a specific word into the search bar and tap 🔍 to fetch a custom AI definition and usage sentence for that word.</li>
+            <li><strong>Contextual AI:</strong> ChatGPT is instructed to provide "public speaking" flavored definitions and family-friendly examples.</li>
+            <li><strong>Select:</strong> Tapping "Select" pins the word to the top-left of the Ah-Counter grid with a gold "WORD OF DAY" badge for easy tracking.</li>
         </ul>
 
-        <h3>Pausing and Saving</h3>
+        <h2>2. Timer Functionality</h2>
         <ul>
-            <li>Tap <strong>PAUSE</strong> to pause the timer. Tap it again (it will say RESUME) to continue.</li>
-            <li>Tap <strong>COMMIT & EXIT</strong> when the speech is over. This saves the speaker's name, role, and final time to the Meeting Report and returns you to the main screen. The background resets to normal.</li>
+            <li><strong>Presets:</strong> Quickly select 1-2m (Table Topics), 2-3m (Evaluations), 4-6m (Ice Breaker), or 5-7m (Speeches).</li>
+            <li><strong>Custom:</strong> Enter a custom time limit for non-standard meeting segments.</li>
+            <li><strong>Visual Cues:</strong> The background turns <code>Green</code> at the minimum time, <code>Yellow</code> at the target time, and <code>Red</code> at the maximum time.</li>
+            <li><strong>Pause:</strong> Tap "Pause" to freeze the timer and "Resume" to continue. Tap "Commit &amp; Exit" to save the result to the meeting report.</li>
         </ul>
 
-        <div class="callout callout-tip">
-            <strong>💡 Tip — Keep the screen on</strong>
-            On most phones, the screen will dim or lock after a minute of no interaction. To prevent this, go to your phone's display settings and temporarily set "Screen Timeout" or "Auto-Lock" to a longer time (or "Never") during meetings.
-        </div>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 4. AH-COUNTER -->
-    <div class="section" id="ah-counter">
-        <h2 class="section-title">4. The Ah-Counter</h2>
-        <span class="section-subtitle">Tracking Filler Words Manually</span>
-
-        <p>The Ah-Counter feature lets you manually track how many filler words a speaker uses during their speech. Each time you hear a filler word, you tap its card to add a count. At the end of the speech you save the results, which are added to the Meeting Report.</p>
-
-        <h3>Starting a Counter Session</h3>
-        <div class="steps">
-            <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Switch to the Ah-Counter tab</strong> on the main screen. Tap "Start Tracking."</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the speaker</strong> by typing their name or tapping from the roster.</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Select the role</strong> from the grid — Ah Counter, Grammarian, Speaker, etc. This is the role the speaker is filling, not your own role.</div></div>
-            <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Make sure "Record Speech" is toggled OFF</strong> if you want to count manually. (See Section 6 for the recording mode.) Tap START.</div></div>
-        </div>
-
-        <h3>Using the Tally Grid</h3>
-        <p>You'll see a grid of cards — one for each filler word being tracked. The default fillers are: <code>AH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>.</p>
+        <h2>3. Ah-Counter &amp; Filler Words</h2>
         <ul>
-            <li><strong>Tap the card</strong> to add 1 to the count. The large number in the middle updates instantly.</li>
-            <li><strong>Tap the − button</strong> (bottom right of the card) to subtract 1 if you tapped by mistake.</li>
-            <li><strong>Tap the ✕ button</strong> (bottom left of the card) to remove that filler from the grid entirely for this session. A confirmation will appear first.</li>
-            <li>If a <strong>Word of the Day</strong> is active, it will appear at the top of the grid with a gold border.</li>
+            <li><strong>Tracking:</strong> Tap any card to increase the count. Tap the small "−" to decrease.</li>
+            <li><strong>Persistence:</strong> If you save a session and start a new one for the same speaker and role, the app will merge the counts automatically.</li>
+            <li><strong>Customization:</strong> You can delete fillers you aren't tracking by tapping the "✕" on the card.</li>
         </ul>
 
-        <h3>Saving the Session</h3>
-        <p>When the speech is over, tap <strong>SAVE RESULTS</strong>. The counts are saved to the Meeting Report. If you already have a saved entry for the same speaker in the same role (for example, if a speaker gave a speech and you want to add their Table Topics count too), the app will automatically merge the counts rather than creating a duplicate entry.</p>
-
-        <div class="callout callout-tip">
-            <strong>💡 Tip — Customizing your filler list</strong>
-            To add a new filler word that isn't in the default list, go to Settings and use Backup/Restore to export your data, manually add the word to the <code>fillers</code> array in the JSON file, then import it back. Alternatively, the Word of the Day feature automatically adds the active WOD to the grid.
-        </div>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 5. WORD OF THE DAY -->
-    <div class="section" id="wod">
-        <h2 class="section-title">5. Word of the Day</h2>
-        <span class="section-subtitle">AI-Powered Vocabulary Feature</span>
-
-        <p>The Word of the Day (W.O.D.) feature helps the Grammarian or Word Master role. It can generate a random sophisticated word with an AI-written definition and example sentence, or let you search for a specific word. Once selected, the word is tracked on the Ah-Counter grid so you can count how many times speakers use it correctly.</p>
-
-        <div class="callout callout-info">
-            <strong>ℹ Requires an OpenAI API key</strong>
-            The AI-powered definitions and examples require your OpenAI key (see Section 2). Without a key, the screen will display the word but won't be able to generate a definition.
-        </div>
-
-        <h3>Generating a Random Word</h3>
-        <p>From the main Ah-Counter menu, tap <strong>Word of the Day</strong>. The app automatically loads a random word from a built-in library of over 1,000 sophisticated vocabulary words. If you have an API key configured, ChatGPT will generate a definition and a public-speaking-themed example sentence within a few seconds. Tap <strong>Random</strong> to get a different word.</p>
-
-        <h3>Searching for a Specific Word</h3>
-        <p>If you already know what word you want to use, type it into the search bar at the top of the W.O.D. screen and tap the 🔍 button. ChatGPT will generate a custom definition and example sentence for any word you enter.</p>
-
-        <h3>Selecting the Word</h3>
-        <p>Once you're happy with the word, tap <strong>Select</strong>. This does two things: it saves the word and its full definition to memory for the Meeting Report, and it adds the word to the top of the Ah-Counter tally grid (with a gold border and "WORD OF DAY" label) so you can count its usage during speeches.</p>
-
-        <div class="callout callout-tip">
-            <strong>💡 Tip</strong>
-            Select your Word of the Day at the beginning of the meeting, before you start tracking any speakers. The word will persist throughout the entire meeting session and appear in the final report.
-        </div>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 6. TRANSCRIPTION -->
-    <div class="section" id="transcription">
-        <h2 class="section-title">6. Record Speech &amp; Auto-Transcription</h2>
-        <span class="section-subtitle">AI-Powered Filler Word Detection</span>
-
-        <p>This feature lets you record a speaker's speech using your device's microphone. When they finish, OpenAI's Whisper AI transcribes what was said, and the app automatically counts how many times each filler word appeared — saving you from having to tap manually during the speech. You can then review the results before they're sent to the counter.</p>
-
-        <div class="callout callout-important">
-            <strong>⚠ Requirements</strong>
-            This feature requires an OpenAI API key (see Section 2) and microphone permission on your device. The first time you use it, your browser will ask permission to use the microphone — tap "Allow."
-        </div>
-
-        <h3>How to Use It</h3>
-        <div class="steps">
-            <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Switch to Ah-Counter mode</strong> on the main screen. Tap "Start Tracking."</div></div>
-            <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the speaker and role</strong> as normal.</div></div>
-            <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Turn on the "Record Speech" toggle</strong> at the bottom of the Setup screen. It will switch from gray to green. Tap START.</div></div>
-            <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Tap "Start Recording"</strong> on the Transcription screen when the speaker begins. The status indicator will pulse red and say "RECORDING LIVE." Place your device where it can clearly hear the speaker.</div></div>
-            <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Tap "End Speech"</strong> when the speaker finishes. The app sends the recording to OpenAI Whisper for transcription. This usually takes 5–15 seconds depending on speech length and your internet connection.</div></div>
-            <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Review the results.</strong> The full transcript appears with filler words highlighted — <span style="background:#FFE0DE; color:#FF3B30; font-weight:700; border-radius:4px; padding:0 4px;">red for regular fillers</span> and <span style="background:#FFF3CD; color:#BF941A; font-weight:700; border-radius:4px; padding:0 4px;">gold for the Word of the Day</span>. Below the transcript, a summary shows each filler word and how many times it was detected.</div></div>
-            <div class="step"><div class="step-num">7</div><div class="step-body"><strong>Tap "Merge to Counter"</strong> to send the detected counts to the Ah-Counter screen. From there you can manually adjust any counts if needed, then tap SAVE RESULTS as usual.</div></div>
-        </div>
-
-        <h3>Understanding the Transcript View</h3>
-        <p>The transcript is a literal transcription of what was spoken, including filler words as they were heard. Words that match your filler list are highlighted directly in the text so you can see exactly where in the speech they occurred — useful context when giving feedback to the speaker.</p>
-
-        <h3>Tips for Best Results</h3>
+        <h2>4. Speech Transcription (Grammarian Mode)</h2>
+        <p>When tracking an Ah-Counter session, you can enable automatic speech transcription to detect filler words hands-free.</p>
         <ul>
-            <li><strong>Microphone placement matters.</strong> The closer the device is to the speaker, the more accurate the transcription. Sitting at the same table works well. Being across a large room may reduce accuracy.</li>
-            <li><strong>Background noise</strong> such as air conditioning, side conversations, or clattering dishes can affect accuracy. Try to minimize it where possible.</li>
-            <li><strong>Whisper is very good</strong> at capturing filler words — it's specifically designed to transcribe speech literally rather than "cleaning it up." However, very quiet or mumbled speech may be missed.</li>
-            <li><strong>Always review the results</strong> before merging. If you notice a count looks wrong, you can adjust it manually on the counter screen after merging.</li>
-            <li><strong>Internet required.</strong> The transcription is processed by OpenAI's servers, so you need an active internet connection. If the venue has poor Wi-Fi, consider using your phone's cellular data as a hotspot.</li>
+            <li><strong>Enable:</strong> On the Setup screen (in Ah-Counter mode), toggle on <strong>Record Speech</strong> before tapping START.</li>
+            <li><strong>Recording:</strong> The transcription screen appears. Tap <strong>Start Recording</strong> and hold your device toward the speaker.</li>
+            <li><strong>Analysis:</strong> Tap <strong>End Speech</strong> when done. The audio is sent to OpenAI Whisper for transcription, then analyzed for your tracked filler words.</li>
+            <li><strong>Results:</strong> The transcript appears with filler words highlighted in red and the Word of the Day highlighted in gold. A count summary is shown below.</li>
+            <li><strong>Merge:</strong> Tap <strong>Merge to Counter</strong> to populate the manual counter screen with the detected counts. You can then adjust any counts before saving.</li>
+        </ul>
+        <div class="alert">
+            <strong>Note on iOS:</strong> Microphone recording requires Safari on iPhone/iPad. Chrome on iOS does not support microphone access in web apps. Android Chrome works correctly.
+        </div>
+
+        <h2 id="setup-api">5. Setting up AI Usage (ChatGPT)</h2>
+        <div class="alert">
+            <strong>Why do I need a key?</strong> For privacy and cost reasons, the app does not store a central key. By providing your own key, your meeting data stays private and you get your own dedicated AI usage.
+        </div>
+        
+        <h3>How to get your OpenAI API Key:</h3>
+        <div class="api-step">
+            <strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.
+        </div>
+        <div class="api-step">
+            <strong>Step 2:</strong> Navigate to the <strong>API Keys</strong> tab in the left sidebar.
+        </div>
+        <div class="api-step">
+            <strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>. Name it "Toastmasters App" and copy the key (it starts with <code>sk-...</code>).
+        </div>
+        <div class="api-step">
+            <strong>Step 4:</strong> In the Meeting Tools app, go to <strong>Settings (⚙)</strong> and paste the key into the <strong>ChatGPT API Key</strong> field.
+        </div>
+        <p><em>Note: OpenAI provides a small amount of free credit to new accounts. Even after that, <code>gpt-4o-mini</code> and <code>whisper-1</code> are both very inexpensive — typical meeting usage costs a few cents per month.</em></p>
+
+        <h2>6. Data Management</h2>
+        <ul>
+            <li><strong>Settings:</strong> You can toggle <strong>Markdown Export</strong> for clean tables in Slack, Email, or Discord.</li>
+            <li><strong>Backup/Restore:</strong> Use the Export JSON button to save your speaker roster and settings to a file. You can import this file on a different device to sync your data.</li>
+            <li><strong>Clear Meeting Data:</strong> Resets all current logs and the selected W.O.D. for the next meeting. This <em>does not</em> delete your speaker roster.</li>
         </ul>
 
-        <h3>What if Something Goes Wrong?</h3>
-        <ul>
-            <li><strong>"Microphone Error"</strong> — Your browser doesn't have permission to use the microphone. Go to your device's Settings → Privacy → Microphone and make sure your browser is allowed. Then try again.</li>
-            <li><strong>"Network Error"</strong> — The app couldn't reach OpenAI. Check your internet connection and tap "Try Again."</li>
-            <li><strong>"Transcription Failed"</strong> — The audio was sent but something went wrong processing it. This can happen with very short recordings (under 1–2 seconds). Tap "Try Again."</li>
-            <li><strong>API key error</strong> — If you see an "AI Error" message, your API key may have expired or been entered incorrectly. Go to Settings and re-paste your key.</li>
-        </ul>
-
-        <div class="callout callout-tip">
-            <strong>💡 Tip — Manual mode is always available</strong>
-            The recording feature is entirely optional. If you prefer to tap manually, simply leave the "Record Speech" toggle off. Both methods save to the same Meeting Report in exactly the same format.
+        <div style="margin-top: 50px; text-align: center; opacity: 0.6;">
+            <p>Version 2.9.0 | Southern Dutchess Toastmasters</p>
         </div>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
     </div>
 
-    <!-- 7. REPORT -->
-    <div class="section" id="report">
-        <h2 class="section-title">7. Meeting Report</h2>
-        <span class="section-subtitle">Viewing and Sharing Results</span>
-
-        <p>The Meeting Report collects everything recorded during the meeting — all timer results and all Ah-Counter/transcription results — into a single formatted log that you can copy, share, or read aloud during the meeting wrap-up.</p>
-
-        <h3>Viewing the Report</h3>
-        <p>From the main screen, tap <strong>Meeting Report</strong> (in Timer mode) or <strong>Counter Report</strong> (in Ah-Counter mode). Both go to the same report — all data from the meeting is in one place.</p>
-        <p>The report shows the date at the top, followed by the Word of the Day and its definition (if one was selected), then a table of all recorded sessions with speaker name, role, and result.</p>
-
-        <h3>Sharing the Report</h3>
-        <ul>
-            <li><strong>Copy</strong> — Copies the full report text to your clipboard so you can paste it into an email, Slack message, or meeting notes document.</li>
-            <li><strong>Share</strong> — Opens your device's native share sheet, letting you send the report via Messages, email, WhatsApp, or any other app on your device.</li>
-        </ul>
-
-        <h3>Markdown Format</h3>
-        <p>If you share reports in Slack, Discord, or similar platforms, turn on <strong>Markdown Export</strong> in Settings. This formats the report as a table that renders beautifully in those apps. With Markdown off, the report is plain text suitable for email or copying into a Word document.</p>
-
-        <div class="callout callout-tip">
-            <strong>💡 Tip — Share during the meeting</strong>
-            Many Ah-Counters share the report immediately after their verbal summary at the end of the meeting. Tapping Share → Email lets you send the full record to the club's mailing list in seconds.
-        </div>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 8. SETTINGS -->
-    <div class="section" id="settings">
-        <h2 class="section-title">8. Settings &amp; Data Management</h2>
-        <span class="section-subtitle">Customization, Backup, and Reset</span>
-
-        <p>Access Settings by tapping the <strong>⚙</strong> icon in the top right corner of the main screen.</p>
-
-        <h3>Markdown Export Toggle</h3>
-        <p>When turned on, the Meeting Report is formatted as a Markdown table. This renders as a nicely formatted table in Slack, Discord, and most modern email clients. Turn it off for plain text output that works everywhere.</p>
-
-        <h3>ChatGPT API Key</h3>
-        <p>Paste your OpenAI API key here. The key is stored only on your device and is never sent anywhere except directly to OpenAI when you use an AI feature. See Section 2 for full setup instructions.</p>
-
-        <h3>Backup Data (Export JSON)</h3>
-        <p>Tap this to download a backup file containing your entire speaker roster, filler word list, club name, and API key. Save this file somewhere safe — your email, iCloud, or Google Drive. You can use it to restore the app on a new device or after clearing your browser data.</p>
-
-        <div class="callout callout-warn">
-            <strong>⚠ Back up regularly</strong>
-            The app stores data in your browser's local storage, which can be cleared if you clear your browser history or cache. Back up your data before doing any browser cleanup.
-        </div>
-
-        <h3>Restore Data (Import JSON)</h3>
-        <p>Tap this to import a previously saved backup file. This will restore your roster, fillers, club name, and API key exactly as they were when the backup was made. This is also how you sync your data to a new phone or share the roster with a co-timer.</p>
-
-        <h3>Clear Meeting Data</h3>
-        <p>This resets the current meeting — it clears all recorded timer and counter logs and removes the selected Word of the Day. Use this at the start of each meeting to begin fresh. <strong>It does not delete your speaker roster, settings, or API key.</strong> A confirmation dialog will appear before anything is deleted.</p>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <!-- 9. FAQ -->
-    <div class="section" id="faq">
-        <h2 class="section-title">9. Frequently Asked Questions</h2>
-        <span class="section-subtitle">Common Questions and Answers</span>
-
-        <h3>Can two people use the app at the same time — one as Timer and one as Ah-Counter?</h3>
-        <p>Yes. If two people both have the app open on separate devices, they each record their own data. You can then combine the reports manually, or one person can import the other's backup JSON at the end of the meeting to merge the data. Native real-time sync between devices is not currently supported.</p>
-
-        <h3>I accidentally tapped the wrong filler word. Can I undo it?</h3>
-        <p>Yes — tap the small <strong>−</strong> button in the bottom right corner of the card that was tapped by mistake. It subtracts one from the count, down to a minimum of zero.</p>
-
-        <h3>A speaker is listed in the report twice. How do I fix it?</h3>
-        <p>The app automatically merges entries when the same speaker name and role combination is saved more than once in a session. If you see a duplicate, it means the name was spelled differently the second time (for example, "JOHN SMITH" vs "JOHN"). The simplest fix is to use the roster — always tap the speaker's name from the list rather than typing it, so the spelling is always consistent.</p>
-
-        <h3>The Word of the Day doesn't show a definition — it just says "Add OpenAI Key in Settings."</h3>
-        <p>This means an API key hasn't been entered yet. Go to Settings (⚙), paste your OpenAI key into the ChatGPT API Key field, then return to the W.O.D. screen and tap Random or search again.</p>
-
-        <h3>The transcription missed some filler words. Why?</h3>
-        <p>Whisper transcribes what it hears, so accuracy depends on audio quality. Common causes of missed words: the device was too far from the speaker, there was significant background noise, or the speaker spoke very quietly or quickly. The transcription is also limited to words that are in your filler list — if a speaker uses "right?" as a filler but "RIGHT" isn't in your list, it won't be counted. You can always adjust counts manually on the counter screen before saving.</p>
-
-        <h3>Does the app work without internet?</h3>
-        <p>Mostly yes. The Timer, manual Ah-Counter, Meeting Report, and all data management features work completely offline once the app has been loaded. The Word of the Day definitions and the speech transcription require an internet connection because they use OpenAI's cloud services.</p>
-
-        <h3>How do I add a new filler word to the tracking list?</h3>
-        <p>The easiest method: go to Settings → Backup Data to export your data as a JSON file. Open the file in any text editor, find the <code>"fillers"</code> section, and add your new word in quotes (e.g., <code>"BASICALLY"</code>). Save the file, then go back to Settings → Restore Data and import it. Your new word will appear on the counter grid.</p>
-
-        <h3>Can I use this at a non-Toastmasters event?</h3>
-        <p>Absolutely. The app is general-purpose enough to be useful at any meeting, class, or event where speech timing and filler word tracking are helpful. The club name, role names, and filler list are all customizable.</p>
-
-        <h3>Is my data private?</h3>
-        <p>Yes. All data (roster, logs, settings) is stored locally on your device only. When you use AI features (Word of the Day or transcription), the word or audio is sent to OpenAI using your personal API key, under your own OpenAI account's privacy terms. Nothing is sent to any other server.</p>
-        <a href="#top" class="back-to-top">↑ Back to Contents</a>
-    </div>
-
-    <div class="manual-footer">
-        <p>Meeting Tools v2.9.0 &nbsp;·&nbsp; Southern Dutchess Toastmasters<br>
-        Questions or feedback? Bring them to a club officer.</p>
-    </div>
-
-</div>
 </body>
 </html>
