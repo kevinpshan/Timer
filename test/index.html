@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.10.1</title>
+    <title>Meeting Tools v2.10.2</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -183,7 +183,6 @@
                 <button class="footer-btn" style="flex:0; padding:15px 25px; font-size:18px; height:54px; display:flex; align-items:center;" onclick="saveSpeaker()">Add</button>
             </div>
             <div id="speakerArea" style="background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px; margin-bottom: 10px;"></div>
-            <div id="roleGridArea" class="role-grid"></div>
             <!-- NEW: Record Speech toggle — only visible in counter mode -->
             <div id="recordToggleRow" style="display:none; justify-content:space-between; align-items:center; background:var(--card); border-radius:14px; padding:18px 20px; border:1px solid var(--border); flex-shrink:0;">
                 <div>
@@ -195,6 +194,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div id="roleGridArea" class="role-grid"></div>
         </div>
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
     </div>
@@ -250,7 +250,7 @@
         </div>
     </div>
 
-    <!-- ===================== TRANSCRIPT LIST SCREEN (NEW v2.10.1) ===================== -->
+    <!-- ===================== TRANSCRIPT LIST SCREEN (NEW v2.10.2) ===================== -->
     <div id="transcriptList" class="screen">
         <div class="header"><h1>Transcripts</h1><div class="subtitle">Saved this meeting</div></div>
         <div class="container">
@@ -259,7 +259,7 @@
         <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button></div>
     </div>
 
-    <!-- ===================== TRANSCRIPT VIEW SCREEN (NEW v2.10.1) ===================== -->
+    <!-- ===================== TRANSCRIPT VIEW SCREEN (NEW v2.10.2) ===================== -->
     <div id="transcriptView" class="screen">
         <div class="header">
             <h1 id="transcriptViewName">Name</h1>
@@ -271,7 +271,8 @@
         </div>
         <div class="button-row">
             <button class="footer-btn secondary-btn" onclick="showScreen('transcriptList')">Back</button>
-            <button class="footer-btn secondary-btn" onclick="printTranscript()">Save PDF</button>
+            <button class="footer-btn secondary-btn" onclick="printTranscript()">Print / PDF</button>
+            <button class="footer-btn secondary-btn" onclick="shareRichTranscript()">Rich Text</button>
             <button class="footer-btn" style="background:var(--green);" onclick="shareTranscript()">Share</button>
         </div>
     </div>
@@ -281,7 +282,7 @@
         const KEY_LOGS = prefix + 'sdtm_logs', KEY_CLUB = prefix + 'sdtm_club_name', KEY_SPEAKERS = prefix + 'sdtm_speakers', KEY_FILLERS = prefix + 'sdtm_fillers', KEY_MD = prefix + 'sdtm_md_toggle', KEY_WOD_FULL = prefix + 'sdtm_wod_full', KEY_CUSTOM = prefix + 'sdtm_custom_limits', KEY_AI_KEY = prefix + 'sdtm_openai_key', KEY_TRANSCRIPTS = prefix + 'sdtm_transcripts';
 
         let currentMode = 'timer', currentSpeaker = "", currentTally = {}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
-        let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
+        let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
         let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
 
         // --- NEW: Transcription state ---
@@ -301,7 +302,7 @@
             document.getElementById('mdToggle').checked = (mdSaved === 'true');
             document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
             const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.10.1" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
+            vLabel.innerText = "Version 2.10.2" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
             refreshRoster();
             nextWod();
         }
@@ -666,7 +667,7 @@
         }
 
         /* ============================================================
-           NEW: TRANSCRIPT LIST & VIEW FUNCTIONS (v2.10.1)
+           NEW: TRANSCRIPT LIST & VIEW FUNCTIONS (v2.10.2)
         ============================================================ */
 
         let activeTranscriptIndex = -1;
@@ -751,6 +752,20 @@
                 navigator.share({ title: t.speaker + ' Transcript', text });
             } else {
                 navigator.clipboard.writeText(text).then(() => openModal("Copied", "Transcript copied to clipboard.", () => {}));
+            }
+        }
+
+        function shareRichTranscript() {
+            const transcripts = JSON.parse(localStorage.getItem(KEY_TRANSCRIPTS) || '[]');
+            const t = transcripts[activeTranscriptIndex];
+            if (!t) return;
+            // Replace highlighted spans with **WORD** (bold caps) for rich text / markdown
+            const richText = t.plainText.replace(/\b(AH|UH|UM|ER|SO|LIKE|YOU KNOW)/gi, (match) => '**' + match.toUpperCase() + '**');
+            const fullText = 'Transcript — ' + t.speaker + ' (' + t.role + ')\n' + t.date + '\n\nFiller Summary: ' + t.fillerSummary + '\n\n' + richText;
+            if (navigator.share) {
+                navigator.share({ title: t.speaker + ' — Rich Transcript', text: fullText });
+            } else {
+                navigator.clipboard.writeText(fullText).then(() => openModal("Copied", "Rich text transcript copied to clipboard.", () => {}));
             }
         }
 
