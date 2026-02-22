@@ -1,391 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Technical Reference — Meeting Tools</title>
-    <style>
-        :root {
-            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF;
-            --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
-            --gold: #BF941A; --red: #FF3B30; --green: #34C759;
-        }
-        body {
-            margin: 0; background: var(--bg); color: var(--text);
-            font-family: -apple-system, system-ui, sans-serif; line-height: 1.6;
-            padding: 30px 20px 60px;
-        }
-        .content { max-width: 860px; margin: 0 auto; }
+# Meeting Tools — Technical Reference
+> Developer contract for `index.html` v2.10.3. Every item below must survive unchanged in any new version.
 
-        a.btn-back {
-            display: inline-block; text-decoration: none; color: var(--accent);
-            font-weight: 700; margin-bottom: 24px; font-size: 17px;
-        }
+---
 
-        h1 { font-size: 34px; font-weight: 800; margin: 0 0 4px; color: #000; }
-        .tagline { font-size: 15px; color: #8E8E93; margin-bottom: 30px; }
+## LocalStorage Keys
+Every key is prefixed dynamically based on URL path (`prod_` or `test_`) via:
+```javascript
+const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
+```
 
-        /* TOC */
-        .toc {
-            background: var(--card); border-radius: 16px; padding: 20px 24px;
-            border: 1px solid var(--border); margin-bottom: 30px;
-        }
-        .toc h2 { margin: 0 0 12px; font-size: 16px; color: #8E8E93; text-transform: uppercase; letter-spacing: 1px; }
-        .toc ol { margin: 0; padding-left: 20px; }
-        .toc li { margin: 6px 0; }
-        .toc a { color: var(--accent); font-weight: 600; text-decoration: none; font-size: 15px; }
+| Constant | Full Key (prod) | Stores |
+|---|---|---|
+| `KEY_LOGS` | `prod_sdtm_logs` | Array of session log strings |
+| `KEY_CLUB` | `prod_sdtm_club_name` | Club name string |
+| `KEY_SPEAKERS` | `prod_sdtm_speakers` | Array of speaker name strings |
+| `KEY_FILLERS` | `prod_sdtm_fillers` | Array of filler word strings |
+| `KEY_MD` | `prod_sdtm_md_toggle` | Boolean string for markdown export |
+| `KEY_WOD_FULL` | `prod_sdtm_wod_full` | Object `{word, definition, example}` |
+| `KEY_CUSTOM` | `prod_sdtm_custom_limits` | Object `{g, cy, r}` in minutes |
+| `KEY_AI_KEY` | `prod_sdtm_openai_key` | OpenAI API key string |
+| `KEY_TRANSCRIPTS` | `prod_sdtm_transcripts` | Array of transcript objects `{speaker, role, date, highlightedHTML, fillerSummary, plainText}` |
 
-        /* Section cards */
-        .section {
-            background: var(--card); border-radius: 16px; padding: 24px;
-            border: 1px solid var(--border); margin-bottom: 20px;
-        }
-        h2 {
-            font-size: 22px; font-weight: 800; margin: 0 0 16px;
-            color: var(--accent); padding-bottom: 10px;
-            border-bottom: 2px solid var(--bg);
-        }
-        h3 { font-size: 16px; font-weight: 700; color: var(--gold); margin: 20px 0 8px; }
+---
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; }
-        th {
-            background: #F2F2F7; text-align: left; padding: 10px 12px;
-            font-size: 12px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.5px; color: #8E8E93; border-bottom: 1px solid var(--border);
-        }
-        td { padding: 10px 12px; border-bottom: 1px solid #F2F2F7; vertical-align: top; }
-        tr:last-child td { border-bottom: none; }
-        code {
-            background: #F2F2F7; padding: 2px 6px; border-radius: 5px;
-            font-family: monospace; font-size: 13px; font-weight: 600; color: #1C1C1E;
-        }
-        .new-badge {
-            display: inline-block; background: var(--green); color: white;
-            font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
-            text-transform: uppercase; vertical-align: middle; margin-left: 6px;
-        }
+## Global State Variables
 
-        /* Rule box */
-        .rules ol { padding-left: 20px; margin: 0; }
-        .rules li { margin: 8px 0; font-size: 15px; }
-        .rules li strong { color: var(--accent); }
+| Variable | Type | Purpose |
+|---|---|---|
+| `currentMode` | string | `'timer'` or `'counter'` |
+| `currentSpeaker` | string | Active speaker's name |
+| `currentTally` | object | `{fillerWord: count}` for current session |
+| `iv` | interval | Timer interval handle |
+| `start` | number | Timestamp when timer started |
+| `elapsed` | number | Seconds elapsed |
+| `lims` | object | `{g, y, r}` thresholds in seconds |
+| `selectedTypeLabel` | string | Selected role label (e.g. "SPEECH") |
+| `fillerList` | array | Current list of filler words |
+| `allSpeakers` | array | Roster of all speakers |
+| `activeWodData` | object | `{word, definition, example}` from current WOD session |
+| `WOD_LIBRARY` | array | ~1000 words hardcoded |
+| `recordingEnabled` | boolean | Whether "Record Speech" toggle is on |
+| `recordingStream` | MediaStream | Active microphone stream (null when idle) |
+| `transcriptResult` | string | Plain text from last Whisper transcription |
+| `transcriptCounts` | object | `{fillerWord: count}` auto-detected from transcript |
+| `activeTranscriptIndex` | number | Index of transcript currently open in transcript viewer |
 
-        /* Back to top */
-        .back-to-top {
-            display: block; text-align: right; margin-top: 18px;
-            padding-top: 12px; border-top: 1px solid var(--bg);
-            font-size: 13px; font-weight: 700; color: #8E8E93;
-            text-decoration: none;
-        }
-        .back-to-top:hover { color: var(--accent); }
+---
 
-        /* Warning box */
-        .warn {
-            background: #FFF3CD; border-left: 4px solid var(--gold);
-            padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 14px;
-        }
+## Screens
 
-        .footer { text-align: center; opacity: 0.4; font-size: 12px; margin-top: 40px; }
-    </style>
-</head>
-<body>
-<div class="content" id="top">
+All screens use the `showScreen(id)` pattern — hides all `.screen` divs, shows the target.
 
-    <a href="manual.html" class="btn-back">← Back to Manual</a>
+| Screen ID | Purpose |
+|---|---|
+| `menu` | Main hub, has timer/counter tab toggle |
+| `wod` | Word of the Day — search/generate/select |
+| `setup` | Speaker name input + roster + record toggle + role grid |
+| `counterDisplay` | Live tally grid during counter session |
+| `timerDisplay` | Live countdown/countup timer |
+| `report` | Displays formatted log of all sessions |
+| `settings` | API key, markdown toggle, backup/restore, clear |
+| `transcriptionDisplay` | Shows live Whisper transcript with highlights; merge button sends to counter |
+| `transcriptList` | List of all saved transcripts for the current meeting |
+| `transcriptView` | Shows a single saved transcript with filler summary and Share button |
 
-    <h1>Technical Reference</h1>
-    <div class="tagline">Meeting Tools v2.9.0 — Southern Dutchess Toastmasters<br>
-    This document is the development contract. Every item below must survive unchanged in any new version.</div>
+---
 
-    <div class="toc">
-        <h2>Contents</h2>
-        <ol>
-            <li><a href="#architecture">Architecture Overview</a></li>
-            <li><a href="#localstorage">LocalStorage Keys</a></li>
-            <li><a href="#globals">Global State Variables</a></li>
-            <li><a href="#screens">Screens</a></li>
-            <li><a href="#functions">All Functions</a></li>
-            <li><a href="#css">CSS — Key Classes</a></li>
-            <li><a href="#cssvars">CSS Variables</a></li>
-            <li><a href="#deployment">Deployment Notes</a></li>
-            <li><a href="#rules">Rules for Safe Feature Addition</a></li>
-        </ol>
-    </div>
+## Every Function
 
-    <!-- ARCHITECTURE -->
-    <div class="section" id="architecture">
-        <h2>1. Architecture Overview</h2>
-        <p>The entire app lives in a single <code>index.html</code> file — all CSS, HTML, and JavaScript are inline. This is intentional. It avoids cross-file dependency issues, makes offline caching simple, and eliminates the risk of a partial deploy breaking the app.</p>
-        <p>A <code>sw.js</code> service worker provides offline capability using a network-first caching strategy. The cache name must be bumped on every deployment to force clients to fetch fresh files.</p>
-        <p>The app uses a <strong>screen-based navigation</strong> system — all screens are present in the DOM at all times; only one has <code>class="screen active"</code> at any moment. The <code>showScreen(id)</code> function handles all navigation.</p>
+| Function | What it does |
+|---|---|
+| `initApp()` | Runs on body load — loads club name, toggle state, API key, version label, refreshes roster, loads first WOD |
+| `nextWod()` | Picks random word from library, calls `fetchWordDetails()` |
+| `searchWod()` | Reads manual input field, calls `fetchWordDetails()` |
+| `fetchWordDetails(word)` | Calls OpenAI GPT-4o-mini, renders definition + example in WOD card |
+| `selectWod()` | Pins active WOD to fillerList and localStorage |
+| `saveSettings()` | Writes markdown toggle + API key to localStorage |
+| `refreshRoster()` | Renders full speaker list in `speakerArea` |
+| `saveSpeaker()` | Adds new name to roster, sorts, saves |
+| `selectSpeaker(n)` | Fills name input when a roster name is tapped |
+| `handleNameInput(el)` | Filters roster live as user types, uppercases input |
+| `renderSpeakerListFiltered(f)` | Renders a filtered subset of the roster |
+| `askDeleteSpeaker(n)` | Opens modal to confirm speaker deletion |
+| `showScreen(id)` | Hides all screens, shows target; triggers `renderSetupGrid()`, `loadReport()`, or `loadTranscriptList()` as needed |
+| `renderSetupGrid()` | Builds role card grid — timer presets or counter roles depending on `currentMode` |
+| `selectRole(el, g, y, r, label)` | Sets `lims`, `selectedTypeLabel`, highlights selected card |
+| `askCustomTime(el)` | Opens modal with inputs for custom thresholds (timer) or custom role name (counter) |
+| `switchMode(m)` | Switches between timer and counter tabs |
+| `handleStart()` | Validates name + role; if `recordingEnabled` routes to `transcriptionDisplay`, else to `timerDisplay` or `counterDisplay` |
+| `startRecording()` | Requests mic, starts MediaRecorder, updates UI |
+| `stopRecording()` | Stops MediaRecorder, triggers Whisper transcription |
+| `sendToWhisper()` | POSTs audio blob to OpenAI Whisper API, calls `analyzeTranscript()` |
+| `analyzeTranscript(text)` | Detects fillers in transcript, builds highlighted HTML, stores counts |
+| `mergeTranscriptToCounter()` | Stops stream, merges transcript counts into tally, saves transcript to `KEY_TRANSCRIPTS`, navigates to counterDisplay |
+| `initTally()` | Resets `currentTally` to zero for all fillers, calls `renderTally()` |
+| `renderTally()` | Builds tally grid cards, sorts WOD to top |
+| `incTally(f)` | Increments a filler count |
+| `decTally(e, f)` | Decrements a filler count (min 0) |
+| `delFiller(e, f)` | Removes a filler from `fillerList` via modal confirm |
+| `saveCounterSession()` | Saves/merges tally to `KEY_LOGS`, shows confirmation modal |
+| `parseTallyString(s)` | Deserializes a tally log string back to object |
+| `serializeTally(o)` | Serializes tally object to log string |
+| `startTimer()` | Starts interval, updates display, changes `body` background on thresholds |
+| `togglePause()` | Pauses/resumes the timer interval |
+| `commitAndExit()` | Saves timer result to logs, resets background, returns to menu |
+| `loadReport()` | Builds formatted report string from logs + WOD, renders to `reportLog` |
+| `generateReportText()` | Returns plain or markdown report string (used by copy + share) |
+| `copyReport()` | Copies report to clipboard via modal confirm |
+| `shareReport()` | Uses Web Share API |
+| `exportData()` | Downloads JSON backup of speakers, fillers, club name, API key (transcripts excluded) |
+| `handleImportFile(i)` | Reads uploaded JSON, restores all data, reloads page |
+| `askClubName()` | Modal to set club name |
+| `askClearLogs()` | Modal to confirm full reset of logs, WOD, and transcripts |
+| `openModal(t, b, c)` | Core modal function — sets title, body HTML, confirm callback |
+| `loadTranscriptList()` | Renders list of saved transcripts in `transcriptListArea` |
+| `openTranscript(i)` | Loads a single transcript into the viewer screen |
+| `shareTranscript()` | Shares transcript via Web Share API; format depends on markdown toggle — full markdown if on, plain text with `**fillers**` if off |
 
-        <h3>Test vs. Production Isolation</h3>
-        <p>All localStorage keys are prefixed dynamically at runtime:</p>
-        <code>const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';</code>
-        <p style="margin-top:12px;">When the file runs from <code>/test/</code> it uses <code>test_</code> prefixed keys. From the root it uses <code>prod_</code>. Copying a file from <code>/test/index.html</code> to <code>/index.html</code> requires <strong>zero code changes</strong> — the prefix shifts automatically. Test and production data are fully isolated in localStorage on the same device.</p>
-    </div>
+---
 
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
+## Default Filler List
+`["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]`
 
-    <!-- LOCALSTORAGE -->
-    <div class="section" id="localstorage">
-        <h2>2. LocalStorage Keys</h2>
-        <div class="warn">These constant names must never be renamed. The string values (right side of <code>prefix +</code>) must never change.</div>
-        <table>
-            <tr><th>Constant</th><th>Full Key (prod)</th><th>Stores</th></tr>
-            <tr><td><code>KEY_LOGS</code></td><td><code>prod_sdtm_logs</code></td><td>Array of session log strings</td></tr>
-            <tr><td><code>KEY_CLUB</code></td><td><code>prod_sdtm_club_name</code></td><td>Club name string</td></tr>
-            <tr><td><code>KEY_SPEAKERS</code></td><td><code>prod_sdtm_speakers</code></td><td>Array of speaker name strings (sorted, uppercase)</td></tr>
-            <tr><td><code>KEY_FILLERS</code></td><td><code>prod_sdtm_fillers</code></td><td>Array of filler word strings</td></tr>
-            <tr><td><code>KEY_MD</code></td><td><code>prod_sdtm_md_toggle</code></td><td>Boolean string — markdown export on/off</td></tr>
-            <tr><td><code>KEY_WOD_FULL</code></td><td><code>prod_sdtm_wod_full</code></td><td>Object <code>{word, definition, example}</code></td></tr>
-            <tr><td><code>KEY_CUSTOM</code></td><td><code>prod_sdtm_custom_limits</code></td><td>Object <code>{g, cy, r}</code> in minutes</td></tr>
-            <tr><td><code>KEY_AI_KEY</code></td><td><code>prod_sdtm_openai_key</code></td><td>OpenAI API key string</td></tr>
-        </table>
-    </div>
+"WORD OF DAY" is a placeholder replaced by the active WOD word when one is selected.
 
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
+---
 
-    <!-- GLOBALS -->
-    <div class="section" id="globals">
-        <h2>3. Global State Variables</h2>
-        <table>
-            <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
-            <tr><td><code>currentMode</code></td><td>string</td><td><code>'timer'</code> or <code>'counter'</code></td></tr>
-            <tr><td><code>currentSpeaker</code></td><td>string</td><td>Active speaker's name (uppercase)</td></tr>
-            <tr><td><code>currentTally</code></td><td>object</td><td><code>{fillerWord: count}</code> for current session</td></tr>
-            <tr><td><code>iv</code></td><td>interval</td><td>Timer interval handle</td></tr>
-            <tr><td><code>start</code></td><td>number</td><td>Timestamp when timer started</td></tr>
-            <tr><td><code>elapsed</code></td><td>number</td><td>Seconds elapsed in current timer session</td></tr>
-            <tr><td><code>lims</code></td><td>object</td><td><code>{g, y, r}</code> thresholds in seconds</td></tr>
-            <tr><td><code>selectedTypeLabel</code></td><td>string</td><td>Selected role label (e.g. "SPEECH")</td></tr>
-            <tr><td><code>fillerList</code></td><td>array</td><td>Current list of filler word strings</td></tr>
-            <tr><td><code>allSpeakers</code></td><td>array</td><td>Roster of all speaker names</td></tr>
-            <tr><td><code>activeWodData</code></td><td>object</td><td><code>{word, definition, example}</code> from current WOD session</td></tr>
-            <tr><td><code>WOD_LIBRARY</code></td><td>array</td><td>~1,000 words hardcoded inline</td></tr>
-            <tr><td><code>recordingEnabled</code></td><td>boolean</td><td><span class="new-badge">v2.9</span> Whether Record Speech toggle is on</td></tr>
-            <tr><td><code>mediaRecorder</code></td><td>MediaRecorder</td><td><span class="new-badge">v2.9</span> Active recording instance (null when idle)</td></tr>
-            <tr><td><code>recordingStream</code></td><td>MediaStream</td><td><span class="new-badge">v2.9</span> Microphone stream (must be stopped on cancel/exit)</td></tr>
-            <tr><td><code>audioChunks</code></td><td>array</td><td><span class="new-badge">v2.9</span> Raw audio data chunks from MediaRecorder</td></tr>
-            <tr><td><code>transcriptResult</code></td><td>string</td><td><span class="new-badge">v2.9</span> Raw transcript text from Whisper</td></tr>
-            <tr><td><code>transcriptCounts</code></td><td>object</td><td><span class="new-badge">v2.9</span> <code>{fillerWord: count}</code> from transcript analysis</td></tr>
-        </table>
-    </div>
+## CSS — Key Classes to Preserve
 
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
+| Class/ID | Purpose |
+|---|---|
+| `.screen` / `.screen.active` | Show/hide screen system |
+| `.tab` / `.tab.active` | Mode switcher tabs |
+| `.main-menu-card` | Menu item cards |
+| `.role-card` / `.role-card.selected` | Setup grid cards |
+| `.tally-card` / `.tally-card.wod-active` | Counter grid cards |
+| `.tally-del` / `.tally-minus` | Delete/decrement buttons on tally cards |
+| `.wod-card-big`, `.wod-word`, `.wod-def`, `.wod-example` | WOD display layout |
+| `.footer-btn` / `.secondary-btn` | All action buttons |
+| `.button-row` | Button container at screen bottom |
+| `.credit-footer` | Bottom branding area on menu |
+| `#customModal` | Modal overlay |
+| `.highlight-filler` | Red highlight on filler words in transcript |
+| `.highlight-wod` | Gold highlight on Word of the Day in transcript |
+| `body` background | Changes to `--green`, `--yellow`, `--red` during timing — must be `var(--bg)` at rest |
 
-    <!-- SCREENS -->
-    <div class="section" id="screens">
-        <h2>4. Screens</h2>
-        <p>All screens use the <code>showScreen(id)</code> pattern — it removes <code>active</code> from all <code>.screen</code> divs, then adds it to the target. New screens are added as <code>&lt;div id="newscreen" class="screen"&gt;</code> and are handled automatically with no changes to <code>showScreen()</code>.</p>
-        <table>
-            <tr><th>Screen ID</th><th>Purpose</th></tr>
-            <tr><td><code>menu</code></td><td>Main hub — has Timer / Ah-Counter tab toggle and main navigation cards</td></tr>
-            <tr><td><code>wod</code></td><td>Word of the Day — search, generate via AI, select for tracking</td></tr>
-            <tr><td><code>setup</code></td><td>Speaker name input, roster list, role grid, and (in counter mode) Record Speech toggle</td></tr>
-            <tr><td><code>counterDisplay</code></td><td>Live tally grid for manual filler counting</td></tr>
-            <tr><td><code>timerDisplay</code></td><td>Live countdown/countup timer with color-change background</td></tr>
-            <tr><td><code>report</code></td><td>Formatted log of all sessions for the current meeting</td></tr>
-            <tr><td><code>settings</code></td><td>API key, markdown toggle, backup/restore, clear data</td></tr>
-            <tr><td><code>transcription</code></td><td><span class="new-badge">v2.9</span> Whisper speech recording — 4 states: Ready → Recording → Analyzing → Results</td></tr>
-        </table>
-    </div>
+---
 
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
+## CSS Variables (`:root`)
 
-    <!-- FUNCTIONS -->
-    <div class="section" id="functions">
-        <h2>5. All Functions</h2>
+| Variable | Value | Usage |
+|---|---|---|
+| `--bg` | `#F2F2F7` | Page background |
+| `--card` | `#FFFFFF` | Card/surface background |
+| `--accent` | `#007AFF` | Primary blue (buttons, names, tabs) |
+| `--text` | `#000000` | Primary text |
+| `--subtext` | `#3A3A3C` | Secondary text |
+| `--red` | `#FF3B30` | Timer max / delete actions |
+| `--green` | `#34C759` | Timer min / save actions |
+| `--yellow` | `#FFCC00` | Timer target |
+| `--gold` | `#BF941A` | WOD accent color |
+| `--border` | `#D1D1D6` | Card and input borders |
 
-        <h3>App Lifecycle</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>initApp()</code></td><td>Runs on body load — loads club name, toggle state, API key, version label, refreshes roster, loads first WOD</td></tr>
-            <tr><td><code>showScreen(id)</code></td><td>Hides all screens, shows target. Also resets setup screen state and toggles record row visibility. Triggers <code>renderSetupGrid()</code> or <code>loadReport()</code> as needed.</td></tr>
-            <tr><td><code>switchMode(m)</code></td><td>Switches between timer and counter tabs, updates title and container visibility</td></tr>
-            <tr><td><code>openModal(t, b, c)</code></td><td>Core modal — sets title, body HTML, confirm callback. <strong>Only modal system in the app — no <code>alert()</code> or <code>confirm()</code> calls.</strong></td></tr>
-        </table>
+---
 
-        <h3>Word of the Day</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>nextWod()</code></td><td>Picks random word from <code>WOD_LIBRARY</code>, calls <code>fetchWordDetails()</code></td></tr>
-            <tr><td><code>searchWod()</code></td><td>Reads manual input field, calls <code>fetchWordDetails()</code></td></tr>
-            <tr><td><code>fetchWordDetails(word)</code></td><td>Calls OpenAI <code>gpt-4o-mini</code> with JSON response format, renders definition + example in WOD card</td></tr>
-            <tr><td><code>selectWod()</code></td><td>Pins active WOD to <code>fillerList</code> and <code>KEY_WOD_FULL</code>, removes "WORD OF DAY" placeholder</td></tr>
-        </table>
+## Transcript Data Architecture
+- Transcripts are saved on `mergeTranscriptToCounter()` to `KEY_TRANSCRIPTS` as a JSON array
+- Each entry: `{ speaker, role, date, highlightedHTML, fillerSummary, plainText }`
+- `highlightedHTML` — rendered HTML with `.highlight-filler` and `.highlight-wod` spans (for display)
+- `plainText` — raw Whisper transcript string (for sharing)
+- Transcripts are **excluded from backup export** (meeting-specific, session-only data)
+- Transcripts are **cleared with "Clear Meeting Data"** along with logs and WOD
 
-        <h3>Roster</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>refreshRoster()</code></td><td>Renders full speaker list in <code>speakerArea</code></td></tr>
-            <tr><td><code>saveSpeaker()</code></td><td>Adds new name to roster, sorts, saves to <code>KEY_SPEAKERS</code></td></tr>
-            <tr><td><code>selectSpeaker(n)</code></td><td>Fills name input when a roster name is tapped</td></tr>
-            <tr><td><code>handleNameInput(el)</code></td><td>Filters roster live as user types, uppercases input</td></tr>
-            <tr><td><code>renderSpeakerListFiltered(f)</code></td><td>Renders a filtered subset of the roster</td></tr>
-            <tr><td><code>askDeleteSpeaker(n)</code></td><td>Opens modal to confirm speaker deletion</td></tr>
-        </table>
+## Share Behavior (Transcript)
+- **Markdown ON:** Shares full markdown — `# Header`, `**role**`, `> filler summary`, `---`, fillers as `**BOLD CAPS**`
+- **Markdown OFF:** Shares plain text with `**filler**` markers only — compatible with email, Notes, Messages
 
-        <h3>Setup Screen</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>renderSetupGrid()</code></td><td>Builds role card grid — timer presets or counter roles depending on <code>currentMode</code></td></tr>
-            <tr><td><code>selectRole(el, g, y, r, label)</code></td><td>Sets <code>lims</code>, <code>selectedTypeLabel</code>, highlights selected card</td></tr>
-            <tr><td><code>askCustomTime(el)</code></td><td>Opens modal with inputs for custom thresholds (timer) or custom role name (counter)</td></tr>
-            <tr><td><code>handleStart()</code></td><td>Validates name + role, routes to <code>timerDisplay</code>, <code>transcription</code> (if toggle on), or <code>counterDisplay</code></td></tr>
-        </table>
+---
 
-        <h3>Tally / Counter</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>initTally()</code></td><td>Resets <code>currentTally</code> to zero for all fillers, calls <code>renderTally()</code></td></tr>
-            <tr><td><code>renderTally()</code></td><td>Builds tally grid cards, sorts WOD word to top position</td></tr>
-            <tr><td><code>incTally(f)</code></td><td>Increments a filler count</td></tr>
-            <tr><td><code>decTally(e, f)</code></td><td>Decrements a filler count (min 0)</td></tr>
-            <tr><td><code>delFiller(e, f)</code></td><td>Removes a filler from <code>fillerList</code> via modal confirm</td></tr>
-            <tr><td><code>saveCounterSession()</code></td><td>Saves/merges tally to <code>KEY_LOGS</code> — if same speaker+role already exists, counts are added together</td></tr>
-            <tr><td><code>parseTallyString(s)</code></td><td>Deserializes a tally log string back to object</td></tr>
-            <tr><td><code>serializeTally(o)</code></td><td>Serializes tally object to log string format</td></tr>
-        </table>
+## Deployment Notes
+- The `prefix` variable auto-detects `/test/` in the URL path and uses `test_` for all localStorage keys, otherwise `prod_`
+- Copying the file from `/test/index.html` to `/index.html` requires **zero changes** — the prefix shifts automatically
+- Test and production data are fully isolated in localStorage on the same device
+- Version label is rendered dynamically by `initApp()` into `#versionLabel`
 
-        <h3>Timer</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>startTimer()</code></td><td>Starts interval, updates display, changes <code>body</code> background at green/yellow/red thresholds</td></tr>
-            <tr><td><code>togglePause()</code></td><td>Pauses or resumes the timer interval</td></tr>
-            <tr><td><code>commitAndExit()</code></td><td>Saves timer result to logs, resets background to <code>var(--bg)</code>, returns to menu</td></tr>
-        </table>
+---
 
-        <h3>Report</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>loadReport()</code></td><td>Builds formatted report string from logs + WOD, renders to <code>reportLog</code></td></tr>
-            <tr><td><code>generateReportText()</code></td><td>Returns plain or markdown report string based on <code>KEY_MD</code> toggle (used by copy + share)</td></tr>
-            <tr><td><code>copyReport()</code></td><td>Copies report to clipboard</td></tr>
-            <tr><td><code>shareReport()</code></td><td>Uses Web Share API</td></tr>
-        </table>
-
-        <h3>Settings & Data</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>saveSettings()</code></td><td>Writes markdown toggle + API key to localStorage</td></tr>
-            <tr><td><code>exportData()</code></td><td>Downloads JSON backup of speakers, fillers, club name, API key</td></tr>
-            <tr><td><code>handleImportFile(i)</code></td><td>Reads uploaded JSON, restores all data, reloads page</td></tr>
-            <tr><td><code>askClubName()</code></td><td>Modal to set club name displayed in header</td></tr>
-            <tr><td><code>askClearLogs()</code></td><td>Modal to confirm full log + WOD reset</td></tr>
-        </table>
-
-        <h3>Transcription (New in v2.9.0)</h3>
-        <table>
-            <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>initTranscription()</code></td><td>Resets all transcription state and UI to "Ready to Record"</td></tr>
-            <tr><td><code>startTranscriptionRecording()</code></td><td>Requests microphone, creates MediaRecorder, updates UI to recording state</td></tr>
-            <tr><td><code>stopTranscriptionRecording()</code></td><td>Stops recorder and mic stream, triggers Whisper upload</td></tr>
-            <tr><td><code>sendToWhisper()</code></td><td>POSTs audio blob to OpenAI <code>whisper-1</code>, calls <code>analyzeTranscript()</code> on success</td></tr>
-            <tr><td><code>analyzeTranscript(rawText)</code></td><td>Counts occurrences of each filler word using regex word-boundary matching; skips "WORD OF DAY" placeholder</td></tr>
-            <tr><td><code>showTranscriptResults(rawText)</code></td><td>Renders highlighted transcript (red = filler, gold = WOD) and filler count summary. Enables "Merge to Counter" button.</td></tr>
-            <tr><td><code>showTranscriptionError(msg)</code></td><td>Surfaces errors cleanly in the UI with a "Try Again" button</td></tr>
-            <tr><td><code>mergeTranscriptToCounter()</code></td><td>Builds <code>currentTally</code> from transcript counts, navigates to <code>counterDisplay</code> with counts pre-populated</td></tr>
-            <tr><td><code>cancelTranscription()</code></td><td>Stops mic stream if active, returns to menu</td></tr>
-        </table>
-    </div>
-
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
-
-    <!-- CSS CLASSES -->
-    <div class="section" id="css">
-        <h2>6. CSS — Key Classes to Preserve</h2>
-        <table>
-            <tr><th>Class / ID</th><th>Purpose</th></tr>
-            <tr><td><code>.screen</code> / <code>.screen.active</code></td><td>Show/hide screen system — <strong>core navigation, do not touch</strong></td></tr>
-            <tr><td><code>.tab</code> / <code>.tab.active</code></td><td>Mode switcher tabs (Timer / Ah-Counter)</td></tr>
-            <tr><td><code>.main-menu-card</code></td><td>Menu item cards on home screen</td></tr>
-            <tr><td><code>.role-card</code> / <code>.role-card.selected</code></td><td>Setup grid cards; selected state has accent border + blue tint</td></tr>
-            <tr><td><code>.tally-card</code> / <code>.tally-card.wod-active</code></td><td>Counter grid cards; WOD active state has gold border + yellow tint</td></tr>
-            <tr><td><code>.tally-del</code> / <code>.tally-minus</code></td><td>Delete (red, bottom-left) and decrement (gray, bottom-right) buttons on tally cards</td></tr>
-            <tr><td><code>.wod-card-big</code>, <code>.wod-word</code>, <code>.wod-def</code>, <code>.wod-example</code></td><td>WOD display layout and typography</td></tr>
-            <tr><td><code>.footer-btn</code> / <code>.secondary-btn</code></td><td>All action buttons; secondary is gray</td></tr>
-            <tr><td><code>.button-row</code></td><td>Button container at the bottom of each screen</td></tr>
-            <tr><td><code>.credit-footer</code></td><td>Bottom branding area on menu screen</td></tr>
-            <tr><td><code>#customModal</code></td><td>Modal overlay — display toggled between <code>none</code> and <code>flex</code></td></tr>
-            <tr><td><code>body</code> background</td><td>Changes to <code>--green</code>, <code>--yellow</code>, <code>--red</code> during timing — <strong>must reset to <code>var(--bg)</code> on exit</strong></td></tr>
-            <tr><td><code>.trans-status</code></td><td><span class="new-badge">v2.9</span> Status label on transcription screen</td></tr>
-            <tr><td><code>.trans-display</code></td><td><span class="new-badge">v2.9</span> Scrollable transcript text box</td></tr>
-            <tr><td><code>.trans-result-row</code></td><td><span class="new-badge">v2.9</span> Filler count row in results list</td></tr>
-            <tr><td><code>.highlight-filler</code></td><td><span class="new-badge">v2.9</span> Red highlight for filler words in transcript</td></tr>
-            <tr><td><code>.highlight-wod</code></td><td><span class="new-badge">v2.9</span> Gold highlight for Word of the Day in transcript</td></tr>
-            <tr><td><code>.recording-pulse</code></td><td><span class="new-badge">v2.9</span> Pulsing animation on status label during recording</td></tr>
-            <tr><td><code>.switch</code> / <code>.slider</code></td><td>iOS-style toggle switch (used for Markdown toggle and Record Speech toggle)</td></tr>
-        </table>
-    </div>
-
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
-
-    <!-- CSS VARIABLES -->
-    <div class="section" id="cssvars">
-        <h2>7. CSS Variables (<code>:root</code>)</h2>
-        <table>
-            <tr><th>Variable</th><th>Value</th><th>Usage</th></tr>
-            <tr><td><code>--bg</code></td><td><code>#F2F2F7</code></td><td>Page background (light gray)</td></tr>
-            <tr><td><code>--card</code></td><td><code>#FFFFFF</code></td><td>Card and surface background</td></tr>
-            <tr><td><code>--accent</code></td><td><code>#007AFF</code></td><td>Primary blue — buttons, names, tabs, icons</td></tr>
-            <tr><td><code>--text</code></td><td><code>#000000</code></td><td>Primary text</td></tr>
-            <tr><td><code>--subtext</code></td><td><code>#3A3A3C</code></td><td>Secondary / descriptive text</td></tr>
-            <tr><td><code>--red</code></td><td><code>#FF3B30</code></td><td>Timer max threshold / delete actions / recording indicator</td></tr>
-            <tr><td><code>--green</code></td><td><code>#34C759</code></td><td>Timer min threshold / save actions / success state</td></tr>
-            <tr><td><code>--yellow</code></td><td><code>#FFCC00</code></td><td>Timer target threshold</td></tr>
-            <tr><td><code>--gold</code></td><td><code>#BF941A</code></td><td>Word of the Day accent color</td></tr>
-            <tr><td><code>--border</code></td><td><code>#D1D1D6</code></td><td>Card and input borders</td></tr>
-        </table>
-    </div>
-
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
-
-    <!-- DEPLOYMENT -->
-    <div class="section" id="deployment">
-        <h2>8. Deployment Notes</h2>
-        <p><strong>File structure:</strong> The repository has two deployment targets — <code>/index.html</code> (production) and <code>/test/index.html</code> (staging). The same file works in both locations with no changes.</p>
-        <p><strong>Service worker caching:</strong> The cache name in <code>sw.js</code> must be bumped on every deployment (e.g. <code>SDTM-TIMER-V2.9.0</code>). The worker uses <code>skipWaiting()</code> and <code>clients.claim()</code> for immediate activation, and deletes all old caches on activate. If users report seeing a stale version, have them test in an incognito window first to confirm the new code is live before troubleshooting further.</p>
-        <p><strong>Version label:</strong> The version string is set inside <code>initApp()</code> — update it there when bumping versions. The "(TEST)" suffix is appended automatically when running from <code>/test/</code>.</p>
-        <p><strong>External API calls:</strong> The app calls two OpenAI endpoints — <code>/v1/chat/completions</code> (GPT-4o-mini, for WOD definitions) and <code>/v1/audio/transcriptions</code> (Whisper-1, for speech transcription). Both require the user's own API key stored in <code>KEY_AI_KEY</code>. No API key is bundled in the app.</p>
-        <p><strong>Microphone permissions:</strong> The transcription feature requires <code>getUserMedia</code>. Recording has been confirmed working on iPad with Chrome. If users experience microphone access issues, Safari is a reliable fallback. Behavior may vary on older iOS versions or in installed PWA mode on iPhone.</p>
-    </div>
-
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
-
-    <!-- RULES -->
-    <div class="section rules" id="rules">
-        <h2>9. Rules for Safe Feature Addition</h2>
-        <ol>
-            <li><strong>Every function name above must remain identical.</strong> Renaming breaks existing HTML event handlers.</li>
-            <li><strong>Every localStorage key constant name must remain identical.</strong> Renaming loses all existing user data.</li>
-            <li><strong>Every screen ID must remain identical.</strong> Any code that calls <code>showScreen('id')</code> will break silently.</li>
-            <li><strong>No existing CSS class may be renamed or removed.</strong> Classes are referenced in JavaScript and HTML throughout.</li>
-            <li><strong>New screens:</strong> Add as <code>&lt;div id="newscreen" class="screen"&gt;</code> — <code>showScreen()</code> handles them automatically.</li>
-            <li><strong>New localStorage keys:</strong> Use new constant names with the same <code>prefix +</code> pattern.</li>
-            <li><strong>New global variables</strong> must not shadow any existing variable name.</li>
-            <li><strong>The <code>body</code> background must always return to <code>var(--bg)</code></strong> when leaving the timer screen. Failure to do so leaves the screen the wrong color for all subsequent screens.</li>
-            <li><strong><code>openModal(t, b, c)</code> is the only modal system.</strong> Do not introduce <code>alert()</code>, <code>confirm()</code>, or any third-party modal library.</li>
-            <li><strong>The microphone stream (<code>recordingStream</code>) must be stopped</strong> on every exit path from the transcription screen — including cancel, error, and successful merge. Orphaned streams leave the browser recording indicator active.</li>
-        </ol>
-    </div>
-
-        <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-    </div>
-
-    <div class="footer">
-        Technical Reference v2.9.0 | Southern Dutchess Toastmasters | Updated February 2026
-    </div>
-
-</div>
-</body>
-</html>
+## Rules for Safe Feature Addition
+1. Every function name above must remain identical
+2. Every localStorage key constant name must remain identical
+3. Every screen ID must remain identical
+4. No existing CSS class may be renamed or removed
+5. New screens are added as new `<div id="newscreen" class="screen">` blocks — `showScreen()` handles them automatically
+6. New localStorage keys get new constant names with the same `prefix +` pattern
+7. New global variables must not shadow any existing variable name
+8. The `body` background must always return to `var(--bg)` when leaving the timer screen
+9. `openModal(t, b, c)` is the only modal system — no `alert()` or `confirm()` calls
+10. Transcripts are never included in backup export JSON

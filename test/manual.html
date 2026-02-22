@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,156 +13,99 @@
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
             font-family: -apple-system, system-ui, sans-serif; line-height: 1.5;
-            padding: 40px 20px 60px;
+            padding: 40px 20px;
         }
-        .content { max-width: 800px; margin: 0 auto; }
-        a.btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 24px; font-size: 18px; }
-        h1 { font-size: 34px; font-weight: 800; margin-bottom: 4px; color: #000; }
-        .version-tag { font-size: 14px; color: #8E8E93; margin-bottom: 22px; display: block; }
-        .toc { background: var(--card); border-radius: 16px; padding: 22px 26px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .toc-heading { margin: 0 0 14px; font-size: 12px; font-weight: 800; color: #8E8E93; text-transform: uppercase; letter-spacing: 1px; }
-        .toc ol { margin: 0; padding-left: 20px; }
-        .toc li { margin: 8px 0; }
-        .toc a { color: var(--accent); font-weight: 600; text-decoration: none; font-size: 16px; }
-        .toc a:hover { text-decoration: underline; }
-        .tech-ref-card { display: flex; justify-content: space-between; align-items: center; background: #F0F6FF; border: 2px solid var(--accent); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; text-decoration: none; color: var(--text); }
-        .tech-ref-card:hover { background: #E3EEFF; }
-        .tech-ref-card .label { font-size: 17px; font-weight: 700; color: var(--accent); }
-        .tech-ref-card .desc { font-size: 13px; color: var(--subtext); margin-top: 3px; }
-        .tech-ref-card .arrow { font-size: 26px; color: var(--accent); }
-        .section { background: var(--card); border-radius: 16px; padding: 24px 26px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { font-size: 22px; font-weight: 800; margin: 0 0 14px; color: var(--accent); padding-bottom: 10px; border-bottom: 2px solid var(--bg); }
-        h3 { font-size: 17px; color: var(--gold); margin: 20px 0 8px; font-weight: 700; }
-        p { margin: 12px 0; font-size: 16px; }
-        ul { padding-left: 20px; margin: 10px 0; }
-        li { margin-bottom: 10px; font-size: 16px; }
-        code { background: #F2F2F7; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-weight: 600; font-size: 14px; }
-        a { color: var(--accent); }
-        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
-        .api-step { background: #F9F9FB; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; font-size: 15px; }
-        .back-to-top { display: block; text-align: right; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--bg); font-size: 13px; font-weight: 700; color: #8E8E93; text-decoration: none; }
-        .back-to-top:hover { color: var(--accent); }
-        .footer { text-align: center; opacity: 0.5; font-size: 13px; margin-top: 30px; }
+        .content { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; color: #000; }
+        h2 { font-size: 24px; font-weight: 700; margin-top: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
+        h3 { font-size: 20px; color: var(--gold); margin-top: 25px; }
+        p { margin: 15px 0; font-size: 17px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 10px; font-size: 17px; }
+        code { background: #F2F2F7; padding: 3px 6px; border-radius: 6px; font-family: monospace; font-weight: 600; }
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 20px; font-size: 18px; }
+        .api-step { background: #F9F9FB; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; }
+        .highlight-filler { background: #FFD0CE; border-bottom: 2px solid #FF3B30; color: #CC0000; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+        .highlight-wod { background: #FFF3C4; border-bottom: 2px solid #BF941A; color: #7A5C00; font-weight: 700; border-radius: 3px; padding: 0 3px; }
     </style>
 </head>
 <body>
-<div class="content" id="top">
 
-```
-<a href="index.html" class="btn-back">← Back to App</a>
-<h1>User Manual</h1>
-<span class="version-tag">Version 2.9.0 — Southern Dutchess Toastmasters</span>
+    <div class="content">
+        <a href="index.html" class="btn-back">← Back to App</a>
+        <h1>User Manual</h1>
+        <p>Welcome to the <strong>Southern Dutchess Toastmasters</strong> Meeting Tools suite (v2.10.3). This PWA (Progressive Web App) streamlines the roles of Timer, Ah-Counter, and Grammarian.</p>
 
-<div class="toc">
-    <div class="toc-heading">Contents</div>
-    <ol>
-        <li><a href="#wod">Word of the Day (W.O.D.)</a></li>
-        <li><a href="#timer">Timer Functionality</a></li>
-        <li><a href="#ahcounter">Ah-Counter &amp; Filler Words</a></li>
-        <li><a href="#transcription">Speech Transcription (Grammarian Mode)</a></li>
-        <li><a href="#setup-api">Setting up AI Usage (ChatGPT)</a></li>
-        <li><a href="#data">Data Management</a></li>
-    </ol>
-</div>
+        <h2>1. The Word of the Day (W.O.D.)</h2>
+        <p>The W.O.D. feature uses <strong>ChatGPT-4o-mini</strong> to provide intelligent, club-appropriate content.</p>
+        <ul>
+            <li><strong>Randomize:</strong> Tap "Random" to pick from a curated library of 1,000 sophisticated words.</li>
+            <li><strong>Search:</strong> Type a specific word and tap 🔍 to fetch a custom AI definition and usage sentence.</li>
+            <li><strong>Contextual AI:</strong> ChatGPT provides public-speaking flavored definitions with family-friendly examples.</li>
+            <li><strong>Select:</strong> Tapping "Select" pins the word to the top of the Ah-Counter grid with a gold "WORD OF DAY" badge for easy tracking.</li>
+        </ul>
 
-<a href="technical-reference.html" class="tech-ref-card">
-    <div>
-        <div class="label">Technical Reference</div>
-        <div class="desc">Developer contract — all screens, functions, keys, and CSS classes</div>
+        <h2>2. Timer Functionality</h2>
+        <ul>
+            <li><strong>Presets:</strong> Quickly select Table Topics (1-2m), Evaluations (2-3m), Ice Breaker (4-6m), or Speeches (5-7m).</li>
+            <li><strong>Custom:</strong> Enter custom Green / Yellow / Red thresholds for non-standard segments.</li>
+            <li><strong>Visual Cues:</strong> The background turns <code style="background:#d4f7dc;">Green</code> at the minimum time, <code style="background:#fff3c4;">Yellow</code> at the target, and <code style="background:#ffe0de;">Red</code> at the maximum.</li>
+        </ul>
+
+        <h2>3. Ah-Counter & Filler Words</h2>
+        <ul>
+            <li><strong>Default Fillers:</strong> AH, UH, UM, ER, SO, LIKE, YOU KNOW — plus the active Word of the Day.</li>
+            <li><strong>Tracking:</strong> Tap any card to increase the count. Tap the small "−" to decrease.</li>
+            <li><strong>Customization:</strong> Delete fillers you aren't tracking by tapping "✕" on the card. Counts merge if you save the same speaker twice.</li>
+        </ul>
+
+        <h2>4. Speech Recording & Transcription</h2>
+        <p>The app can record a speaker's speech, transcribe it using <strong>OpenAI Whisper</strong>, and automatically highlight filler words — no manual counting needed.</p>
+        <ul>
+            <li><strong>Enable Recording:</strong> On the Setup screen, toggle <strong>Record Speech</strong> on before tapping START. The toggle appears above the role grid.</li>
+            <li><strong>Recording:</strong> The transcription screen shows when active. Tap "End Speech & Analyze" when the speaker finishes.</li>
+            <li><strong>Highlights:</strong> Filler words appear in <span class="highlight-filler">red</span>. The Word of the Day appears in <span class="highlight-wod">gold</span>.</li>
+            <li><strong>Merge:</strong> Tap "Merge to Counter" to send the auto-detected counts directly to your tally — no re-entry needed.</li>
+        </ul>
+
+        <h2>5. Transcripts</h2>
+        <p>Every merged transcription is saved for the duration of the meeting so you can share it with speakers.</p>
+        <ul>
+            <li><strong>Access:</strong> From the Ah-Counter tab on the main menu, tap <strong>Transcripts</strong>.</li>
+            <li><strong>View:</strong> Tap any speaker's name to open their highlighted transcript with a filler summary.</li>
+            <li><strong>Share:</strong> Tap <strong>Share</strong> to send via email, Messages, or any app. The format depends on your Markdown Export setting:
+                <ul>
+                    <li><strong>Markdown ON:</strong> Full markdown format with headers, blockquotes, and <code>**bold**</code> fillers — ideal for Slack or email apps that render markdown.</li>
+                    <li><strong>Markdown OFF:</strong> Plain text with <code>**double asterisks**</code> around each filler word — readable in any email or notes app.</li>
+                </ul>
+            </li>
+            <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap "Clear Meeting Data" in Settings.</li>
+        </ul>
+
+        <h2 id="setup-api">6. Setting up AI (ChatGPT & Whisper)</h2>
+        <div class="alert">
+            <strong>Why do I need a key?</strong> For privacy and cost reasons, the app does not store a central key. Your own key keeps your meeting data private and gives you dedicated AI access.
+        </div>
+
+        <h3>How to get your OpenAI API Key:</h3>
+        <div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
+        <div class="api-step"><strong>Step 2:</strong> Navigate to the <strong>API Keys</strong> tab in the left sidebar.</div>
+        <div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>. Name it "Toastmasters App" and copy the key (it starts with <code>sk-...</code>).</div>
+        <div class="api-step"><strong>Step 4:</strong> In the Meeting Tools app, go to <strong>Settings (⚙)</strong> and paste the key into the <strong>ChatGPT API Key</strong> field.</div>
+        <p><em>Note: The same key powers both the W.O.D. (GPT-4o-mini) and speech transcription (Whisper). Both are very inexpensive — 1,000 word searches and dozens of transcriptions will cost less than $0.10.</em></p>
+
+        <h2>7. Data Management</h2>
+        <ul>
+            <li><strong>Markdown Export:</strong> Toggle in Settings for clean formatted output in Slack, email, or Discord.</li>
+            <li><strong>Backup/Restore:</strong> Export JSON saves your speaker roster, filler list, club name, and API key. Import it on another device to sync. <em>Transcripts are not included in backups — they are meeting-specific.</em></li>
+            <li><strong>Clear Meeting Data:</strong> Resets all logs, transcripts, and the selected W.O.D. for the next meeting. Does <em>not</em> delete your speaker roster.</li>
+        </ul>
+
+        <div style="margin-top: 50px; text-align: center; opacity: 0.6;">
+            <p>Version 2.10.3 | Southern Dutchess Toastmasters</p>
+        </div>
     </div>
-    <div class="arrow">&#x27E9;</div>
-</a>
 
-<div class="section" id="wod">
-    <h2>1. Word of the Day (W.O.D.)</h2>
-    <p>The W.O.D. feature uses <strong>ChatGPT-4o-mini</strong> to provide intelligent, club-appropriate content.</p>
-    <ul>
-        <li><strong>Randomize:</strong> Tap "Random" to pick from a curated library of 1,000 sophisticated words.</li>
-        <li><strong>Search:</strong> Type a specific word into the search bar and tap the search button to fetch a custom AI definition and usage sentence for that word.</li>
-        <li><strong>Contextual AI:</strong> ChatGPT is instructed to provide "public speaking" flavored definitions and family-friendly examples.</li>
-        <li><strong>Select:</strong> Tapping "Select" pins the word to the top-left of the Ah-Counter grid with a gold "WORD OF DAY" badge for easy tracking.</li>
-    </ul>
-    <div class="alert">The W.O.D. feature requires an OpenAI API key. See <a href="#setup-api">Section 5</a> for setup instructions.</div>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="section" id="timer">
-    <h2>2. Timer Functionality</h2>
-    <ul>
-        <li><strong>Presets:</strong> Quickly select from standard Toastmasters timing slots — 1-2m (Table Topics), 2-3m (Evaluations), 4-6m (Ice Breaker), or 5-7m (Speeches).</li>
-        <li><strong>Custom:</strong> Tap "Custom" to enter your own Green / Yellow / Red thresholds in minutes for non-standard segments.</li>
-        <li><strong>Visual Cues:</strong> The entire screen background turns <code>Green</code> at the minimum time, <code>Yellow</code> at the target time, and <code>Red</code> at the maximum time — visible from across the room.</li>
-        <li><strong>Pause:</strong> Tap "Pause" to freeze the clock without losing elapsed time. Tap "Resume" to continue from where you stopped.</li>
-        <li><strong>Commit &amp; Exit:</strong> Saves the final time to the meeting report and returns to the menu. The background color resets automatically.</li>
-    </ul>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="section" id="ahcounter">
-    <h2>3. Ah-Counter &amp; Filler Words</h2>
-    <ul>
-        <li><strong>Tracking:</strong> Tap any filler word card to increment the count. Tap the small "&#x2212;" button in the bottom-right corner to decrement if you over-counted.</li>
-        <li><strong>Word of the Day:</strong> If a W.O.D. has been selected, it appears in the top-left position with a gold border. Tap it each time the speaker uses the word correctly.</li>
-        <li><strong>Session Merging:</strong> If you save a session and start a new one for the same speaker and role, the app automatically adds the counts together — useful for long presentations delivered in parts.</li>
-        <li><strong>Delete Fillers:</strong> Tap the red "&#x2715;" on any card to remove a filler word you are not tracking this meeting. Deleted fillers can be restored by re-importing a backup via Settings.</li>
-    </ul>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="section" id="transcription">
-    <h2>4. Speech Transcription (Grammarian Mode)</h2>
-    <p>When running an Ah-Counter session, you can enable automatic speech transcription to detect filler words hands-free using OpenAI Whisper.</p>
-    <h3>How to use it</h3>
-    <ul>
-        <li><strong>Enable:</strong> On the Setup screen in Ah-Counter mode, toggle on <strong>Record Speech</strong> before tapping START. This toggle only appears in Ah-Counter mode.</li>
-        <li><strong>Recording:</strong> The transcription screen appears. Tap <strong>Start Recording</strong> and hold your device toward the speaker. The status indicator pulses red while active.</li>
-        <li><strong>End the speech:</strong> Tap <strong>End Speech</strong> when the speaker finishes. The audio uploads to OpenAI Whisper — transcription typically takes 5 to 15 seconds depending on length.</li>
-        <li><strong>Review results:</strong> The full transcript appears with filler words highlighted in red and the Word of the Day highlighted in gold. A count summary is shown below the transcript.</li>
-        <li><strong>Merge to Counter:</strong> Tap <strong>Merge to Counter</strong> to load the counter screen with the detected counts pre-filled. Adjust any counts manually before tapping Save Results.</li>
-    </ul>
-    <h3>Browser &amp; device compatibility</h3>
-    <p>Recording has been tested and confirmed working on <strong>iPad with Chrome</strong>. If you experience microphone access issues on other browsers or devices, try Safari as an alternative. Behavior may vary on older iOS versions or in installed PWA mode on iPhone.</p>
-    <h3>Tips for best results</h3>
-    <ul>
-        <li>Hold the device 1 to 2 feet from the speaker for the clearest audio pickup.</li>
-        <li>Whisper performs best in a reasonably quiet room — heavy background noise reduces accuracy.</li>
-        <li>If audience members speak during the session, you can manually correct any miscounted fillers on the counter screen after merging.</li>
-        <li>The Record Speech toggle resets to off each time you return to the Setup screen, so it will never activate accidentally.</li>
-    </ul>
-    <div class="alert">
-        <strong>Requires an OpenAI API key.</strong> Transcription uses the <code>whisper-1</code> model. Cost is very low — a typical 5 to 7 minute speech costs roughly $0.01 to $0.05. See <a href="#setup-api">Section 5</a> for key setup.
-    </div>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="section" id="setup-api">
-    <h2>5. Setting up AI Usage (ChatGPT)</h2>
-    <div class="alert">
-        <strong>Why do I need a key?</strong> For privacy and cost reasons, the app does not store a central key. By providing your own, your meeting data stays private and you control your own usage and billing.
-    </div>
-    <h3>How to get your OpenAI API Key</h3>
-    <div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
-    <div class="api-step"><strong>Step 2:</strong> Navigate to the <strong>API Keys</strong> tab in the left sidebar.</div>
-    <div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>. Name it "Toastmasters App" and copy the key — it starts with <code>sk-...</code>.</div>
-    <div class="api-step"><strong>Step 4:</strong> In the Meeting Tools app, go to <strong>Settings (&#x2699;)</strong> and paste the key into the <strong>ChatGPT API Key</strong> field.</div>
-    <p><em>OpenAI provides a small amount of free credit to new accounts. After that, both <code>gpt-4o-mini</code> (Word of the Day) and <code>whisper-1</code> (transcription) are very inexpensive — typical meeting usage costs a few cents per month at most.</em></p>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="section" id="data">
-    <h2>6. Data Management</h2>
-    <ul>
-        <li><strong>Markdown Export:</strong> Toggle this on in Settings to format the meeting report as a Markdown table — useful for pasting into Slack, email, or Discord.</li>
-        <li><strong>Backup Data:</strong> Downloads a JSON file containing your complete speaker roster, filler word list, club name, and API key. Save this somewhere safe as your recovery option.</li>
-        <li><strong>Restore Data:</strong> Imports a previously saved JSON backup. This will overwrite your current roster and settings.</li>
-        <li><strong>Clear Meeting Data:</strong> Resets all session logs and the selected W.O.D. for the next meeting. <em>This does not delete your speaker roster or settings.</em></li>
-    </ul>
-    <a href="#top" class="back-to-top">&#x2191; Back to Contents</a>
-</div>
-
-<div class="footer">Version 2.9.0 | Southern Dutchess Toastmasters</div>
-```
-
-</div>
 </body>
 </html>
