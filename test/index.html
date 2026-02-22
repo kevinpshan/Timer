@@ -88,7 +88,7 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- TRANSCRIPTION SCREEN (NEW) --- */
+        /* --- TRANSCRIPTION SCREEN --- */
         .trans-status { text-align: center; font-weight: 800; font-size: 14px; letter-spacing: 2px; color: #8E8E93; padding: 8px 0; flex-shrink: 0; }
         .trans-display { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 20px; overflow-y: auto; font-size: 17px; line-height: 1.7; min-height: 140px; max-height: 220px; flex-shrink: 0; }
         .trans-placeholder { color: #8E8E93; font-style: italic; }
@@ -98,6 +98,8 @@
         .trans-result-count { font-size: 28px; font-weight: 800; color: var(--accent); }
         @keyframes recordingPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         .recording-pulse { animation: recordingPulse 1s infinite; }
+        .highlight-filler { background: #FFE0DE; border-bottom: 2px solid var(--red); color: var(--red); font-weight: 700; border-radius: 4px; padding: 0 3px; }
+        .highlight-wod { background: #FFF3CD; border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 700; border-radius: 4px; padding: 0 3px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -126,18 +128,15 @@
             <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
             <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
         </div>
-        
         <div id="timerMode" class="container">
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
         </div>
-
         <div id="counterMode" class="container" style="display:none;">
             <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI Definition & Search</p></div><div class="icon" style="color:var(--gold);">★</div></div>
             <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
             <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
         </div>
-        
         <div class="credit-footer">
             <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
             <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
@@ -175,7 +174,6 @@
             </div>
             <div id="speakerArea" style="background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px; margin-bottom: 10px;"></div>
             <div id="roleGridArea" class="role-grid"></div>
-            <!-- NEW: Record Speech toggle — only visible in counter mode -->
             <div id="recordToggleRow" style="display:none; justify-content:space-between; align-items:center; background:var(--card); border-radius:14px; padding:18px 20px; border:1px solid var(--border); flex-shrink:0;">
                 <div>
                     <div style="font-size:18px; font-weight:700;">Record Speech</div>
@@ -222,7 +220,7 @@
         <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
     </div>
 
-    <!-- ===================== TRANSCRIPTION SCREEN (NEW) ===================== -->
+    <!-- ===================== TRANSCRIPTION SCREEN ===================== -->
     <div id="transcription" class="screen">
         <div class="header">
             <h1 id="transcriptionSpeakerName">Name</h1>
@@ -334,7 +332,6 @@
                 selectedTypeLabel = "";
                 renderSetupGrid();
                 refreshRoster();
-                // Reset and show/hide record toggle based on current mode
                 recordingEnabled = false;
                 const rt = document.getElementById('recordToggle');
                 if (rt) rt.checked = false;
@@ -386,7 +383,7 @@
         function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
         function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; document.getElementById('timerMode').style.display = m === 'timer' ? 'flex' : 'none'; document.getElementById('counterMode').style.display = m === 'counter' ? 'flex' : 'none'; }
 
-        /* --- START HANDLER (modified to route to transcription if toggle is on) --- */
+        /* --- START HANDLER --- */
         function handleStart() {
             const n = document.getElementById('name').value.trim().toUpperCase();
             if (!n || !selectedTypeLabel) { openModal("Error", "Enter Name & Role.", ()=>{}); return; }
@@ -432,9 +429,7 @@
         }
 
         /* ============================================================
-           NEW: TRANSCRIPTION FUNCTIONS
-           These functions are entirely new and do not modify or 
-           replace any existing function above.
+           TRANSCRIPTION FUNCTIONS
         ============================================================ */
 
         function initTranscription() {
@@ -532,7 +527,7 @@
             transcriptCounts = {};
             const upperText = rawText.toUpperCase();
             fillerList.forEach(f => {
-                if (f === "WORD OF DAY") return; // skip placeholder entry
+                if (f === "WORD OF DAY") return;
                 const escaped = f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
                 const matches = upperText.match(regex);
@@ -548,10 +543,21 @@
             status.innerText = "ANALYSIS COMPLETE";
             status.style.color = "var(--green)";
 
-            document.getElementById('transcriptionContent').innerText = rawText;
-
             const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
             const activeWod = wodData ? wodData.word.toUpperCase() : null;
+            let highlighted = rawText;
+            const sortedFillers = [...fillerList]
+                .filter(f => f !== "WORD OF DAY")
+                .sort((a, b) => b.length - a.length);
+            sortedFillers.forEach(f => {
+                const escaped = f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const isWod = (f === activeWod);
+                const cls = isWod ? 'highlight-wod' : 'highlight-filler';
+                const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+                highlighted = highlighted.replace(regex, match => `<span class="${cls}">${match}</span>`);
+            });
+            document.getElementById('transcriptionContent').innerHTML = highlighted;
+
             const foundFillers = Object.keys(transcriptCounts);
 
             let html = `<div style="font-weight:800; font-size:13px; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; padding:12px 0 8px;">Fillers Detected</div>`;
@@ -582,7 +588,6 @@
 
         function mergeTranscriptToCounter() {
             if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
-            // Build tally from fillerList, then overlay transcript counts
             currentTally = {};
             fillerList.forEach(f => currentTally[f] = 0);
             for (const f in transcriptCounts) {
