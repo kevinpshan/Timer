@@ -207,7 +207,7 @@
     <div class="header"><h1 id="setupHeader">Setup</h1></div>
     <div class="container">
         <div style="display:flex;gap:10px;flex-shrink:0;align-items:center;">
-            <input type="text" id="name" placeholder="SEARCH OR ADD NAME" style="flex:1;" oninput="handleNameInput(this)">
+            <input type="text" id="name" placeholder="FIRST LAST (e.g. KEVIN SHAN)" style="flex:1;" oninput="handleNameInput(this)">
             <button class="footer-btn" style="flex:0;padding:15px 25px;font-size:18px;height:54px;display:flex;align-items:center;" onclick="saveSpeaker()">Add</button>
         </div>
         <div id="speakerArea" style="background:var(--card);border-radius:16px;padding:2px;flex:1;overflow-y:auto;border:1px solid var(--border);min-height:120px;margin-bottom:10px;"></div>
@@ -728,7 +728,28 @@ function saveSettings(){localStorage.setItem(pk(KEY_MD),document.getElementById(
 
 /* ============ ROSTER ============ */
 function refreshRoster(){const area=document.getElementById('speakerArea');if(!area)return;if(!allSpeakers.length){area.innerHTML=`<div style="padding:20px;opacity:0.3;text-align:center;">Empty Roster</div>`;return;}area.innerHTML=allSpeakers.map(n=>`<div style="padding:14px 18px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;"><div style="font-size:22px;flex:1;color:var(--accent);font-weight:600;text-transform:uppercase;cursor:pointer;" onclick="selectSpeaker('${n}')">${n}</div><div style="padding:5px 12px;color:var(--red);font-weight:800;font-size:22px;cursor:pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');}
-function saveSpeaker(){const n=document.getElementById('name').value.trim().toUpperCase();if(n&&!allSpeakers.includes(n)){allSpeakers.push(n);allSpeakers.sort();localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));autoSyncUp();}refreshRoster();}
+function saveSpeaker(){
+    const n=document.getElementById('name').value.trim().toUpperCase();
+    if(!n) return;
+    if(allSpeakers.includes(n)){refreshRoster();return;}
+    // Warn if single word (likely first name only)
+    if(!n.includes(' ')){
+        openModal("First Name Only?",
+            `<div style="font-size:17px;line-height:1.5;">For accurate tracking, use full names like <strong>KEVIN SHAN</strong>.<br><br>Single names can cause duplicates across meetings.</div>
+            <div style="margin-top:15px;font-size:15px;color:var(--subtext);">Adding: <strong>${n}</strong></div>`,
+            ()=>{ doAddSpeaker(n); },
+            "Update", "Add Anyway"
+        );
+        return;
+    }
+    doAddSpeaker(n);
+}
+function doAddSpeaker(n){
+    allSpeakers.push(n);allSpeakers.sort();
+    localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));
+    document.getElementById('name').value='';
+    autoSyncUp();refreshRoster();
+}
 function selectSpeaker(n){document.getElementById('name').value=n;}
 function handleNameInput(el){el.value=el.value.toUpperCase();renderSpeakerListFiltered(allSpeakers.filter(s=>s.includes(el.value)));}
 function renderSpeakerListFiltered(f){const area=document.getElementById('speakerArea');area.innerHTML=f.map(n=>`<div style="padding:14px 18px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;"><div style="font-size:22px;flex:1;color:var(--accent);font-weight:600;text-transform:uppercase;cursor:pointer;" onclick="selectSpeaker('${n}')">${n}</div><div style="padding:5px 12px;color:var(--red);font-weight:800;font-size:22px;cursor:pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');}
@@ -804,8 +825,15 @@ function loadReport(){const logs=JSON.parse(localStorage.getItem(clubKey('logs')
 function exportData(){const ac=getActiveClub();const d={clubName:ac?ac.name:'',speakers:allSpeakers,fillers:fillerList,openai:localStorage.getItem(pk(KEY_AI_KEY))||''};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='meeting-backup.json';a.click();}
 function handleImportFile(i){const r=new FileReader();r.onload=(e)=>{const d=JSON.parse(e.target.result);if(d.speakers){allSpeakers=d.speakers;localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));}if(d.fillers){fillerList=d.fillers;localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));}if(d.openai)localStorage.setItem(pk(KEY_AI_KEY),d.openai);location.reload();};r.readAsText(i.files[0]);}
 function askClearLogs(){openModal("Clear?","Reset logs, WOD, and transcripts for this club?",()=>{localStorage.removeItem(clubKey('logs'));localStorage.removeItem(clubKey('wod_full'));localStorage.removeItem(clubKey('transcripts'));location.reload();});}
-function openModal(t,b,c){document.getElementById('modalTitle').innerText=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('customModal').style.display='flex';document.getElementById('modalConfirm').onclick=()=>{c();document.getElementById('customModal').style.display='none';};document.getElementById('modalCancel').onclick=()=>{document.getElementById('customModal').style.display='none';};}
-function askCustomTime(el){const saved=JSON.parse(localStorage.getItem(clubKey('custom_limits'))||'{"g":5,"cy":6,"r":7}');const title=currentMode==='timer'?"Thresholds":"Enter Custom Role";const body=currentMode==='timer'?`<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">`:`<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;openModal(title,body,()=>{if(currentMode==='timer'){const g=document.getElementById('cg').value,y=document.getElementById('cy').value,r=document.getElementById('cr').value;lims={g:g*60,y:y*60,r:r*60};localStorage.setItem(clubKey('custom_limits'),JSON.stringify({g,cy:y,r}));document.getElementById('customLabel').innerText=`${g}-${r}m`;selectedTypeLabel='CUSTOM';}else{selectedTypeLabel=document.getElementById('customRole').value.toUpperCase();document.getElementById('customLabel').innerText=selectedTypeLabel;}document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');});}
+function openModal(t,b,c,cancelLabel,confirmLabel){
+    document.getElementById('modalTitle').innerText=t;
+    document.getElementById('modalBody').innerHTML=b;
+    document.getElementById('modalCancel').innerText=cancelLabel||'Cancel';
+    document.getElementById('modalConfirm').innerText=confirmLabel||'OK';
+    document.getElementById('customModal').style.display='flex';
+    document.getElementById('modalConfirm').onclick=()=>{c();document.getElementById('customModal').style.display='none';};
+    document.getElementById('modalCancel').onclick=()=>{document.getElementById('customModal').style.display='none';};
+}function askCustomTime(el){const saved=JSON.parse(localStorage.getItem(clubKey('custom_limits'))||'{"g":5,"cy":6,"r":7}');const title=currentMode==='timer'?"Thresholds":"Enter Custom Role";const body=currentMode==='timer'?`<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">`:`<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;openModal(title,body,()=>{if(currentMode==='timer'){const g=document.getElementById('cg').value,y=document.getElementById('cy').value,r=document.getElementById('cr').value;lims={g:g*60,y:y*60,r:r*60};localStorage.setItem(clubKey('custom_limits'),JSON.stringify({g,cy:y,r}));document.getElementById('customLabel').innerText=`${g}-${r}m`;selectedTypeLabel='CUSTOM';}else{selectedTypeLabel=document.getElementById('customRole').value.toUpperCase();document.getElementById('customLabel').innerText=selectedTypeLabel;}document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');});}
 function switchMode(m){currentMode=m;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(m==='timer'?'tabTimer':'tabCounter').classList.add('active');document.getElementById('modeTitle').innerText=m==='timer'?'Meeting Timer':'Ah-Counter';document.getElementById('timerMode').style.display=m==='timer'?'block':'none';document.getElementById('counterMode').style.display=m==='counter'?'block':'none';}
 
 /* ============ START HANDLER ============ */
