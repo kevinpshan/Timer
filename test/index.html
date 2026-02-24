@@ -401,7 +401,7 @@ function clubKey(s) { return prefix+'club_'+activeClubId+'_'+s; }
 function getActiveClub() { return clubs.find(c=>c.id===activeClubId); }
 
 let currentMode='timer', currentSpeaker='', currentTally={}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel='';
-let fillerList=[], allSpeakers=[], recordingEnabled=false;
+let fillerList=[], allSpeakers=[], recordingEnabled=false, sessionFromTranscript=false;
 let mediaRecorder=null, recordingStream=null, audioChunks=[], transcriptResult='', transcriptCounts={};
 let recordingStartTime=0, speechDuration=0, activeTranscriptIndex=-1;
 
@@ -1026,7 +1026,8 @@ function saveCounterSession(){
     if(idx!==-1){let m=parseTallyString(logs[idx].split(' :: ')[1]);for(let w in currentTally)if(currentTally[w]>0)m[w]=(m[w]||0)+currentTally[w];logs[idx]=hdr+serializeTally(m);}
     else logs.push(hdr+serializeTally(currentTally));
     localStorage.setItem(clubKey('logs'),JSON.stringify(logs));
-    writeSession({speaker:currentSpeaker,role:selectedTypeLabel,date:new Date().toLocaleString(),type:'counter',fillerDetail,totalFillers});
+    if(!sessionFromTranscript)writeSession({speaker:currentSpeaker,role:selectedTypeLabel,date:new Date().toLocaleString(),type:'counter',fillerDetail,totalFillers});
+    sessionFromTranscript=false;
     openModal("Saved","Counts saved.",()=>{showScreen('menu');});
 }
 function parseTallyString(s){let o={};if(s==="0 Fillers")return o;s.split(', ').forEach(p=>{const[w,c]=p.split(': ');o[w]=parseInt(c);});return o;}
@@ -1135,6 +1136,7 @@ function mergeTranscriptToCounter(){
     saved.push({speaker:currentSpeaker,role:selectedTypeLabel,date:new Date().toLocaleString(),highlightedHTML:hl,fillerSummary:fs,plainText:transcriptResult,fillerPct:pct,fillerScore:sl,totalWords:tw,totalFillers:tot,fillersPerMin:fpm,durationMins:dm});
     localStorage.setItem(clubKey('transcripts'),JSON.stringify(saved));
     writeSession({speaker:currentSpeaker,role:selectedTypeLabel,date:new Date().toLocaleString(),type:'counter',fillerDetail:transcriptCounts,totalFillers:tot,totalWords:tw,fillerPct:pct,fillerScore:sl,fillersPerMin:fpm,durationMins:dm});
+    sessionFromTranscript=true; // session already written with full stats — skip duplicate in saveCounterSession
     showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=currentSpeaker;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;renderTally();
 }
 function cancelTranscription(){if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}showScreen('menu');}
