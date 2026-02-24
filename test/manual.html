@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,106 +7,254 @@
     <title>Meeting Tools Manual</title>
     <style>
         :root {
-            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF; 
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF;
             --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
-            --gold: #BF941A;
+            --gold: #BF941A; --green: #34C759; --red: #FF3B30;
         }
-        body { 
-            margin: 0; background: var(--bg); color: var(--text); 
-            font-family: -apple-system, system-ui, sans-serif; line-height: 1.5;
-            padding: 40px 20px;
-        }
-        .content { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; color: #000; }
-        h2 { font-size: 24px; font-weight: 700; margin-top: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
-        h3 { font-size: 20px; color: var(--gold); margin-top: 25px; }
-        p { margin: 15px 0; font-size: 17px; }
-        ul, ol { padding-left: 20px; }
-        li { margin-bottom: 10px; font-size: 17px; }
-        code { background: #F2F2F7; padding: 3px 6px; border-radius: 6px; font-family: monospace; font-weight: 600; }
-        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin: 20px 0; }
-        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 20px; font-size: 18px; }
-        .api-step { background: #F9F9FB; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; padding: 40px 20px; }
+        .content { max-width: 800px; margin: 0 auto; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 6px; color: #000; }
+        .version-tag { font-size: 14px; color: #8E8E93; margin-bottom: 20px; display: block; }
+        h2 { font-size: 22px; font-weight: 700; margin-top: 35px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
+        h3 { font-size: 18px; color: var(--gold); margin-top: 22px; margin-bottom: 8px; }
+        p { margin: 12px 0; font-size: 16px; }
+        ul, ol { padding-left: 22px; }
+        li { margin-bottom: 9px; font-size: 16px; }
+        code { background: #F2F2F7; padding: 3px 7px; border-radius: 6px; font-family: monospace; font-weight: 600; font-size: 14px; }
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 15px 18px; border-radius: 8px; margin: 20px 0; font-size: 16px; }
+        .alert-green { background: #F0FFF4; border-left: 4px solid var(--green); padding: 15px 18px; border-radius: 8px; margin: 20px 0; font-size: 16px; }
+        .alert-blue { background: #F0F8FF; border-left: 4px solid var(--accent); padding: 15px 18px; border-radius: 8px; margin: 20px 0; font-size: 16px; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 24px; font-size: 17px; }
+        .api-step { background: #F9F9FB; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); margin: 10px 0; font-size: 16px; }
         .highlight-filler { background: #FFD0CE; border-bottom: 2px solid #FF3B30; color: #CC0000; font-weight: 700; border-radius: 3px; padding: 0 3px; }
         .highlight-wod { background: #FFF3C4; border-bottom: 2px solid #BF941A; color: #7A5C00; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+        .toc { background: #F9F9FB; border-radius: 12px; padding: 18px 22px; border: 1px solid var(--border); margin: 20px 0; }
+        .toc a { color: var(--accent); text-decoration: none; font-size: 15px; display: block; padding: 5px 0; border-bottom: 1px solid var(--border); }
+        .toc a:last-child { border-bottom: none; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 15px; }
+        th { background: #F2F2F7; padding: 10px 14px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
+        td { padding: 10px 14px; border: 1px solid var(--border); vertical-align: top; }
+        .footer { margin-top: 50px; text-align: center; opacity: 0.5; font-size: 13px; }
     </style>
 </head>
 <body>
+<div class="content">
+    <a href="index.html" class="btn-back">← Back to App</a>
+    <h1>User Manual</h1>
+    <span class="version-tag">Version 3.1.5 · Southern Dutchess Toastmasters</span>
 
-    <div class="content">
-        <a href="index.html" class="btn-back">← Back to App</a>
-        <h1>User Manual</h1>
-        <p>Welcome to the <strong>Southern Dutchess Toastmasters</strong> Meeting Tools suite (v2.10.3). This PWA (Progressive Web App) streamlines the roles of Timer, Ah-Counter, and Grammarian.</p>
+```
+<p>Welcome to <strong>Meeting Tools</strong> — a Progressive Web App (PWA) that streamlines the Timer, Ah-Counter, and Grammarian roles for Toastmasters meetings. Version 3.x introduces <strong>cloud sync</strong> so your roster, filler words, and AI key stay current across all devices automatically.</p>
 
-        <h2>1. The Word of the Day (W.O.D.)</h2>
-        <p>The W.O.D. feature uses <strong>ChatGPT-4o-mini</strong> to provide intelligent, club-appropriate content.</p>
-        <ul>
-            <li><strong>Randomize:</strong> Tap "Random" to pick from a curated library of 1,000 sophisticated words.</li>
-            <li><strong>Search:</strong> Type a specific word and tap 🔍 to fetch a custom AI definition and usage sentence.</li>
-            <li><strong>Contextual AI:</strong> ChatGPT provides public-speaking flavored definitions with family-friendly examples.</li>
-            <li><strong>Select:</strong> Tapping "Select" pins the word to the top of the Ah-Counter grid with a gold "WORD OF DAY" badge for easy tracking.</li>
-        </ul>
+<div class="toc">
+    <strong style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#8E8E93;">Contents</strong>
+    <a href="#firstrun">1. First Time Setup</a>
+    <a href="#clubs">2. Clubs &amp; Cloud Sync</a>
+    <a href="#wod">3. Word of the Day</a>
+    <a href="#timer">4. Timer</a>
+    <a href="#counter">5. Ah-Counter &amp; Filler Words</a>
+    <a href="#transcription">6. Speech Recording &amp; Transcription</a>
+    <a href="#transcripts">7. Transcripts</a>
+    <a href="#progress">8. Progress Tracking</a>
+    <a href="#settings">9. Settings</a>
+    <a href="#data">10. Data Management</a>
+    <a href="#api">11. Setting Up AI (ChatGPT &amp; Whisper)</a>
+</div>
 
-        <h2>2. Timer Functionality</h2>
-        <ul>
-            <li><strong>Presets:</strong> Quickly select Table Topics (1-2m), Evaluations (2-3m), Ice Breaker (4-6m), or Speeches (5-7m).</li>
-            <li><strong>Custom:</strong> Enter custom Green / Yellow / Red thresholds for non-standard segments.</li>
-            <li><strong>Visual Cues:</strong> The background turns <code style="background:#d4f7dc;">Green</code> at the minimum time, <code style="background:#fff3c4;">Yellow</code> at the target, and <code style="background:#ffe0de;">Red</code> at the maximum.</li>
-        </ul>
+<h2 id="firstrun">1. First Time Setup</h2>
+<p>When you open Meeting Tools for the first time you will see the <strong>Welcome screen</strong> with three options:</p>
+<ul>
+    <li><strong>Join Existing Club</strong> — if your club is already using Meeting Tools, ask your club officer for the 8-character sync code and enter it here. Your roster, filler words, and AI key download automatically.</li>
+    <li><strong>Create New Club</strong> — enter your club name to set up a fresh installation. You can enable cloud sync later from Settings → Clubs.</li>
+    <li><strong>Just Exploring</strong> — opens the app immediately using the built-in <strong>TEST CLUB</strong>, pre-loaded with five sample speaker names. No setup required. Nothing you do here affects real club data.</li>
+</ul>
+<div class="alert-green">
+    <strong>Already a member?</strong> Choose <em>Join Existing Club</em> and enter your club's sync code. Everything — roster, filler words, and the shared AI key — will be ready in seconds.
+</div>
 
-        <h2>3. Ah-Counter & Filler Words</h2>
-        <ul>
-            <li><strong>Default Fillers:</strong> AH, UH, UM, ER, SO, LIKE, YOU KNOW — plus the active Word of the Day.</li>
-            <li><strong>Tracking:</strong> Tap any card to increase the count. Tap the small "−" to decrease.</li>
-            <li><strong>Customization:</strong> Delete fillers you aren't tracking by tapping "✕" on the card. Counts merge if you save the same speaker twice.</li>
-        </ul>
+<h2 id="clubs">2. Clubs &amp; Cloud Sync</h2>
+<p>Meeting Tools supports multiple clubs on one device and keeps shared data in sync automatically.</p>
 
-        <h2>4. Speech Recording & Transcription</h2>
-        <p>The app can record a speaker's speech, transcribe it using <strong>OpenAI Whisper</strong>, and automatically highlight filler words — no manual counting needed.</p>
-        <ul>
-            <li><strong>Enable Recording:</strong> On the Setup screen, toggle <strong>Record Speech</strong> on before tapping START. The toggle appears above the role grid.</li>
-            <li><strong>Recording:</strong> The transcription screen shows when active. Tap "End Speech & Analyze" when the speaker finishes.</li>
-            <li><strong>Highlights:</strong> Filler words appear in <span class="highlight-filler">red</span>. The Word of the Day appears in <span class="highlight-wod">gold</span>.</li>
-            <li><strong>Merge:</strong> Tap "Merge to Counter" to send the auto-detected counts directly to your tally — no re-entry needed.</li>
-        </ul>
+<h3>Switching Clubs</h3>
+<p>Tap the club name at the top of the main menu (next to the small ▾) to open the club switcher. A checkmark shows the active club. Switching clubs automatically pulls the latest roster and filler words for that club.</p>
 
-        <h2>5. Transcripts</h2>
-        <p>Every merged transcription is saved for the duration of the meeting so you can share it with speakers.</p>
-        <ul>
-            <li><strong>Access:</strong> From the Ah-Counter tab on the main menu, tap <strong>Transcripts</strong>.</li>
-            <li><strong>View:</strong> Tap any speaker's name to open their highlighted transcript with a filler summary.</li>
-            <li><strong>Share:</strong> Tap <strong>Share</strong> to send via email, Messages, or any app. The format depends on your Markdown Export setting:
-                <ul>
-                    <li><strong>Markdown ON:</strong> Full markdown format with headers, blockquotes, and <code>**bold**</code> fillers — ideal for Slack or email apps that render markdown.</li>
-                    <li><strong>Markdown OFF:</strong> Plain text with <code>**double asterisks**</code> around each filler word — readable in any email or notes app.</li>
-                </ul>
-            </li>
-            <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap "Clear Meeting Data" in Settings.</li>
-        </ul>
+<h3>How Auto-Sync Works</h3>
+<p>Once cloud sync is enabled, the following happen automatically — no buttons to press:</p>
+<ul>
+    <li><strong>App opens</strong> — latest roster and filler words are pulled from the cloud silently.</li>
+    <li><strong>Speaker added or deleted</strong> — change is pushed to the cloud immediately.</li>
+    <li><strong>Filler word added, edited, or deleted</strong> — change is pushed to the cloud immediately.</li>
+    <li><strong>Session committed</strong> — timer or counter result is written to cloud session history for Progress tracking.</li>
+    <li><strong>Offline</strong> — all sync operations skip silently. The app works fully on local data. Sync resumes next session.</li>
+</ul>
 
-        <h2 id="setup-api">6. Setting up AI (ChatGPT & Whisper)</h2>
-        <div class="alert">
-            <strong>Why do I need a key?</strong> For privacy and cost reasons, the app does not store a central key. Your own key keeps your meeting data private and gives you dedicated AI access.
-        </div>
+<h3>Enabling Cloud Sync (Officers)</h3>
+<ol>
+    <li>Go to <strong>Settings → Clubs</strong>.</li>
+    <li>Tap <strong>Enable Cloud Sync</strong> on your club.</li>
+    <li>An 8-character sync code is generated (e.g. <code>ABCD-EF3G</code>).</li>
+    <li>Share this code with your members so they can join.</li>
+</ol>
 
-        <h3>How to get your OpenAI API Key:</h3>
-        <div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
-        <div class="api-step"><strong>Step 2:</strong> Navigate to the <strong>API Keys</strong> tab in the left sidebar.</div>
-        <div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>. Name it "Toastmasters App" and copy the key (it starts with <code>sk-...</code>).</div>
-        <div class="api-step"><strong>Step 4:</strong> In the Meeting Tools app, go to <strong>Settings (⚙)</strong> and paste the key into the <strong>ChatGPT API Key</strong> field.</div>
-        <p><em>Note: The same key powers both the W.O.D. (GPT-4o-mini) and speech transcription (Whisper). Both are very inexpensive — 1,000 word searches and dozens of transcriptions will cost less than $0.10.</em></p>
+<h3>Joining an Existing Club</h3>
+<ol>
+    <li>Go to <strong>Settings → Clubs → Join Existing Club by Code</strong>.</li>
+    <li>Enter the 8-character code from your officer.</li>
+    <li>Roster, filler words, and AI key sync down immediately.</li>
+</ol>
 
-        <h2>7. Data Management</h2>
-        <ul>
-            <li><strong>Markdown Export:</strong> Toggle in Settings for clean formatted output in Slack, email, or Discord.</li>
-            <li><strong>Backup/Restore:</strong> Export JSON saves your speaker roster, filler list, club name, and API key. Import it on another device to sync. <em>Transcripts are not included in backups — they are meeting-specific.</em></li>
-            <li><strong>Clear Meeting Data:</strong> Resets all logs, transcripts, and the selected W.O.D. for the next meeting. Does <em>not</em> delete your speaker roster.</li>
-        </ul>
+<h3>Practice Club</h3>
+<p>The built-in <strong>TEST CLUB (Practice)</strong> is local-only — it never syncs to the cloud and never writes to session history. Use it freely for demos and training. You can also mark any new club as Practice Only when creating it via Settings → Clubs → New Club.</p>
 
-        <div style="margin-top: 50px; text-align: center; opacity: 0.6;">
-            <p>Version 2.10.3 | Southern Dutchess Toastmasters</p>
-        </div>
-    </div>
+<h2 id="wod">3. Word of the Day</h2>
+<p>The W.O.D. feature uses <strong>ChatGPT (GPT-4o-mini)</strong> to provide intelligent, public-speaking flavored definitions and usage examples.</p>
+<ul>
+    <li><strong>Random:</strong> Tap <em>Random</em> to pick from a library of over 1,000 sophisticated words.</li>
+    <li><strong>Search:</strong> Type any word and tap 🔍 to fetch a custom AI definition and usage sentence for that specific word.</li>
+    <li><strong>Select:</strong> Tap <em>Select</em> to activate the word for the meeting. It pins to the top of the Ah-Counter tally grid with a gold <strong>WORD OF DAY</strong> badge and is highlighted in gold during transcription.</li>
+</ul>
+<div class="alert">
+    <strong>AI Key Required.</strong> If your club officer has set up cloud sync, the key is shared automatically. Otherwise see <a href="#api">Section 11</a>.
+</div>
 
+<h2 id="timer">4. Timer</h2>
+<p>The Timer provides accurate timing with full-screen color cues for standard Toastmasters roles.</p>
+
+<h3>Presets</h3>
+<table>
+    <tr><th>Role</th><th>Green (min)</th><th>Yellow (target)</th><th>Red (max)</th></tr>
+    <tr><td>Table Topics</td><td>1:00</td><td>1:30</td><td>2:00</td></tr>
+    <tr><td>Evaluation</td><td>2:00</td><td>2:30</td><td>3:00</td></tr>
+    <tr><td>Ice Breaker</td><td>4:00</td><td>5:00</td><td>6:00</td></tr>
+    <tr><td>Speech</td><td>5:00</td><td>6:00</td><td>7:00</td></tr>
+    <tr><td>Custom</td><td colspan="3">Set your own Green / Yellow / Red thresholds in minutes</td></tr>
+</table>
+
+<h3>Controls</h3>
+<ul>
+    <li><strong>Pause / Resume</strong> — freezes and resumes the timer without losing elapsed time.</li>
+    <li><strong>Commit &amp; Exit</strong> — saves the result to the meeting report and returns to menu. Result is also written to cloud session history if sync is enabled.</li>
+</ul>
+
+<h2 id="counter">5. Ah-Counter &amp; Filler Words</h2>
+<p>Track filler words for any speaker in any role during the meeting.</p>
+
+<h3>Default Filler Words</h3>
+<p>Every new club starts with: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>, plus a Word of the Day placeholder.</p>
+
+<h3>Tracking</h3>
+<ul>
+    <li>Tap any card to <strong>increment</strong> the count.</li>
+    <li>Tap the small <strong>−</strong> button (bottom right) to decrement.</li>
+    <li>Tap the red <strong>✕</strong> (bottom left) to remove a filler from this session only.</li>
+    <li>If you save the same speaker twice in one meeting, counts are <strong>merged</strong> automatically.</li>
+</ul>
+
+<h3>Managing Filler Words</h3>
+<p>Go to <strong>Settings → Filler Words</strong> to add, rename, or permanently delete words for your club. Changes sync to the cloud immediately.</p>
+
+<h3>Full Name Requirement</h3>
+<p>The app encourages full names (First Last) when adding speakers to the roster. This ensures accurate tracking when multiple members share a first name. Single-name entries are allowed but will show a warning.</p>
+
+<h2 id="transcription">6. Speech Recording &amp; Transcription</h2>
+<p>Meeting Tools can record a speaker, transcribe with <strong>OpenAI Whisper</strong>, and automatically detect filler words — no manual counting needed.</p>
+
+<h3>How to Use</h3>
+<ol>
+    <li>On the <strong>Setup</strong> screen in Ah-Counter mode, toggle <strong>Record Speech</strong> on (appears above the role grid).</li>
+    <li>Enter the speaker name, select their role, tap <strong>START</strong>.</li>
+    <li>On the Transcription screen, tap <strong>Start Recording</strong> when the speaker begins.</li>
+    <li>Tap <strong>End Speech</strong> when they finish. The audio is transcribed automatically.</li>
+    <li>Tap <strong>Merge to Counter</strong> to send detected counts to the tally.</li>
+</ol>
+
+<h3>Filler Score</h3>
+<p>After each transcription the app calculates a score based on the percentage of spoken words that were fillers:</p>
+<ul>
+    <li><strong style="color:#34C759;">Under 5%</strong> — Excellent</li>
+    <li><strong style="color:#CC8800;">5–10%</strong> — Good</li>
+    <li><strong style="color:#FF3B30;">Over 10%</strong> — Needs Work</li>
+</ul>
+
+<h3>Highlights</h3>
+<p>Filler words appear in <span class="highlight-filler">red highlight</span>. The active Word of the Day appears in <span class="highlight-wod">gold highlight</span>.</p>
+
+<h2 id="transcripts">7. Transcripts</h2>
+<p>Every transcribed speech is saved for the current meeting so you can share it with the speaker afterward.</p>
+<ul>
+    <li><strong>Access:</strong> From the Ah-Counter menu, tap <strong>Transcripts</strong>.</li>
+    <li><strong>View:</strong> Tap any speaker to open their highlighted transcript with filler summary and score.</li>
+    <li><strong>Share:</strong> Tap <strong>Share</strong> to send via email, Messages, Slack, or any app. Format follows your Markdown Export setting.</li>
+    <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap <em>Clear Meeting Data</em> in Settings.</li>
+</ul>
+
+<h2 id="progress">8. Progress Tracking</h2>
+<p>The Progress screen shows how speakers are improving their filler usage over time across multiple meetings.</p>
+
+<div class="alert-blue">
+    <strong>Cloud sync required.</strong> Progress data is read from Firestore session history. The screen will prompt you to enable cloud sync if it is not yet active.
+</div>
+
+<h3>Progress List</h3>
+<p>Tap <strong>Progress</strong> from the Ah-Counter menu. Each speaker shows:</p>
+<ul>
+    <li>Latest filler rate (color coded)</li>
+    <li>Trend indicator — ↑ Improving, ↓ Worsening, or → Steady</li>
+    <li>Total number of tracked sessions</li>
+</ul>
+
+<h3>Speaker Detail</h3>
+<p>Tap any speaker to see their full history:</p>
+<ul>
+    <li>Latest, Average, and Best filler percentages</li>
+    <li>Overall improvement trend</li>
+    <li>Session-by-session log with date, role, filler %, word count, and fillers-per-minute</li>
+</ul>
+
+<h2 id="settings">9. Settings</h2>
+<ul>
+    <li><strong>Clubs</strong> — manage clubs, view sync codes, enable cloud sync, push/pull manually, create new clubs, or join by code.</li>
+    <li><strong>Filler Words</strong> — add, rename, or delete filler words for the active club.</li>
+    <li><strong>Markdown Export</strong> — when on, reports and transcripts use markdown formatting for Slack and email clients that render it.</li>
+    <li><strong>ChatGPT API Key</strong> — pre-filled automatically if your club officer set one up. Can be overridden locally.</li>
+    <li><strong>Backup Data</strong> — exports a JSON file with roster, fillers, club name, and API key as an emergency restore.</li>
+    <li><strong>Restore Data</strong> — imports a previously exported JSON backup.</li>
+    <li><strong>Clear Meeting Data</strong> — resets logs, transcripts, and WOD. Does not delete roster or filler words.</li>
+</ul>
+
+<h2 id="data">10. Data Management</h2>
+
+<h3>Stored Locally</h3>
+<p>Speaker roster, filler word list, meeting logs, transcripts (current meeting), WOD selection, app settings.</p>
+
+<h3>Stored in the Cloud (sync-enabled clubs)</h3>
+<p>Speaker roster, filler word list, club API key, and session history (used by Progress screen).</p>
+
+<h3>Never Stored in the Cloud</h3>
+<p>Meeting logs, transcripts, and all practice club data.</p>
+
+<h2 id="api">11. Setting Up AI (ChatGPT &amp; Whisper)</h2>
+
+<div class="alert">
+    <strong>Club members:</strong> If your officer has enabled cloud sync, the API key is shared automatically. You do not need to do anything in this section.
+</div>
+
+<h3>Club Officers — Setting the Shared Key</h3>
+<p>Set it up once — it syncs to all members automatically.</p>
+
+<div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
+<div class="api-step"><strong>Step 2:</strong> Navigate to <strong>API Keys</strong> in the left sidebar.</div>
+<div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>, name it "Toastmasters App", and copy the key (starts with <code>sk-...</code>).</div>
+<div class="api-step"><strong>Step 4:</strong> In Meeting Tools, go to <strong>Settings → ChatGPT API Key</strong>, paste the key, and tap away from the field. It saves and syncs to the club automatically.</div>
+
+<h3>Cost</h3>
+<p>GPT-4o-mini (W.O.D.) and Whisper (transcription) are extremely inexpensive. A full meeting's worth of usage will typically cost less than $0.05. OpenAI provides free credit to new accounts.</p>
+
+<div class="footer">
+    <p>Version 3.1.5 &nbsp;|&nbsp; Southern Dutchess Toastmasters &nbsp;|&nbsp; <a href="https://bit.ly/m/SDTM">bit.ly/m/SDTM</a></p>
+</div>
+```
+
+</div>
 </body>
 </html>
