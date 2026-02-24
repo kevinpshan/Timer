@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v2.11.2</title>
+    <title>Meeting Tools v3.0.0</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,790 +16,742 @@
             --green: #34C759; --yellow: #FFCC00; --gold: #BF941A; --border: #D1D1D6;
         }
 
-        html { height: -webkit-fill-available; }
-        body { 
-            margin: 0; background: var(--bg); color: var(--text); 
-            font-family: -apple-system, system-ui, sans-serif; display: flex; 
-            flex-direction: column;
-            height: 100vh;
-            height: -webkit-fill-available;
-            padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
-        }
+```
+    html { height: -webkit-fill-available; }
+    body { 
+        margin: 0; background: var(--bg); color: var(--text); 
+        font-family: -apple-system, system-ui, sans-serif; display: flex; 
+        flex-direction: column;
+        height: 100vh;
+        height: -webkit-fill-available;
+        padding-bottom: env(safe-area-inset-bottom); box-sizing: border-box; overflow: hidden;
+    }
 
-        /* --- UI STRUCTURE --- */
-        .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
-        h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
-        .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
-        .settings-icon { position: absolute; top: 35px; right: 20px; font-size: 32px; color: var(--accent); cursor: pointer; padding: 5px; z-index: 10; }
+    .header { padding: 30px 20px 10px; text-align: left; flex-shrink: 0; position: relative; }
+    h1 { margin: 0; font-size: clamp(34px, 5vw, 55px); font-weight: 800; color: #1C1C1E; }
+    .subtitle { font-size: clamp(17px, 2.5vw, 26px); margin-top: 5px; color: var(--accent); font-weight: 700; }
+    .settings-icon { position: absolute; top: 35px; right: 20px; font-size: 32px; color: var(--accent); cursor: pointer; padding: 5px; z-index: 10; }
 
-        .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; margin: 0 20px 15px; flex-shrink: 0; }
-        .tab { flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: var(--subtext); }
-        .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; margin: 0 20px 15px; flex-shrink: 0; }
+    .tab { flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: var(--subtext); }
+    .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .screen { display: none; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
-        .screen.active { display: flex; }
+    .container { flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 15px; overflow-y: auto; min-height: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .screen { display: none; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+    .screen.active { display: flex; }
 
-        /* --- MENU CARDS --- */
-        .main-menu-card { 
-            background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; 
-            padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box;
-        }
-        .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
-        .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
-        .main-menu-card .icon { font-size: 45px; color: var(--accent); }
-        .settings-card { padding: 16px 20px !important; margin-bottom: 8px !important; }
-        .settings-card h3 { font-size: 20px !important; }
-        .settings-card p { font-size: 15px !important; margin-top: 4px !important; }
+    .main-menu-card { background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; padding: 30px 25px; border: 1px solid var(--border); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-bottom: 12px; width: 100%; box-sizing: border-box; }
+    .card-content h3 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; }
+    .card-content p { margin: 8px 0 0; font-size: 18px; color: var(--subtext); }
+    .main-menu-card .icon { font-size: 45px; color: var(--accent); }
+    .settings-card { padding: 16px 20px !important; margin-bottom: 8px !important; }
+    .settings-card h3 { font-size: 20px !important; }
+    .settings-card p { font-size: 15px !important; margin-top: 4px !important; }
 
-        .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
-        @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
-        
-        .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; min-height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
-        .role-card h4, .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; margin: 0; pointer-events: none; }
-        
-        .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
-        .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
+    .role-grid, .tally-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex-shrink: 0; padding-bottom: 15px; }
+    @media (min-width: 600px) { .role-grid, .tally-grid { grid-template-columns: repeat(3, 1fr); } }
+    .role-card, .tally-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; min-height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .role-card.selected { border: 3px solid var(--accent); background: #E8F2FF; }
+    .role-card h4, .tally-card .label { font-size: 16px; font-weight: 700; text-transform: uppercase; margin: 0; pointer-events: none; }
+    .tally-card.wod-active { border: 3px solid var(--gold); background: #FFF9E6; }
+    .wod-mini-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
+    .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); pointer-events: none; line-height: 1; margin-bottom: 5px; }
+    .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; z-index: 10; }
+    .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; z-index: 10; }
 
-        .tally-card .count { font-size: 44px; font-weight: 800; color: var(--accent); pointer-events: none; line-height: 1; margin-bottom: 5px; }
-        .tally-del { position: absolute; bottom: 5px; left: 5px; width: 30px; height: 30px; background: var(--red); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; z-index: 10; }
-        .tally-minus { position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #8E8E93; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; z-index: 10; }
+    .wod-search-row { display: flex; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
+    .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: flex-start; overflow-y: auto; position: relative; }
+    .wod-word { font-size: 44px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; flex-shrink: 0; }
+    .wod-label { font-size: 13px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+    .wod-def { font-size: 19px; line-height: 1.4; color: var(--text); margin-bottom: 20px; }
+    .wod-example { font-size: 18px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
+    .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--accent); font-weight: 800; }
 
-        /* --- WOD DISPLAY --- */
-        .wod-search-row { display: flex; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
-        .wod-card-big { background: white; border-radius: 24px; padding: 35px 25px; text-align: center; border: 4px solid var(--gold); margin: 10px 0; box-shadow: 0 10px 25px rgba(191,148,26,0.1); flex: 1; display: flex; flex-direction: column; justify-content: flex-start; overflow-y: auto; position: relative; }
-        .wod-word { font-size: 44px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; flex-shrink: 0; }
-        .wod-label { font-size: 13px; font-weight: 800; color: #8E8E93; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        .wod-def { font-size: 19px; line-height: 1.4; color: var(--text); margin-bottom: 20px; }
-        .wod-example { font-size: 18px; line-height: 1.4; color: var(--subtext); font-style: italic; background: #F2F2F7; padding: 15px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
-        .ai-indicator { position: absolute; top: 15px; right: 15px; font-size: 10px; color: var(--accent); font-weight: 800; }
+    .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
+    .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
+    .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; margin-top: auto; }
+    .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
+    .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 16px; border: 1px solid var(--border); }
+    .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
 
-        /* --- FOOTER & BUTTONS --- */
-        .button-row { display: flex; gap: 12px; padding: 15px 20px 25px; flex-shrink: 0; max-width: 950px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .footer-btn { flex: 1; padding: 20px; border-radius: 15px; font-size: 22px; font-weight: 700; border: none; background: var(--accent); color: white; cursor: pointer; }
-        .secondary-btn { background: #E5E5EA; color: #000; border: 1px solid var(--border); }
+    input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 20px; outline: none; width: 100%; box-sizing: border-box; }
+    .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
+    .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--green); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
-        .credit-footer { text-align: center; padding: 25px 20px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; margin-top: auto; }
-        .resource-row { display: flex; gap: 12px; margin-bottom: 15px; width: 100%; max-width: 500px; justify-content: center; }
-        .res-btn { flex: 1; background: #F2F2F7; color: var(--accent); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 16px; border: 1px solid var(--border); }
-        .version-tag { display: block; font-size: 12px; opacity: 0.5; margin-top: 6px; }
+    .trans-status { text-align: center; font-weight: 800; font-size: 14px; letter-spacing: 2px; color: #8E8E93; padding: 8px 0; flex-shrink: 0; }
+    .trans-display { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 20px; overflow-y: auto; font-size: 17px; line-height: 1.7; min-height: 140px; max-height: 220px; flex-shrink: 0; }
+    .trans-placeholder { color: #8E8E93; font-style: italic; }
+    .trans-result-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--bg); }
+    .trans-result-row:last-child { border-bottom: none; }
+    .trans-result-word { font-size: 20px; font-weight: 700; text-transform: uppercase; }
+    .trans-result-count { font-size: 28px; font-weight: 800; color: var(--accent); }
+    @keyframes recordingPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .recording-pulse { animation: recordingPulse 1s infinite; }
+    .highlight-filler { background: #FFE0DE; border-bottom: 2px solid var(--red); color: var(--red); font-weight: 700; border-radius: 4px; padding: 0 3px; }
+    .highlight-wod { background: #FFF3CD; border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 700; border-radius: 4px; padding: 0 3px; }
 
-        input[type="text"], input[type="number"], input[type="password"] { background: var(--card); border: 2px solid var(--border); color: var(--text); padding: 15px; border-radius: 14px; font-size: 20px; outline: none; width: 100%; box-sizing: border-box; }
-        
-        /* --- TOGGLE --- */
-        .switch { position: relative; display: inline-block; width: 51px; height: 31px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 31px; }
-        .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
+    /* Club Switcher - iOS action sheet style */
+    #clubSwitcherOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9999; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
+    #clubSwitcherPanel { background: var(--bg); width: 100%; max-width: 600px; border-radius: 20px 20px 0 0; padding: 12px 0 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+    .club-switcher-title { font-size: 13px; font-weight: 700; color: #8E8E93; text-transform: uppercase; letter-spacing: 1px; text-align: center; padding: 8px 20px 12px; }
+    .club-switcher-section { background: var(--card); border-radius: 14px; margin: 0 12px 10px; overflow: hidden; }
+    .club-switcher-item { padding: 18px 20px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 18px; font-weight: 600; }
+    .club-switcher-item:last-child { border-bottom: none; }
+    .club-switcher-item.active-club { color: var(--accent); }
+    .club-cancel-btn { background: var(--card); border-radius: 14px; margin: 0 12px; padding: 18px; text-align: center; font-size: 18px; font-weight: 700; cursor: pointer; color: var(--accent); }
 
-        /* --- TRANSCRIPTION SCREEN (NEW) --- */
-        .trans-status { text-align: center; font-weight: 800; font-size: 14px; letter-spacing: 2px; color: #8E8E93; padding: 8px 0; flex-shrink: 0; }
-        .trans-display { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 20px; overflow-y: auto; font-size: 17px; line-height: 1.7; min-height: 140px; max-height: 220px; flex-shrink: 0; }
-        .trans-placeholder { color: #8E8E93; font-style: italic; }
-        .trans-result-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--bg); }
-        .trans-result-row:last-child { border-bottom: none; }
-        .trans-result-word { font-size: 20px; font-weight: 700; text-transform: uppercase; }
-        .trans-result-count { font-size: 28px; font-weight: 800; color: var(--accent); }
-        @keyframes recordingPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .recording-pulse { animation: recordingPulse 1s infinite; }
-        .highlight-filler { background: #FFE0DE; border-bottom: 2px solid var(--red); color: var(--red); font-weight: 700; border-radius: 4px; padding: 0 3px; }
-        .highlight-wod { background: #FFF3CD; border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 700; border-radius: 4px; padding: 0 3px; }
-    </style>
+    /* Manager list items (Filler Manager + Club Manager) */
+    .manager-item { padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center; background: var(--card); }
+    .manager-item:last-child { border-bottom: none; }
+    .manager-item-label { font-size: 20px; font-weight: 700; text-transform: uppercase; flex: 1; }
+    .manager-btn { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; cursor: pointer; border: none; margin-left: 8px; }
+    .manager-edit-btn { background: #E8F2FF; color: var(--accent); }
+    .manager-del-btn { background: #FFE5E3; color: var(--red); }
+    .add-item-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--card); border: 2px dashed var(--border); border-radius: 14px; padding: 18px; cursor: pointer; color: var(--accent); font-size: 18px; font-weight: 700; width: 100%; box-sizing: border-box; }
+</style>
+```
+
 </head>
 <body onload="initApp()">
 
-    <div id="customModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
-        <div class="modal-content" style="background: var(--card); width: 85%; max-width: 500px; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid var(--border);">
-            <h2 id="modalTitle" style="margin:0;"></h2>
-            <div id="modalBody" style="margin:20px 0;"></div>
-            <div class="button-row" style="padding:0; background:none; margin:0; width:100%;">
-                <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
-                <button id="modalConfirm" class="footer-btn">OK</button>
-            </div>
+```
+<!-- CUSTOM MODAL -->
+<div id="customModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+    <div style="background:var(--card); width:85%; max-width:500px; padding:25px; border-radius:24px; text-align:center; border:1px solid var(--border);">
+        <h2 id="modalTitle" style="margin:0;"></h2>
+        <div id="modalBody" style="margin:20px 0;"></div>
+        <div class="button-row" style="padding:0; margin:0; width:100%;">
+            <button id="modalCancel" class="footer-btn secondary-btn">Cancel</button>
+            <button id="modalConfirm" class="footer-btn">OK</button>
         </div>
     </div>
+</div>
 
-    <!-- ===================== MENU SCREEN ===================== -->
-    <div id="menu" class="screen active">
-        <div class="header">
-            <div onclick="askClubName()">
-                <h1 id="modeTitle">Meeting Tools</h1>
-                <div id="clubSubtitle" class="subtitle">Tap to set club name</div>
+<!-- CLUB SWITCHER OVERLAY -->
+<div id="clubSwitcherOverlay" onclick="closeClubSwitcher(event)">
+    <div id="clubSwitcherPanel">
+        <div class="club-switcher-title">Switch Club</div>
+        <div class="club-switcher-section" id="clubSwitcherList"></div>
+        <div class="club-switcher-section">
+            <div class="club-switcher-item" onclick="showScreen('clubManager'); closeClubSwitcher();" style="color:var(--accent);">
+                <span>Manage Clubs</span><span style="font-size:20px;">›</span>
             </div>
-            <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
         </div>
-        <div class="tab-container">
-            <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
-            <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
-        </div>
-        
-        <div id="timerMode" class="container" style="flex: 0 0 auto;">
-            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
-            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
-        </div>
+        <div class="club-cancel-btn" onclick="closeClubSwitcher()">Cancel</div>
+    </div>
+</div>
 
-        <div id="counterMode" class="container" style="display:none; flex: 0 0 auto;">
-            <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI Definition & Search</p></div><div class="icon" style="color:var(--gold);">★</div></div>
-            <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
-            <div class="main-menu-card" onclick="showScreen('transcriptList')"><div class="card-content"><h3>Transcripts</h3><p>Share with speakers</p></div><div class="icon">📋</div></div>
-            <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
+<!-- MENU SCREEN -->
+<div id="menu" class="screen active">
+    <div class="header">
+        <div onclick="showClubSwitcher()" style="cursor:pointer;">
+            <h1 id="modeTitle">Meeting Tools</h1>
+            <div class="subtitle" style="display:flex; align-items:center; gap:6px;">
+                <span id="clubSubtitleText">Loading...</span>
+                <span style="font-size:14px; opacity:0.6;">▾</span>
+            </div>
         </div>
-        
-        <div style="flex: 1;"></div>
-        <div class="credit-footer">
-            <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
-            <p style="margin:0; font-weight:700; font-size:15px;">Southern Dutchess Toastmasters</p>
-            <span id="versionLabel" class="version-tag"></span>
+        <div class="settings-icon" onclick="showScreen('settings')">⚙</div>
+    </div>
+    <div class="tab-container">
+        <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
+        <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
+    </div>
+    <div id="timerMode" class="container" style="flex:0 0 auto;">
+        <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>New Timer</h3><p>Select speaker & start</p></div><div class="icon">⊕</div></div>
+        <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Meeting Report</h3><p>View recorded times</p></div><div class="icon">☰</div></div>
+    </div>
+    <div id="counterMode" class="container" style="display:none; flex:0 0 auto;">
+        <div class="main-menu-card" onclick="showScreen('wod')"><div class="card-content"><h3 style="color:var(--gold);">Word of the Day</h3><p>AI Definition & Search</p></div><div class="icon" style="color:var(--gold);">★</div></div>
+        <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
+        <div class="main-menu-card" onclick="showScreen('transcriptList')"><div class="card-content"><h3>Transcripts</h3><p>Share with speakers</p></div><div class="icon">📋</div></div>
+        <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="credit-footer">
+        <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
+        <p id="footerClubName" style="margin:0; font-weight:700; font-size:15px;"></p>
+        <span id="versionLabel" class="version-tag"></span>
+    </div>
+</div>
+
+<!-- WOD SCREEN -->
+<div id="wod" class="screen">
+    <div class="header"><h1>W.O.D.</h1><div class="subtitle">Search or Generate</div></div>
+    <div class="container">
+        <div class="wod-search-row">
+            <input type="text" id="wodManualInput" placeholder="ENTER CUSTOM WORD..." onkeydown="if(event.key==='Enter') searchWod()">
+            <button style="background:var(--accent); border:none; color:white; padding:0 18px; border-radius:12px; font-size:20px; cursor:pointer;" onclick="searchWod()">🔍</button>
+        </div>
+        <div id="wodDisplay" class="wod-card-big">
+            <div id="aiIndicator" class="ai-indicator">● CHATGPT READY</div>
+            <div id="wodContent"><span class="wod-word">...</span></div>
         </div>
     </div>
-
-    <!-- ===================== WOD SCREEN ===================== -->
-    <div id="wod" class="screen">
-        <div class="header"><h1>W.O.D.</h1><div class="subtitle">Search or Generate</div></div>
-        <div class="container">
-            <div class="wod-search-row">
-                <input type="text" id="wodManualInput" placeholder="ENTER CUSTOM WORD..." onkeydown="if(event.key==='Enter') searchWod()">
-                <button style="background:var(--accent); border:none; color:white; padding:0 18px; border-radius:12px; font-size:20px; cursor:pointer;" onclick="searchWod()">🔍</button>
-            </div>
-            <div id="wodDisplay" class="wod-card-big">
-                <div id="aiIndicator" class="ai-indicator">● CHATGPT READY</div>
-                <div id="wodContent"><span class="wod-word">...</span></div>
-            </div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button>
-            <button class="footer-btn secondary-btn" onclick="nextWod()">Random</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button>
-        </div>
+    <div class="button-row">
+        <button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button>
+        <button class="footer-btn secondary-btn" onclick="nextWod()">Random</button>
+        <button class="footer-btn" style="background:var(--green);" onclick="selectWod()">Select</button>
     </div>
+</div>
 
-    <!-- ===================== SETUP SCREEN ===================== -->
-    <div id="setup" class="screen">
-        <div class="header"><h1 id="setupHeader">Setup</h1></div>
-        <div class="container">
-            <div style="display:flex; gap:10px; flex-shrink: 0; align-items:center;">
-                <input type="text" id="name" placeholder="SEARCH OR ADD NAME" style="flex:1;" oninput="handleNameInput(this)">
-                <button class="footer-btn" style="flex:0; padding:15px 25px; font-size:18px; height:54px; display:flex; align-items:center;" onclick="saveSpeaker()">Add</button>
-            </div>
-            <div id="speakerArea" style="background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px; margin-bottom: 10px;"></div>
-            <!-- NEW: Record Speech toggle — only visible in counter mode -->
-            <div id="recordToggleRow" style="display:none; justify-content:space-between; align-items:center; background:var(--card); border-radius:14px; padding:18px 20px; border:1px solid var(--border); flex-shrink:0;">
-                <div>
-                    <div style="font-size:18px; font-weight:700;">Record Speech</div>
-                    <div style="font-size:14px; color:var(--subtext); margin-top:3px;">Transcribe & auto-count fillers</div>
+<!-- SETUP SCREEN -->
+<div id="setup" class="screen">
+    <div class="header"><h1 id="setupHeader">Setup</h1></div>
+    <div class="container">
+        <div style="display:flex; gap:10px; flex-shrink:0; align-items:center;">
+            <input type="text" id="name" placeholder="SEARCH OR ADD NAME" style="flex:1;" oninput="handleNameInput(this)">
+            <button class="footer-btn" style="flex:0; padding:15px 25px; font-size:18px; height:54px; display:flex; align-items:center;" onclick="saveSpeaker()">Add</button>
+        </div>
+        <div id="speakerArea" style="background:var(--card); border-radius:16px; padding:2px; flex:1; overflow-y:auto; border:1px solid var(--border); min-height:120px; margin-bottom:10px;"></div>
+        <div id="recordToggleRow" style="display:none; justify-content:space-between; align-items:center; background:var(--card); border-radius:14px; padding:18px 20px; border:1px solid var(--border); flex-shrink:0;">
+            <div><div style="font-size:18px; font-weight:700;">Record Speech</div><div style="font-size:14px; color:var(--subtext); margin-top:3px;">Transcribe & auto-count fillers</div></div>
+            <label class="switch"><input type="checkbox" id="recordToggle" onchange="recordingEnabled = this.checked"><span class="slider"></span></label>
+        </div>
+        <div id="roleGridArea" class="role-grid"></div>
+    </div>
+    <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
+</div>
+
+<!-- COUNTER DISPLAY SCREEN -->
+<div id="counterDisplay" class="screen">
+    <div class="header"><h1 id="counterSpeakerName">Name</h1><div id="counterSpeakerRole" class="subtitle">ROLE</div></div>
+    <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
+    <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn" style="background:var(--green);" onclick="saveCounterSession()">SAVE RESULTS</button></div>
+</div>
+
+<!-- TIMER DISPLAY SCREEN -->
+<div id="timerDisplay" class="screen">
+    <div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform:uppercase; font-weight:700;">Speaker</div>
+    <div id="timer" style="font-size:clamp(100px, 30vw, 400px); font-weight:200; text-align:center; margin:auto 0; font-variant-numeric:tabular-nums; color:#000;">00:00</div>
+    <div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT & EXIT</button></div>
+</div>
+
+<!-- REPORT SCREEN -->
+<div id="report" class="screen">
+    <div class="header"><h1 id="reportPageTitle">Report</h1></div>
+    <div class="container"><div id="reportLog" style="background:var(--card); border-radius:18px; padding:20px; flex:1; overflow-y:auto; font-family:monospace; font-size:17px; border:1px solid var(--border); color:#000; white-space:pre-wrap;"></div></div>
+    <div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
+</div>
+
+<!-- SETTINGS SCREEN -->
+<div id="settings" class="screen">
+    <div class="header"><h1>Settings</h1></div>
+    <div class="container">
+        <div class="main-menu-card settings-card" onclick="showScreen('clubManager')"><div class="card-content"><h3>Clubs</h3><p id="settingsClubName">Manage your clubs</p></div><div class="icon" style="font-size:30px;">🏛</div></div>
+        <div class="main-menu-card settings-card" onclick="showScreen('fillerManager')"><div class="card-content"><h3>Filler Words</h3><p>Add, edit, delete</p></div><div class="icon" style="font-size:30px;">💬</div></div>
+        <div class="main-menu-card settings-card" style="cursor:default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon"><label class="switch"><input type="checkbox" id="mdToggle" onchange="saveSettings()"><span class="slider"></span></label></div></div>
+        <div class="main-menu-card settings-card" style="cursor:default; flex-direction:column; align-items:flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:12px; font-size:16px;"></div>
+        <div class="main-menu-card settings-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
+        <div class="main-menu-card settings-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
+        <div class="main-menu-card settings-card" onclick="askClearLogs()" style="background:#FFF5F5; border:2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Reset logs, WOD, transcripts</p></div><div class="icon">⚠</div></div>
+        <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
+    </div>
+    <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
+</div>
+
+<!-- CLUB MANAGER SCREEN -->
+<div id="clubManager" class="screen">
+    <div class="header"><h1>Clubs</h1><div class="subtitle">Tap to switch</div></div>
+    <div class="container">
+        <div id="clubManagerList" style="background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); flex-shrink:0;"></div>
+        <button class="add-item-btn" onclick="askAddClub()">+ Add Club</button>
+    </div>
+    <div class="button-row"><button class="footer-btn" onclick="showScreen('settings')">Done</button></div>
+</div>
+
+<!-- FILLER MANAGER SCREEN -->
+<div id="fillerManager" class="screen">
+    <div class="header"><h1>Filler Words</h1><div id="fillerManagerSubtitle" class="subtitle">Current club</div></div>
+    <div class="container">
+        <div id="fillerManagerList" style="background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); flex-shrink:0;"></div>
+        <button class="add-item-btn" onclick="askAddFiller()">+ Add Filler Word</button>
+    </div>
+    <div class="button-row"><button class="footer-btn" onclick="showScreen('settings')">Done</button></div>
+</div>
+
+<!-- TRANSCRIPTION SCREEN -->
+<div id="transcription" class="screen">
+    <div class="header"><h1 id="transcriptionSpeakerName">Name</h1><div id="transcriptionSpeakerRole" class="subtitle">ROLE</div></div>
+    <div class="container">
+        <div id="transcriptionStatus" class="trans-status">READY TO RECORD</div>
+        <div class="trans-display"><div id="transcriptionContent"><span class="trans-placeholder">Transcript will appear here after recording...</span></div></div>
+        <div id="transcriptionResults" style="display:none; flex-shrink:0; padding-bottom:5px;"></div>
+    </div>
+    <div class="button-row">
+        <button class="footer-btn secondary-btn" onclick="cancelTranscription()">Cancel</button>
+        <button id="transRecordBtn" class="footer-btn" style="background:var(--red);">Start Recording</button>
+    </div>
+</div>
+
+<!-- TRANSCRIPT LIST SCREEN -->
+<div id="transcriptList" class="screen">
+    <div class="header"><h1>Transcripts</h1><div class="subtitle">Saved this meeting</div></div>
+    <div class="container"><div id="transcriptListArea" style="background:var(--card); border-radius:16px; padding:2px; flex:1; overflow-y:auto; border:1px solid var(--border); min-height:120px;"></div></div>
+    <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button></div>
+</div>
+
+<!-- TRANSCRIPT VIEW SCREEN -->
+<div id="transcriptView" class="screen">
+    <div class="header"><h1 id="transcriptViewName">Name</h1><div id="transcriptViewRole" class="subtitle">ROLE</div></div>
+    <div class="container">
+        <div id="transcriptViewSummary" style="background:var(--card); border-radius:16px; border:1px solid var(--border); padding:15px 18px; flex-shrink:0;"></div>
+        <div id="transcriptViewText" style="background:var(--card); border-radius:16px; border:1px solid var(--border); padding:20px; flex:1; overflow-y:auto; font-size:17px; line-height:1.8;"></div>
+    </div>
+    <div class="button-row">
+        <button class="footer-btn secondary-btn" onclick="showScreen('transcriptList')">Back</button>
+        <button class="footer-btn" style="background:var(--green);" onclick="shareTranscript()">Share</button>
+    </div>
+</div>
+
+<script>
+    /* ============================================================
+       KEY ARCHITECTURE v3.0.0
+       Global keys: clubs list, active club, UI prefs, API key
+       Club-scoped keys: all meeting data via clubKey()
+    ============================================================ */
+    const isTest = window.location.pathname.toLowerCase().includes('/test/');
+    const prefix = isTest ? 'test_' : 'prod_';
+
+    const KEY_CLUBS       = prefix + 'clubs';
+    const KEY_ACTIVE_CLUB = prefix + 'active_club';
+    const KEY_MD          = prefix + 'md_toggle';
+    const KEY_AI_KEY      = prefix + 'openai_key';
+
+    const DEFAULT_FILLERS = ["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"];
+
+    let clubs = [];
+    let activeClubId = '';
+
+    function clubKey(suffix) { return prefix + 'club_' + activeClubId + '_' + suffix; }
+
+    let currentMode = 'timer', currentSpeaker = "", currentTally = {}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
+    let fillerList = [];
+    let allSpeakers = [];
+    let recordingEnabled = false;
+    let mediaRecorder = null;
+    let recordingStream = null;
+    let audioChunks = [];
+    let transcriptResult = "";
+    let transcriptCounts = {};
+    let recordingStartTime = 0;
+    let speechDuration = 0;
+    let activeTranscriptIndex = -1;
+
+    const WOD_LIBRARY = ["Eloquent","Pernicious","Resilience","Sagacious","Ubiquitous","Meticulous","Pragmatic","Ineffable","Luminous","Tenacious","Altruistic","Candor","Enigma","Fastidious","Gregarious","Inundated","Magnanimous","Nefarious","Obsequious","Parsimonious","Abundant","Benevolent","Clarity","Diligence","Exuberant","Fortitude","Gratitude","Harmony","Insight","Jubilant","Kindle","Legacy","Munificent","Novel","Opulent","Pensive","Quaint","Ruminate","Serene","Thrive","Urbane","Vivid","Wander","Zeal","Acumen","Boisterous","Cerebral","Deferential","Ephemeral","Frugal","Acquiesce","Alacrity","Ameliorate","Anachronism","Anomaly","Antipathy","Archaic","Assiduous","Atrophy","Auspicious","Austere","Belligerent","Banal","Brusque","Cajole","Callous","Capricious","Castigate","Caustic","Censure","Churlish","Circumspect","Clandestine","Coalesce","Cogent","Collusion","Complacent","Conciliatory","Concise","Condone","Conspicuous","Conundrum","Copious","Cordial","Corroborate","Cryptic","Culpable","Cursory","Dearth","Debacle","Debilitate","Decorum","Deference","Deleterious","Demagogue","Demure","Denigrate","Depravity","Deride","Despot","Destitute","Diatribe","Didactic","Diffident","Dilatory","Diligence","Disparate","Disseminate","Dissonance","Divergent","Dogmatic","Dormant","Duplicity","Ebullient","Eclectic","Edify","Efface","Efficacious","Effrontery","Egregious","Elated","Elegy","Elicit","Elucidate","Elusive","Emaciated","Embellish","Emulate","Enervate","Engender","Enigma","Enmity","Ennui","Ephemeral","Epitome","Equanimity","Equivocal","Eradicate","Erudite","Esoteric","Espouse","Ethereal","Euphoric","Evanescent","Exacerbate","Exalt","Exasperate","Execrable","Exemplary","Exhort","Exigent","Exonerate","Exorbitant","Expedient","Expedite","Expunge","Extant","Extol","Extraneous","Extricate","Exult","Fabricate","Facade","Facetious","Facilitate","Fallacious","Fastidious","Fathom","Fatuous","Feasible","Felicitous","Fervent","Fetter","Fickle","Fidelity","Figurative","Flabbergasted","Flagrant","Flamboyant","Flaunt","Fledgling","Flout","Fluctuate","Foil","Forage","Forbearance","Forestall","Forlorn","Forsake","Fortitude","Fortuitous","Foster","Fractious","Fraught","Frugal","Furtive","Futile","Garrulous","Genial","Germane","Gesticulate","Glib","Gluttony","Goad","Gourmet","Grandiloquent","Grandiose","Gregarious","Guile","Gullible","Hackneyed","Hallowed","Hapless","Harangue","Harass","Harbinger","Hardy","Haughty","Hedonist","Heinous","Hermetic","Heterogeneous","Hiatus","Hierarchy","Hidebound","Hilarity","Histrionic","Holistic","Homage","Hubris","Humanitarian","Hypocrisy","Hypothetical","Iconoclast","Idiosyncratic","Ignominious","Immutable","Impassive","Impeccable","Impecunious","Imperative","Imperceptible","Imperious","Impertinent","Impervious","Impetuous","Impinge","Implacable","Implausible","Implicit","Implore","Impose","Impromptu","Imprudent","Impudence","Impugn","Impunity","Inadvertent","Inane","Inarticulate","Inaugurate","Incapacitate","Incendiary","Incessant","Inchoate","Incisive","Incite","Inclination","Incognito","Incoherent","Incongruous","Incorrigible","Incredulous","Inculcate","Incumbent","Incursion","Indefatigable","Indict","Indigenous","Indigent","Indignant","Indomitable","Indubitable","Induce","Indulgent","Ineffable","Inept","Inert","Inevitable","Inexorable","Infamy","Infuriate","Ingenious","Ingenuous","Ingratiate","Inherent","Inhibit","Inimical","Iniquity","Initiate","Innate","Innocuous","Innovate","Innuendo","Inordinate","Insatiable","Inscrutable","Insidious","Insinuate","Insipid","Insolent","Instigate","Insular","Intangible","Integrity","Intelligible","Intercede","Interminable","Intermittent","Intractable","Intransigent","Intrepid","Intrinsic","Inundate","Inure","Invective","Inveterate","Invidious","Invincible","Inviolable","Irascible","Iridescent","Irrevocable","Iteration","Itinerant","Jaded","Jargon","Jettison","Jocular","Jovial","Judicious","Juxtaposition","Kindle","Knotty","Labyrinth","Lachrymose","Laconic","Lament","Lampoon","Languid","Larceny","Largess","Lassitude","Latent","Laudatory","Lavish","Legacy","Legerdemain","Lenient","Lethargic","Levity","Liability","Licentious","Lithe","Litigate","Lofty","Logistics","Loquacious","Lucid","Lucrative","Ludicrous","Lugubrious","Luminescent","Lurid","Lush","Machination","Magnanimous","Malediction","Malevolent","Malleable","Mandate","Manifest","Manifold","Maverick","Mawkish","Maxim","Meager","Mediate","Melancholy","Mellifluous","Mendacious","Mercurial","Meritorious","Metaphor","Meticulous","Mettle","Misanthrope","Mitigate","Modicum","Modulate","Mollify","Momentous","Monotony","Morose","Multifarious","Munificent","Mutability","Myriad","Nadir","Narrative","Nascent","Nebulous","Nefarious","Negligence","Neophyte","Nexus","Nocturnal","Nomadic","Nominal","Nonchalant","Nondescript","Notoriety","Novice","Noxious","Nuance","Nurture","Obdurate","Obfuscate","Objective","Oblivious","Obscure","Obsequious","Obsolete","Obstinate","Obstreperous","Obtrusive","Obtuse","Obviate","Odious","Officious","Ominous","Omnipotent","Omniscient","Opaque","Opulent","Oration","Ornate","Orthodox","Oscillate","Ossify","Ostensible","Ostentatious","Ostracism","Pacific","Palatable","Palliate","Pallid","Panacea","Paradigm","Paradox","Paragon","Paramount","Pariah","Parity","Parody","Parsimony","Partisan","Pastoral","Pathos","Paucity","Peccadillo","Peculiar","Pedantic","Pedestrian","Pejorative","Penchant","Penitent","Pensive","Penurious","Perceptive","Perdition","Perfunctory","Peripheral","Pernicious","Perpetual","Perplexity","Perspicacity","Pertinent","Perturb","Pervasive","Petulant","Philanthropic","Phlegmatic","Pinnacle","Pious","Pithy","Placate","Placid","Platitude","Plausible","Plethora","Pliable","Poignant","Polemic","Portent","Postulate","Potent","Pragmatic","Precarious","Precedent","Precept","Precipice","Preclude","Precocious","Precursor","Predatory","Predilection","Preeminent","Preempt","Prepossessing","Presage","Prescience","Presumptuous","Pretext","Prevalent","Prevaricate","Pristine","Probity","Proclivity","Procure","Prodigious","Profane","Profligate","Profuse","Prolific","Promulgate","Propensity","Propitious","Propriety","Prosaic","Proscribe","Prosperity","Protagonist","Protean","Prowess","Prudence","Prurient","Puerile","Pugnacious","Pulchritude","Punctilious","Pungent","Punitive","Putrid","Quaint","Quandary","Quell","Querulous","Quiescent","Quintessential","Quixotic","Quotidian","Radiant","Rancor","Rapport","Ratify","Raucous","Raze","Rebuke","Recalcitrant","Recant","Recapitulate","Reciprocal","Recluse","Recondite","Rectitude","Redoubtable","Refract","Refurbish","Refute","Regurgitate","Reiterate","Rejoinder","Relentless","Relevant","Remiss","Remit","Remnant","Renovate","Renounce","Repentant","Replenish","Replete","Reprehensible","Reprieve","Reproach","Reprobate","Reprove","Repudiate","Repulse","Rescind","Resilient","Resolute","Resonance","Respite","Resplendent","Restive","Retract","Retribution","Revel","Revere","Revoke","Rhapsodize","Rhetoric","Rife","Rigor","Ruminate","Ruse","Rustic","Sacrosanct","Sagacious","Salient","Salutation","Sanctimonious","Sanguine","Satiate","Scanty","Scrupulous","Scurrilous","Sedate","Sedentary","Sedulous","Seminal","Serendipity","Serene","Servile","Sinuous","Sobriety","Solace","Solicitous","Solvent","Somnolent","Sophomoric","Soporific","Specious","Speculative","Spurious","Squalid","Stagnate","Staid","Steadfast","Stifle","Stigma","Stoic","Stolid","Strenuous","Strident","Stupefy","Subjugate","Sublime","Submissive","Subsequent","Subservient","Subside","Substantiate","Subterfuge","Subtle","Subversive","Succinct","Succumb","Sullen","Sumptuous","Supercilious","Superficial","Superfluous","Surfeit","Surmise","Surreptitious","Surrogate","Susceptible","Sycophant","Symbiotic","Tacit","Taciturn","Tangential","Tangible","Tantamount","Tedious","Temerity","Temperance","Tenable","Tenacious","Tenuous","Tepid","Terse","Theocracy","Timorous","Tirade","Toady","Tome","Torpid","Torrid","Tortuous","Tractable","Tranquil","Transgress","Transient","Translucent","Transmute","Traverse","Treachery","Tremulous","Trenchant","Trepidation","Trite","Truculent","Truncate","Turgid","Turpitude","Ubiquitous","Umbrage","Uncanny","Unctuous","Undulate","Upbraid","Usurp","Utilitarian","Utopia","Vacillate","Vacuous","Valiant","Valid","Vanquish","Vapid","Variegated","Vehement","Veneer","Venerable","Venerate","Veracity","Verbose","Verdant","Verge","Verify","Veritable","Vernacular","Versatile","Vestige","Vex","Vicarious","Vicissitude","Vigilant","Vignette","Vilify","Vindicate","Vindictive","Virtuoso","Virulent","Viscous","Visionary","Vital","Vituperate","Vivacious","Vivid","Vociferous","Volatility","Volition","Voluble","Voracious","Vulnerable","Wane","Wanderlust","Warrant","Wary","Waver","Whet","Whimsical","Wily","Winsome","Wistful","Wizened","Wrath","Yoke","Zeal","Zealot","Zenith","Zephyr"];
+
+    /* ============================================================
+       MIGRATION v2.x → v3.0 — runs once on first v3 launch
+    ============================================================ */
+    function migrateIfNeeded() {
+        if (localStorage.getItem(KEY_CLUBS)) return;
+        const oldName = localStorage.getItem(prefix + 'sdtm_club_name') || 'My Toastmasters Club';
+        const clubId = 'c' + Date.now();
+        localStorage.setItem(KEY_CLUBS, JSON.stringify([{ id: clubId, name: oldName, syncKey: '' }]));
+        localStorage.setItem(KEY_ACTIVE_CLUB, clubId);
+        ['logs','speakers','fillers','wod_full','custom_limits','transcripts'].forEach(k => {
+            const v = localStorage.getItem(prefix + 'sdtm_' + k);
+            if (v !== null) localStorage.setItem(prefix + 'club_' + clubId + '_' + k, v);
+        });
+    }
+
+    /* ============================================================
+       LOAD CLUB DATA into working variables
+    ============================================================ */
+    function loadClubData() {
+        clubs = JSON.parse(localStorage.getItem(KEY_CLUBS) || '[]');
+        activeClubId = localStorage.getItem(KEY_ACTIVE_CLUB) || (clubs[0] ? clubs[0].id : '');
+        fillerList = JSON.parse(localStorage.getItem(clubKey('fillers')) || 'null') || [...DEFAULT_FILLERS];
+        allSpeakers = JSON.parse(localStorage.getItem(clubKey('speakers')) || '[]');
+    }
+
+    function updateClubUI() {
+        const ac = clubs.find(c => c.id === activeClubId);
+        const name = ac ? ac.name : 'No Club Selected';
+        document.getElementById('clubSubtitleText').innerText = name;
+        document.getElementById('footerClubName').innerText = name;
+        const sc = document.getElementById('settingsClubName');
+        if (sc) sc.innerText = name;
+        const fm = document.getElementById('fillerManagerSubtitle');
+        if (fm) fm.innerText = name;
+    }
+
+    /* ============================================================
+       INIT APP
+    ============================================================ */
+    function initApp() {
+        migrateIfNeeded();
+        if (!localStorage.getItem(KEY_CLUBS)) {
+            const clubId = 'c' + Date.now();
+            localStorage.setItem(KEY_CLUBS, JSON.stringify([{ id: clubId, name: 'My Toastmasters Club', syncKey: '' }]));
+            localStorage.setItem(KEY_ACTIVE_CLUB, clubId);
+        }
+        loadClubData();
+        updateClubUI();
+        document.getElementById('mdToggle').checked = (localStorage.getItem(KEY_MD) === 'true');
+        document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
+        document.getElementById('versionLabel').innerText = "Version 3.0.0" + (isTest ? " (TEST)" : "");
+        refreshRoster();
+        nextWod();
+    }
+
+    /* ============================================================
+       CLUB SWITCHER
+    ============================================================ */
+    function showClubSwitcher() {
+        document.getElementById('clubSwitcherList').innerHTML = clubs.map(c =>
+            `<div class="club-switcher-item ${c.id === activeClubId ? 'active-club' : ''}" onclick="switchClub('${c.id}')">
+                <span>${c.name}</span>
+                ${c.id === activeClubId ? '<span style="color:var(--accent); font-size:20px; font-weight:800;">✓</span>' : '<span style="color:#ccc; font-size:20px;">›</span>'}
+            </div>`
+        ).join('');
+        document.getElementById('clubSwitcherOverlay').style.display = 'flex';
+    }
+    function closeClubSwitcher(event) {
+        if (!event || event.target === document.getElementById('clubSwitcherOverlay'))
+            document.getElementById('clubSwitcherOverlay').style.display = 'none';
+    }
+    function switchClub(id) {
+        if (id === activeClubId) { closeClubSwitcher(); return; }
+        activeClubId = id;
+        localStorage.setItem(KEY_ACTIVE_CLUB, id);
+        loadClubData();
+        updateClubUI();
+        closeClubSwitcher();
+        showScreen('menu');
+    }
+
+    /* ============================================================
+       CLUB MANAGER
+    ============================================================ */
+    function renderClubManager() {
+        const list = document.getElementById('clubManagerList');
+        if (!clubs.length) { list.innerHTML = `<div style="padding:20px; text-align:center; opacity:0.4;">No clubs yet. Add one below.</div>`; return; }
+        list.innerHTML = clubs.map(c => `
+            <div class="manager-item">
+                <div style="flex:1;">
+                    <div style="font-size:18px; font-weight:700;">${c.name}</div>
+                    ${c.id === activeClubId ? '<div style="font-size:12px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-top:2px;">Active</div>' : ''}
                 </div>
-                <label class="switch">
-                    <input type="checkbox" id="recordToggle" onchange="recordingEnabled = this.checked">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div id="roleGridArea" class="role-grid"></div>
-        </div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Cancel</button><button class="footer-btn" onclick="handleStart()">START</button></div>
-    </div>
+                ${c.id !== activeClubId ? `<button class="manager-btn" style="background:#E8F2FF; color:var(--accent); font-size:13px; width:auto; padding:0 14px;" onclick="switchClub('${c.id}'); renderClubManager();">Switch</button>` : ''}
+                <button class="manager-btn manager-edit-btn" onclick="askEditClub('${c.id}')">✎</button>
+                ${clubs.length > 1 ? `<button class="manager-btn manager-del-btn" onclick="askDeleteClub('${c.id}')">✕</button>` : ''}
+            </div>`).join('');
+    }
+    function askAddClub() {
+        openModal("New Club", `<input type="text" id="newClubName" placeholder="Club name" style="text-transform:none;">`, () => {
+            const name = document.getElementById('newClubName').value.trim();
+            if (!name) return;
+            const clubId = 'c' + Date.now();
+            clubs.push({ id: clubId, name, syncKey: '' });
+            localStorage.setItem(KEY_CLUBS, JSON.stringify(clubs));
+            localStorage.setItem(prefix + 'club_' + clubId + '_fillers', JSON.stringify([...DEFAULT_FILLERS]));
+            renderClubManager();
+        });
+    }
+    function askEditClub(id) {
+        const club = clubs.find(c => c.id === id); if (!club) return;
+        openModal("Rename Club", `<input type="text" id="editClubName" value="${club.name}" style="text-transform:none;">`, () => {
+            const name = document.getElementById('editClubName').value.trim();
+            if (!name) return;
+            club.name = name;
+            localStorage.setItem(KEY_CLUBS, JSON.stringify(clubs));
+            updateClubUI(); renderClubManager();
+        });
+    }
+    function askDeleteClub(id) {
+        const club = clubs.find(c => c.id === id); if (!club) return;
+        openModal("Delete Club?", `Remove "${club.name}" and all its data?`, () => {
+            ['logs','speakers','fillers','wod_full','custom_limits','transcripts'].forEach(k => localStorage.removeItem(prefix + 'club_' + id + '_' + k));
+            clubs = clubs.filter(c => c.id !== id);
+            localStorage.setItem(KEY_CLUBS, JSON.stringify(clubs));
+            if (activeClubId === id && clubs.length > 0) switchClub(clubs[0].id);
+            renderClubManager();
+        });
+    }
 
-    <!-- ===================== COUNTER DISPLAY SCREEN ===================== -->
-    <div id="counterDisplay" class="screen">
-        <div class="header"><h1 id="counterSpeakerName">Name</h1><div id="counterSpeakerRole" class="subtitle">ROLE</div></div>
-        <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button><button class="footer-btn" style="background:var(--green);" onclick="saveCounterSession()">SAVE RESULTS</button></div>
-    </div>
+    /* ============================================================
+       FILLER MANAGER
+    ============================================================ */
+    function renderFillerManager() {
+        updateClubUI();
+        const displayFillers = fillerList.filter(f => f !== 'WORD OF DAY');
+        const list = document.getElementById('fillerManagerList');
+        if (!displayFillers.length) { list.innerHTML = `<div style="padding:20px; text-align:center; opacity:0.4;">No filler words. Add some below.</div>`; return; }
+        list.innerHTML = displayFillers.map(f => `
+            <div class="manager-item">
+                <div class="manager-item-label">${f}</div>
+                <button class="manager-btn manager-edit-btn" onclick="askEditFiller('${f}')">✎</button>
+                <button class="manager-btn manager-del-btn" onclick="askDeleteFiller('${f}')">✕</button>
+            </div>`).join('');
+    }
+    function askAddFiller() {
+        openModal("Add Filler Word", `<input type="text" id="newFiller" placeholder="e.g. BASICALLY" style="text-transform:uppercase;">`, () => {
+            const word = document.getElementById('newFiller').value.trim().toUpperCase();
+            if (!word || fillerList.includes(word)) return;
+            fillerList.push(word);
+            localStorage.setItem(clubKey('fillers'), JSON.stringify(fillerList));
+            renderFillerManager();
+        });
+    }
+    function askEditFiller(oldWord) {
+        openModal("Edit Filler Word", `<input type="text" id="editFiller" value="${oldWord}" style="text-transform:uppercase;">`, () => {
+            const newWord = document.getElementById('editFiller').value.trim().toUpperCase();
+            if (!newWord || newWord === oldWord) return;
+            fillerList = fillerList.map(f => f === oldWord ? newWord : f);
+            localStorage.setItem(clubKey('fillers'), JSON.stringify(fillerList));
+            renderFillerManager();
+        });
+    }
+    function askDeleteFiller(word) {
+        openModal("Delete Filler?", `Remove "${word}" from this club's list?`, () => {
+            fillerList = fillerList.filter(f => f !== word);
+            localStorage.setItem(clubKey('fillers'), JSON.stringify(fillerList));
+            renderFillerManager();
+        });
+    }
 
-    <!-- ===================== TIMER DISPLAY SCREEN ===================== -->
-    <div id="timerDisplay" class="screen"><div id="spkName" style="font-size:30px; color:#666; margin-top:20px; text-align:center; text-transform: uppercase; font-weight:700;">Speaker</div><div id="timer" style="font-size: clamp(100px, 30vw, 400px); font-weight: 200; text-align: center; margin: auto 0; font-variant-numeric: tabular-nums; color: #000;">00:00</div><div class="button-row"><button id="pauseResumeBtn" class="footer-btn secondary-btn" onclick="togglePause()">PAUSE</button><button class="footer-btn" style="background:var(--green);" onclick="commitAndExit()">COMMIT & EXIT</button></div></div>
+    /* ============================================================
+       WOD
+    ============================================================ */
+    let activeWodData = null;
+    async function nextWod() { fetchWordDetails(WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)]); }
+    async function searchWod() { const w = document.getElementById('wodManualInput').value.trim(); if (w) fetchWordDetails(w); }
+    async function fetchWordDetails(word) {
+        const display = document.getElementById('wodContent');
+        const aiInd = document.getElementById('aiIndicator');
+        const aiKey = (localStorage.getItem(KEY_AI_KEY) || "").trim();
+        display.innerHTML = `<span class="wod-word">...</span>`;
+        if (aiInd) aiInd.style.display = aiKey ? 'block' : 'none';
+        if (!aiKey) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def" style="margin-top:20px;">Add OpenAI Key in Settings.</div>`; return; }
+        display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Consulting ChatGPT...</div>`;
+        try {
+            const res = await fetch("https://api.openai.com/v1/chat/completions", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${aiKey}`}, body:JSON.stringify({model:"gpt-4o-mini",messages:[{role:"system",content:"You are a speech coach. Provide JSON with 'definition' and 'example' keys. Keep family-friendly and sophisticated."},{role:"user",content:`Word: ${word}`}],response_format:{type:"json_object"}})});
+            if (res.ok) { const data = await res.json(); const r = JSON.parse(data.choices[0].message.content); activeWodData = {word, definition:r.definition, example:r.example}; display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-label">Definition</div><div class="wod-def">${activeWodData.definition}</div><div class="wod-label">Usage</div><div class="wod-example">"${activeWodData.example}"</div>`; }
+            else display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">AI Error. Check key.</div>`;
+        } catch(e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Network Error.</div>`; }
+    }
 
-    <!-- ===================== REPORT SCREEN ===================== -->
-    <div id="report" class="screen"><div class="header"><h1 id="reportPageTitle">Report</h1></div><div class="container"><div id="reportLog" style="background: var(--card); border-radius: 18px; padding: 20px; flex: 1; overflow-y: auto; font-family: monospace; font-size: 17px; border: 1px solid var(--border); color: #000; white-space: pre-wrap;"></div></div><div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div></div>
+    /* ============================================================
+       SETTINGS
+    ============================================================ */
+    function saveSettings() { localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); }
 
-    <!-- ===================== SETTINGS SCREEN ===================== -->
-    <div id="settings" class="screen">
-        <div class="header"><h1>Settings</h1></div>
-        <div class="container">
-            <div class="main-menu-card settings-card" style="cursor: default;"><div class="card-content"><h3>Markdown Export</h3><p>Enable Slack/Email tables</p></div><div class="icon">
-                <label class="switch">
-                    <input type="checkbox" id="mdToggle" onchange="saveSettings()">
-                    <span class="slider"></span>
-                </label>
-            </div></div>
-            <div class="main-menu-card settings-card" style="cursor: default; flex-direction: column; align-items: flex-start;"><div class="card-content"><h3>ChatGPT API Key</h3><p>OpenAI sk-... key</p></div><input type="password" id="openaiKey" placeholder="Paste Key Here" onchange="saveSettings()" style="margin-top:12px; font-size: 16px;"></div>
-            <div class="main-menu-card settings-card" onclick="exportData()"><div class="card-content"><h3>Backup Data</h3><p>Export JSON</p></div><div class="icon">⤓</div></div>
-            <div class="main-menu-card settings-card" onclick="document.getElementById('importFile').click()"><div class="card-content"><h3>Restore Data</h3><p>Import JSON</p></div><div class="icon">⤒</div></div>
-            <div class="main-menu-card settings-card" onclick="askClearLogs()" style="background: #FFF5F5; border: 2px solid var(--red);"><div class="card-content"><h3 style="color:var(--red);">Clear Meeting Data</h3><p>Full Reset</p></div><div class="icon">⚠</div></div>
-            <input type="file" id="importFile" style="display:none" onchange="handleImportFile(this)">
-        </div>
-        <div class="button-row"><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
-    </div>
+    /* ============================================================
+       ROSTER
+    ============================================================ */
+    function refreshRoster() { const area = document.getElementById('speakerArea'); if(!area) return; if(!allSpeakers.length){area.innerHTML=`<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`;return;} area.innerHTML=allSpeakers.map(n=>`<div class="speaker-item" style="padding:14px 18px; border-bottom:1px solid var(--bg); display:flex; justify-content:space-between; align-items:center;"><div style="font-size:22px; flex:1; color:var(--accent); font-weight:600; text-transform:uppercase; cursor:pointer;" onclick="selectSpeaker('${n}')">${n}</div><div style="padding:5px 12px; color:var(--red); font-weight:800; font-size:22px; cursor:pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');}
+    function saveSpeaker() { const n=document.getElementById('name').value.trim().toUpperCase(); if(n&&!allSpeakers.includes(n)){allSpeakers.push(n);allSpeakers.sort();localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));} refreshRoster(); }
+    function selectSpeaker(n) { document.getElementById('name').value=n; }
+    function handleNameInput(el) { el.value=el.value.toUpperCase(); renderSpeakerListFiltered(allSpeakers.filter(s=>s.includes(el.value))); }
+    function renderSpeakerListFiltered(f) { const area=document.getElementById('speakerArea'); area.innerHTML=f.map(n=>`<div style="padding:14px 18px; border-bottom:1px solid var(--bg); display:flex; justify-content:space-between; align-items:center;"><div style="font-size:22px; flex:1; color:var(--accent); font-weight:600; text-transform:uppercase; cursor:pointer;" onclick="selectSpeaker('${n}')">${n}</div><div style="padding:5px 12px; color:var(--red); font-weight:800; font-size:22px; cursor:pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');}
+    function askDeleteSpeaker(n) { openModal("Delete?",`Remove ${n}?`,()=>{allSpeakers=allSpeakers.filter(s=>s!==n);localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));refreshRoster();}); }
 
-    <!-- ===================== TRANSCRIPTION SCREEN (NEW) ===================== -->
-    <div id="transcription" class="screen">
-        <div class="header">
-            <h1 id="transcriptionSpeakerName">Name</h1>
-            <div id="transcriptionSpeakerRole" class="subtitle">ROLE</div>
-        </div>
-        <div class="container">
-            <div id="transcriptionStatus" class="trans-status">READY TO RECORD</div>
-            <div class="trans-display">
-                <div id="transcriptionContent"><span class="trans-placeholder">Transcript will appear here after recording...</span></div>
-            </div>
-            <div id="transcriptionResults" style="display:none; flex-shrink:0; padding-bottom:5px;"></div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="cancelTranscription()">Cancel</button>
-            <button id="transRecordBtn" class="footer-btn" style="background:var(--red);">Start Recording</button>
-        </div>
-    </div>
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id==='setup') { selectedTypeLabel=""; renderSetupGrid(); refreshRoster(); recordingEnabled=false; const rt=document.getElementById('recordToggle'); if(rt) rt.checked=false; const rr=document.getElementById('recordToggleRow'); if(rr) rr.style.display=currentMode==='counter'?'flex':'none'; }
+        if (id==='report') loadReport();
+        if (id==='transcriptList') loadTranscriptList();
+        if (id==='fillerManager') renderFillerManager();
+        if (id==='clubManager') renderClubManager();
+    }
 
-    <!-- ===================== TRANSCRIPT LIST SCREEN (NEW v2.11.2) ===================== -->
-    <div id="transcriptList" class="screen">
-        <div class="header"><h1>Transcripts</h1><div class="subtitle">Saved this meeting</div></div>
-        <div class="container">
-            <div id="transcriptListArea" style="background: var(--card); border-radius: 16px; padding: 2px; flex: 1; overflow-y: auto; border: 1px solid var(--border); min-height: 120px;"></div>
-        </div>
-        <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('menu')">Back</button></div>
-    </div>
-
-    <!-- ===================== TRANSCRIPT VIEW SCREEN (NEW v2.11.2) ===================== -->
-    <div id="transcriptView" class="screen">
-        <div class="header">
-            <h1 id="transcriptViewName">Name</h1>
-            <div id="transcriptViewRole" class="subtitle">ROLE</div>
-        </div>
-        <div class="container">
-            <div id="transcriptViewSummary" style="background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 15px 18px; flex-shrink: 0;"></div>
-            <div id="transcriptViewText" style="background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 20px; flex: 1; overflow-y: auto; font-size: 17px; line-height: 1.8;"></div>
-        </div>
-        <div class="button-row">
-            <button class="footer-btn secondary-btn" onclick="showScreen('transcriptList')">Back</button>
-            <button class="footer-btn" style="background:var(--green);" onclick="shareTranscript()">Share</button>
-        </div>
-    </div>
-
-    <script>
-        const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
-        const KEY_LOGS = prefix + 'sdtm_logs', KEY_CLUB = prefix + 'sdtm_club_name', KEY_SPEAKERS = prefix + 'sdtm_speakers', KEY_FILLERS = prefix + 'sdtm_fillers', KEY_MD = prefix + 'sdtm_md_toggle', KEY_WOD_FULL = prefix + 'sdtm_wod_full', KEY_CUSTOM = prefix + 'sdtm_custom_limits', KEY_AI_KEY = prefix + 'sdtm_openai_key', KEY_TRANSCRIPTS = prefix + 'sdtm_transcripts';
-
-        let currentMode = 'timer', currentSpeaker = "", currentTally = {}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel="";
-        let fillerList = JSON.parse(localStorage.getItem(KEY_FILLERS) || '["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]');
-        let allSpeakers = JSON.parse(localStorage.getItem(KEY_SPEAKERS) || "[]");
-
-        // --- NEW: Transcription state ---
-        let recordingEnabled = false;
-        let mediaRecorder = null;
-        let recordingStream = null;
-        let audioChunks = [];
-        let transcriptResult = "";
-        let transcriptCounts = {};
-        let recordingStartTime = 0;
-        let speechDuration = 0;
-
-        const WOD_LIBRARY = ["Eloquent", "Pernicious", "Resilience", "Sagacious", "Ubiquitous", "Meticulous", "Pragmatic", "Ineffable", "Luminous", "Tenacious", "Altruistic", "Candor", "Enigma", "Fastidious", "Gregarious", "Inundated", "Magnanimous", "Nefarious", "Obsequious", "Parsimonious", "Abundant", "Benevolent", "Clarity", "Diligence", "Exuberant", "Fortitude", "Gratitude", "Harmony", "Insight", "Jubilant", "Kindle", "Legacy", "Munificent", "Novel", "Opulent", "Pensive", "Quaint", "Ruminate", "Serene", "Thrive", "Urbane", "Vivid", "Wander", "Zeal", "Acumen", "Boisterous", "Cerebral", "Deferential", "Ephemeral", "Frugal", "Acquiesce", "Alacrity", "Ameliorate", "Anachronism", "Anomaly", "Antipathy", "Archaic", "Assiduous", "Atrophy", "Auspicious", "Austere", "Belligerent", "Banal", "Benevolent", "Boisterous", "Brusque", "Cajole", "Callous", "Candor", "Capricious", "Castigate", "Caustic", "Censure", "Cerebral", "Churlish", "Circumspect", "Clandestine", "Coalesce", "Cogent", "Collusion", "Complacent", "Conciliatory", "Concise", "Condone", "Conspicuous", "Conundrum", "Copious", "Cordial", "Corroborate", "Cryptic", "Culpable", "Cursory", "Dearth", "Debacle", "Debilitate", "Decorum", "Deference", "Deleterious", "Demagogue", "Demure", "Denigrate", "Depravity", "Deride", "Despot", "Destitute", "Diatribe", "Didactic", "Diffident", "Dilatory", "Diligence", "Disparate", "Disseminate", "Dissonance", "Divergent", "Dogmatic", "Dormant", "Duplicity", "Ebullient", "Eclectic", "Edify", "Efface", "Efficacious", "Effrontery", "Egregious", "Elated", "Elegy", "Elicit", "Elucidate", "Elusive", "Emaciated", "Embellish", "Emulate", "Enervate", "Engender", "Enigma", "Enmity", "Ennui", "Ephemeral", "Epitome", "Equanimity", "Equivocal", "Eradicate", "Erudite", "Esoteric", "Espouse", "Ethereal", "Euphoric", "Evanescent", "Exacerbate", "Exalt", "Exasperate", "Execrable", "Exemplary", "Exhort", "Exigent", "Exonerate", "Exorbitant", "Expedient", "Expedite", "Expunge", "Extant", "Extol", "Extraneous", "Extricate", "Exult", "Fabricate", "Facade", "Facetious", "Facilitate", "Fallacious", "Fastidious", "Fathom", "Fatuous", "Feasible", "Felicitous", "Fervent", "Fetter", "Fickle", "Fidelity", "Figurative", "Flabbergasted", "Flagrant", "Flamboyant", "Flaunt", "Fledgling", "Flout", "Fluctuate", "Foil", "Forage", "Forbearance", "Forestall", "Forlorn", "Forsake", "Fortitude", "Fortuitous", "Foster", "Fractious", "Fraught", "Frugal", "Furtive", "Futile", "Garrulous", "Genial", "Germane", "Gesticulate", "Glib", "Gluttony", "Goad", "Gourmet", "Grandiloquent", "Grandiose", "Gratitous", "Gregarious", "Guile", "Gullible", "Hackneyed", "Hallowed", "Hapless", "Harangue", "Harass", "Harbinger", "Hardy", "Haughty", "Hedonist", "Heinous", "Hermetic", "Heterogeneous", "Hiatus", "Hierarchy", "Hidebound", "Hilarity", "Histrionic", "Holistic", "Homage", "Hubris", "Humanitarian", "Hypocrisy", "Hypothetical", "Iconoclast", "Idiosyncratic", "Ignominious", "Immutable", "Impassive", "Impeccable", "Impecunious", "Imperative", "Imperceptible", "Imperious", "Impertinent", "Impervious", "Impetuous", "Impinge", "Implacable", "Implausible", "Implicit", "Implore", "Impose", "Impromptu", "Imprudent", "Impudence", "Impugn", "Impunity", "Inadvertent", "Inane", "Inarticulate", "Inaugurate", "Incapacitate", "Incendiary", "Incessant", "Inchoate", "Incisive", "Incite", "Inclination", "Incognito", "Incoherent", "Incongruous", "Incorrigible", "Incredulous", "Inculcate", "Incumbent", "Incursion", "Indefatigable", "Indict", "Indigenous", "Indigent", "Indignant", "Indomitable", "Indubitable", "Induce", "Indulgent", "Ineffable", "Inept", "Inert", "Inevitable", "Inexorable", "Infamy", "Infuriate", "Ingenious", "Ingenuous", "Ingratiate", "Inherent", "Inhibit", "Inimical", "Iniquity", "Initiate", "Innate", "Innocuous", "Innovate", "Innuendo", "Inordinate", "Insatiable", "Inscrutable", "Insidious", "Insinuate", "Insipid", "Insolent", "Instigate", "Insular", "Intangible", "Integrity", "Intelligible", "Intercede", "Interminable", "Intermittent", "Intractable", "Intransigent", "Intrepid", "Intrinsic", "Inundate", "Inure", "Invective", "Inveterate", "Invidious", "Invincible", "Inviolable", "Irascible", "Iridescent", "Irrevocable", "Iteration", "Itinerant", "Jaded", "Jargon", "Jettison", "Jocular", "Jovial", "Judicious", "Juxtaposition", "Kindle", "Knotty", "Labyrinth", "Laceration", "Lachrymose", "Laconic", "Lament", "Lampoon", "Languid", "Larceny", "Largess", "Lassitude", "Latent", "Laudatory", "Lavish", "Legacy", "Legerdemain", "Lenient", "Lethargic", "Levity", "Liability", "Licentious", "Lithe", "Litigate", "Lofty", "Logistics", "Loquacious", "Lucid", "Lucrative", "Ludicrous", "Lugubrious", "Luminescent", "Lurid", "Lush", "Machination", "Magnanimous", "Malediction", "Malevolent", "Malleable", "Mandate", "Manifest", "Manifold", "Maverick", "Mawkish", "Maxim", "Meager", "Mediate", "Melancholy", "Meliorate", "Mellifluous", "Mendacious", "Mercurial", "Meritorious", "Metaphor", "Meticulous", "Mettle", "Misanthrope", "Mitigate", "Modicum", "Modulate", "Mollify", "Momentous", "Monotony", "Morose", "Multifarious", "Munificent", "Mutability", "Myriad", "Nadir", "Narrative", "Nascent", "Nebulous", "Nefarious", "Negligence", "Neophyte", "Nexus", "Nocturnal", "Nomadic", "Nominal", "Nonchalant", "Nondescript", "Notoriety", "Novice", "Noxious", "Nuance", "Nurture", "Obdurate", "Obfuscate", "Objective", "Oblivious", "Obscure", "Obsequious", "Obsolete", "Obstinate", "Obstreperous", "Obtrusive", "Obtuse", "Obviate", "Odious", "Officious", "Ominous", "Omnipotent", "Omniscient", "Opaque", "Opulent", "Oration", "Ornate", "Orthodox", "Oscillate", "Ossify", "Ostensible", "Ostentatious", "Ostracism", "Pacific", "Palatable", "Palette", "Palliate", "Pallid", "Panacea", "Paradigm", "Paradox", "Paragon", "Paramount", "Pariah", "Parity", "Parody", "Parsimony", "Partisan", "Pastoral", "Pathos", "Paucity", "Peccadillo", "Peculiar", "Pedantic", "Pedestrian", "Pejorative", "Penchant", "Penitent", "Pensive", "Penurious", "Perceptive", "Perdition", "Perfunctory", "Peripheral", "Pernicious", "Perpetual", "Perplexity", "Perspicacity", "Pertinent", "Perturb", "Pervasive", "Petulant", "Philanthropic", "Phlegmatic", "Pinnacle", "Pious", "Pithy", "Placate", "Placid", "Platitude", "Plausible", "Plethora", "Pliable", "Poignant", "Polemic", "Portent", "Postulate", "Potent", "Pragmatic", "Precarious", "Precedent", "Precept", "Precipice", "Preclude", "Precocious", "Precursor", "Predatory", "Predilection", "Preeminent", "Preempt", "Prepossessing", "Presage", "Prescience", "Presumptuous", "Pretext", "Prevalent", "Prevaricate", "Pristine", "Probity", "Proclivity", "Procure", "Prodigious", "Profane", "Profligate", "Profuse", "Prolific", "Promulgate", "Propensity", "Propitious", "Propriety", "Prosaic", "Proscribe", "Prosperity", "Protagonist", "Protean", "Prowess", "Prudence", "Prurient", "Puerile", "Pugnacious", "Pulchritude", "Punctilious", "Pungent", "Punitive", "Putrid", "Quaint", "Quandary", "Quell", "Querulous", "Quiescent", "Quintessential", "Quixotic", "Quotidian", "Radiant", "Rancor", "Rapport", "Ratify", "Raucous", "Raze", "Rebuke", "Recalcitrant", "Recant", "Recapitulate", "Reciprocal", "Recluse", "Recondite", "Rectitude", "Redoubtable", "Refract", "Refurbish", "Refute", "Regurgitate", "Reiterate", "Rejoinder", "Relentless", "Relevant", "Remiss", "Remit", "Remnant", "Renovate", "Renounce", "Repentant", "Replenish", "Replete", "Reprehensible", "Reprieve", "Reproach", "Reprobate", "Reprove", "Repudiate", "Repulse", "Rescind", "Resilient", "Resolute", "Resonance", "Respite", "Resplendent", "Restive", "Retract", "Retribution", "Revel", "Revere", "Revoke", "Rhapsodize", "Rhetoric", "Rife", "Rigor", "Ruminate", "Ruse", "Rustic", "Sacrosanct", "Sagacious", "Salient", "Salutation", "Sanctimonious", "Sanguine", "Satiate", "Scanty", "Scrupulous", "Scurrilous", "Sedate", "Sedentary", "Sedulous", "Seminal", "Sensual", "Serendipity", "Serene", "Servile", "Sinuous", "Sobriety", "Solace", "Solicitous", "Solvent", "Somnolent", "Sophomoric", "Soporific", "Specious", "Speculative", "Spurious", "Squalid", "Stagnate", "Staid", "Steadfast", "Stifle", "Stigma", "Stoic", "Stolid", "Strenuous", "Strident", "Stupefy", "Subjugate", "Sublime", "Submissive", "Subsequent", "Subservient", "Subside", "Substantiate", "Subterfuge", "Subtle", "Subversive", "Succinct", "Succumb", "Sullen", "Sumptuous", "Supercilious", "Superficial", "Superfluous", "Surfeit", "Surmise", "Surreptitious", "Surrogate", "Susceptible", "Sycophant", "Symbiotic", "Tacit", "Taciturn", "Tangential", "Tangible", "Tantamount", "Tedious", "Temerity", "Temperance", "Tenable", "Tenacious", "Tenuous", "Tepid", "Terse", "Theocracy", "Timorous", "Tirade", "Toady", "Tome", "Torpid", "Torrid", "Tortuous", "Tractable", "Tranquil", "Transgress", "Transient", "Translucent", "Transmute", "Traverse", "Treachery", "Tremulous", "Trenchant", "Trepidation", "Trite", "Truculent", "Truncate", "Turgid", "Turpitude", "Ubiquitous", "Umbrage", "Uncanny", "Unctuous", "Undulate", "Upbraid", "Usurp", "Utilitarian", "Utopia", "Vacillate", "Vacuous", "Valiant", "Valid", "Vanquish", "Vapid", "Variegated", "Vehement", "Veneer", "Venerable", "Venerate", "Veracity", "Verbose", "Verdant", "Verge", "Verify", "Veritable", "Vernacular", "Versatile", "Vestige", "Vex", "Vicarious", "Vicissitude", "Vigilant", "Vignette", "Vilify", "Vindicate", "Vindictive", "Virtuoso", "Virulent", "Viscous", "Visionary", "Vital", "Vituperate", "Vivacious", "Vivid", "Vociferous", "Volatility", "Volition", "Voluble", "Voracious", "Vulnerable", "Wane", "Wanderlust", "Warrant", "Wary", "Waver", "Whet", "Whimsical", "Wily", "Winsome", "Wistful", "Wizened", "Wrath", "Yoke", "Zeal", "Zealot", "Zenith", "Zephyr"
-        ];
-
-        function initApp() {
-            const sn = localStorage.getItem(KEY_CLUB); if (sn) document.getElementById('clubSubtitle').innerText = sn;
-            const mdSaved = localStorage.getItem(KEY_MD);
-            document.getElementById('mdToggle').checked = (mdSaved === 'true');
-            document.getElementById('openaiKey').value = localStorage.getItem(KEY_AI_KEY) || "";
-            const vLabel = document.getElementById('versionLabel');
-            vLabel.innerText = "Version 2.11.2" + (window.location.pathname.toLowerCase().includes('/test/') ? " (TEST)" : "");
-            refreshRoster();
-            nextWod();
+    /* ============================================================
+       SETUP GRID
+    ============================================================ */
+    function renderSetupGrid() {
+        const grid=document.getElementById('roleGridArea'); grid.innerHTML="";
+        if (currentMode==='timer') {
+            [{label:'TABLE TOPICS',sub:'1-2m',g:60,y:90,r:120},{label:'EVALUATION',sub:'2-3m',g:120,y:150,r:180},{label:'SPEECH',sub:'5-7m',g:300,y:360,r:420},{label:'ICE BREAKER',sub:'4-6m',g:240,y:300,r:360}].forEach(p=>{grid.innerHTML+=`<div class="role-card" onclick="selectRole(this,${p.g},${p.y},${p.r},'${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`;});
+            const sc=JSON.parse(localStorage.getItem(clubKey('custom_limits'))||'{"g":5,"cy":6,"r":7}');
+            grid.innerHTML+=`<div class="role-card" style="grid-column:span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`;
+        } else {
+            ["TOASTMASTER","TIMER","AH COUNTER","GRAMMARIAN","WORD MASTER","SPEAKER","EVALUATOR","TABLE TOPICS"].forEach(r=>{grid.innerHTML+=`<div class="role-card" onclick="selectRole(this,0,0,0,'${r}')"><h4>${r}</h4></div>`;});
+            grid.innerHTML+=`<div class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
         }
+    }
+    function selectRole(el,g,y,r,label) { document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel=label; lims={g,y,r}; }
 
-        /* --- WOD --- */
-        let activeWodData = null;
-        async function nextWod() {
-            const word = WOD_LIBRARY[Math.floor(Math.random() * WOD_LIBRARY.length)];
-            fetchWordDetails(word);
-        }
-        async function searchWod() {
-            const word = document.getElementById('wodManualInput').value.trim();
-            if (word) fetchWordDetails(word);
-        }
-        async function fetchWordDetails(word) {
-            const display = document.getElementById('wodContent');
-            const aiInd = document.getElementById('aiIndicator');
-            const aiKey = (localStorage.getItem(KEY_AI_KEY) || "").trim();
-            display.innerHTML = `<span class="wod-word">...</span>`;
-            if (aiInd) aiInd.style.display = aiKey ? 'block' : 'none';
-            if (!aiKey) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def" style="margin-top:20px;">Add OpenAI Key in Settings.</div>`; return; }
-            display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Consulting ChatGPT...</div>`;
-            try {
-                const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${aiKey}` },
-                    body: JSON.stringify({
-                        model: "gpt-4o-mini",
-                        messages: [{ role: "system", content: "You are a speech coach. Provide JSON with 'definition' and 'example' keys. Keep family-friendly and sophisticated." }, { role: "user", content: `Word: ${word}` }],
-                        response_format: { type: "json_object" }
-                    })
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    const aiResult = JSON.parse(data.choices[0].message.content);
-                    activeWodData = { word, definition: aiResult.definition, example: aiResult.example };
-                    display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-label">Definition</div><div class="wod-def">${activeWodData.definition}</div><div class="wod-label">Usage</div><div class="wod-example">"${activeWodData.example}"</div>`;
-                } else display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">AI Error. Check key.</div>`;
-            } catch (e) { display.innerHTML = `<span class="wod-word">${word}</span><div class="wod-def">Network Error.</div>`; }
-        }
+    /* ============================================================
+       WOD SELECT
+    ============================================================ */
+    function selectWod() {
+        if(!activeWodData) return;
+        const wu=activeWodData.word.toUpperCase();
+        localStorage.setItem(clubKey('wod_full'),JSON.stringify(activeWodData));
+        fillerList=fillerList.filter(f=>f!=="WORD OF DAY");
+        if(!fillerList.includes(wu)){fillerList.push(wu);localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));}
+        openModal("WOD Selected",`${wu} is active.`,()=>{showScreen('menu');});
+    }
 
-        /* --- SETTINGS --- */
-        function saveSettings() {
-            localStorage.setItem(KEY_MD, document.getElementById('mdToggle').checked); 
-            localStorage.setItem(KEY_AI_KEY, document.getElementById('openaiKey').value.trim()); 
-        }
+    /* ============================================================
+       TALLY
+    ============================================================ */
+    function initTally() { currentTally={}; fillerList.forEach(f=>currentTally[f]=0); renderTally(); }
+    function renderTally() {
+        const area=document.getElementById('tallyArea');
+        const wodData=JSON.parse(localStorage.getItem(clubKey('wod_full')));
+        const activeWod=wodData?wodData.word.toUpperCase():null;
+        const sorted=[...fillerList].sort((a,b)=>a===activeWod?-1:b===activeWod?1:a.localeCompare(b));
+        area.innerHTML=sorted.map(f=>{const isWod=(f===activeWod);return `<div class="tally-card ${isWod?'wod-active':''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event,'${f}')">✕</div>${isWod?'<div class="wod-mini-label">WORD OF DAY</div>':''}<div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event,'${f}')">−</div></div>`;}).join('');
+    }
+    function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText=currentTally[f]; }
+    function decTally(e,f) { e.stopPropagation(); if(currentTally[f]>0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText=currentTally[f]; }
+    function delFiller(e,f) { e.stopPropagation(); openModal("Delete?",`Remove "${f}"?`,()=>{fillerList=fillerList.filter(w=>w!==f);localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));renderTally();}); }
+    function saveCounterSession() { let logs=JSON.parse(localStorage.getItem(clubKey('logs'))||"[]"); const hdr=`${currentSpeaker} | ${selectedTypeLabel} :: `; let idx=logs.findIndex(e=>e.startsWith(hdr)); if(idx!==-1){let m=parseTallyString(logs[idx].split(' :: ')[1]);for(let w in currentTally)if(currentTally[w]>0)m[w]=(m[w]||0)+currentTally[w];logs[idx]=hdr+serializeTally(m);}else logs.push(hdr+serializeTally(currentTally)); localStorage.setItem(clubKey('logs'),JSON.stringify(logs)); openModal("Saved","Counts merged.",()=>{showScreen('menu');}); }
+    function parseTallyString(s) { let o={}; if(s==="0 Fillers") return o; s.split(', ').forEach(p=>{const[w,c]=p.split(': ');o[w]=parseInt(c);}); return o; }
+    function serializeTally(o) { let r=[]; for(let w in o) if(o[w]>0) r.push(`${w}: ${o[w]}`); return r.length>0?r.join(', '):"0 Fillers"; }
 
-        /* --- ROSTER --- */
-        function refreshRoster() {
-            const area = document.getElementById('speakerArea'); if (!area) return;
-            if (!allSpeakers.length) { area.innerHTML = `<div style="padding:20px; opacity:0.3; text-align:center;">Empty Roster</div>`; return; }
-            area.innerHTML = allSpeakers.map(n => `<div class="speaker-item" style="padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center;"><div class="sp-name" style="font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer;" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" style="padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 22px; cursor: pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');
-        }
-        function saveSpeaker() { const n = document.getElementById('name').value.trim().toUpperCase(); if(n && !allSpeakers.includes(n)) { allSpeakers.push(n); allSpeakers.sort(); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); } refreshRoster(); }
-        function selectSpeaker(n) { document.getElementById('name').value = n; }
-        function handleNameInput(el) { el.value = el.value.toUpperCase(); const filtered = allSpeakers.filter(s => s.includes(el.value)); renderSpeakerListFiltered(filtered); }
-        function renderSpeakerListFiltered(f) { const area = document.getElementById('speakerArea'); area.innerHTML = f.map(n => `<div class="speaker-item" style="padding: 14px 18px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: center;"><div class="sp-name" style="font-size: 22px; flex: 1; color: var(--accent); font-weight: 600; text-transform: uppercase; cursor: pointer;" onclick="selectSpeaker('${n}')">${n}</div><div class="sp-del" style="padding: 5px 12px; color: var(--red); font-weight: 800; font-size: 22px; cursor: pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join(''); }
-        function askDeleteSpeaker(n) { openModal("Delete?", `Remove ${n}?`, () => { allSpeakers = allSpeakers.filter(s => s !== n); localStorage.setItem(KEY_SPEAKERS, JSON.stringify(allSpeakers)); refreshRoster(); }); }
+    /* ============================================================
+       TIMER
+    ============================================================ */
+    function startTimer() { elapsed=0; start=Date.now(); iv=setInterval(()=>{elapsed=Math.floor((Date.now()-start)/1000);let m=Math.floor(elapsed/60).toString().padStart(2,'0'),s=(elapsed%60).toString().padStart(2,'0');document.getElementById('timer').innerText=`${m}:${s}`;if(elapsed>=lims.r)document.body.style.background="var(--red)";else if(elapsed>=lims.y)document.body.style.background="var(--yellow)";else if(elapsed>=lims.g)document.body.style.background="var(--green)";},1000); }
+    function togglePause() { if(iv){clearInterval(iv);iv=null;}else{start=Date.now()-(elapsed*1000);startTimer();} }
+    function commitAndExit() { clearInterval(iv); if(elapsed>0){let logs=JSON.parse(localStorage.getItem(clubKey('logs'))||"[]");logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`);localStorage.setItem(clubKey('logs'),JSON.stringify(logs));} elapsed=0; document.body.style.background="var(--bg)"; showScreen('menu'); }
 
-        /* --- NAVIGATION --- */
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if (id === 'setup') {
-                selectedTypeLabel = "";
-                renderSetupGrid();
-                refreshRoster();
-                // Reset and show/hide record toggle based on current mode
-                recordingEnabled = false;
-                const rt = document.getElementById('recordToggle');
-                if (rt) rt.checked = false;
-                const rr = document.getElementById('recordToggleRow');
-                if (rr) rr.style.display = currentMode === 'counter' ? 'flex' : 'none';
-            }
-            if (id === 'report') loadReport();
-            if (id === 'transcriptList') loadTranscriptList();
-        }
+    /* ============================================================
+       REPORT
+    ============================================================ */
+    function loadReport() { const logs=JSON.parse(localStorage.getItem(clubKey('logs'))||"[]");const wod=JSON.parse(localStorage.getItem(clubKey('wod_full')));let d=`Report\nDate: ${new Date().toLocaleDateString()}\n\n`;if(wod)d+=`WOD: ${wod.word.toUpperCase()}\nDef: ${wod.definition}\nUsage: "${wod.example}"\n${'-'.repeat(25)}\n\n`;if(logs.length>0){d+=`NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`;logs.forEach(l=>{const p=l.split(' | ');const s=p[1].split(' :: ');d+=`${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`;});}else d+="No data recorded."; document.getElementById('reportLog').innerText=d; }
+    function exportData() { const ac=clubs.find(c=>c.id===activeClubId); const d={clubName:ac?ac.name:'',speakers:allSpeakers,fillers:fillerList,openai:localStorage.getItem(KEY_AI_KEY)||""}; const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='meeting-backup.json';a.click(); }
+    function handleImportFile(i) { const r=new FileReader();r.onload=(e)=>{const d=JSON.parse(e.target.result);if(d.speakers){allSpeakers=d.speakers;localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));}if(d.fillers){fillerList=d.fillers;localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));}if(d.openai)localStorage.setItem(KEY_AI_KEY,d.openai);location.reload();};r.readAsText(i.files[0]); }
+    function askClearLogs() { openModal("Clear?","Reset logs, WOD, and transcripts for this club?",()=>{localStorage.removeItem(clubKey('logs'));localStorage.removeItem(clubKey('wod_full'));localStorage.removeItem(clubKey('transcripts'));location.reload();}); }
+    function openModal(t,b,c) { document.getElementById('modalTitle').innerText=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('customModal').style.display='flex';document.getElementById('modalConfirm').onclick=()=>{c();document.getElementById('customModal').style.display='none';};document.getElementById('modalCancel').onclick=()=>{document.getElementById('customModal').style.display='none';}; }
+    function askCustomTime(el) { const saved=JSON.parse(localStorage.getItem(clubKey('custom_limits'))||'{"g":5,"cy":6,"r":7}');const title=currentMode==='timer'?"Thresholds":"Enter Custom Role";const body=currentMode==='timer'?`<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">`:`<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;openModal(title,body,()=>{if(currentMode==='timer'){const g=document.getElementById('cg').value,y=document.getElementById('cy').value,r=document.getElementById('cr').value;lims={g:g*60,y:y*60,r:r*60};localStorage.setItem(clubKey('custom_limits'),JSON.stringify({g,cy:y,r}));document.getElementById('customLabel').innerText=`${g}-${r}m`;selectedTypeLabel='CUSTOM';}else{selectedTypeLabel=document.getElementById('customRole').value.toUpperCase();document.getElementById('customLabel').innerText=selectedTypeLabel;}document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}); }
+    function switchMode(m) { currentMode=m;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(m==='timer'?'tabTimer':'tabCounter').classList.add('active');document.getElementById('modeTitle').innerText=m==='timer'?'Meeting Timer':'Ah-Counter';document.getElementById('timerMode').style.display=m==='timer'?'block':'none';document.getElementById('counterMode').style.display=m==='counter'?'block':'none'; }
 
-        /* --- SETUP GRID --- */
-        function renderSetupGrid() {
-            const grid = document.getElementById('roleGridArea'); grid.innerHTML = "";
-            if (currentMode === 'timer') {
-                const TIMER_PRESETS = [{label:'TABLE TOPICS', sub:'1-2m', g:60, y:90, r:120},{label:'EVALUATION', sub:'2-3m', g:120, y:150, r:180},{label:'SPEECH', sub:'5-7m', g:300, y:360, r:420},{label:'ICE BREAKER', sub:'4-6m', g:240, y:300, r:360}];
-                TIMER_PRESETS.forEach(p => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, ${p.g}, ${p.y}, ${p.r}, '${p.label}')"><h4>${p.label}</h4><p>${p.sub}</p></div>`; });
-                const sc = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}');
-                grid.innerHTML += `<div class="role-card" style="grid-column: span 2;" onclick="askCustomTime(this)"><h4>CUSTOM</h4><p id="customLabel">${sc.g}-${sc.r}m</p></div>`;
-            } else {
-                const COUNTER_ROLES = ["TOASTMASTER", "TIMER", "AH COUNTER", "GRAMMARIAN", "WORD MASTER", "SPEAKER", "EVALUATOR", "TABLE TOPICS"];
-                COUNTER_ROLES.forEach(r => { grid.innerHTML += `<div class="role-card" onclick="selectRole(this, 0,0,0, '${r}')"><h4>${r}</h4></div>`; });
-                grid.innerHTML += `<div class="role-card" onclick="askCustomTime(this)"><h4>OTHER</h4><p id="customLabel">Type entry</p></div>`;
-            }
-        }
-        function selectRole(el, g, y, r, label) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTypeLabel = label; lims = { g, y, r }; }
-        function selectWod() { if(!activeWodData) return; const wordUpper = activeWodData.word.toUpperCase(); localStorage.setItem(KEY_WOD_FULL, JSON.stringify(activeWodData)); fillerList = fillerList.filter(f => f !== "WORD OF DAY"); if (!fillerList.includes(wordUpper)) { fillerList.push(wordUpper); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); } openModal("WOD Selected", `${wordUpper} is active.`, () => { showScreen('menu'); }); }
+    /* ============================================================
+       START HANDLER
+    ============================================================ */
+    function handleStart() {
+        const n=document.getElementById('name').value.trim().toUpperCase();
+        if(!n||!selectedTypeLabel){openModal("Error","Enter Name & Role.",()=>{});return;}
+        currentSpeaker=n;
+        if(currentMode==='timer'){showScreen('timerDisplay');document.getElementById('spkName').innerText=n;startTimer();}
+        else{if(recordingEnabled){showScreen('transcription');document.getElementById('transcriptionSpeakerName').innerText=n;document.getElementById('transcriptionSpeakerRole').innerText=selectedTypeLabel;initTranscription();}else{showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=n;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;initTally();}}
+    }
 
-        /* --- TALLY --- */
-        function initTally() { currentTally = {}; fillerList.forEach(f => currentTally[f] = 0); renderTally(); }
-        function renderTally() { const area = document.getElementById('tallyArea'); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); const activeWod = wodData ? wodData.word.toUpperCase() : null; const sorted = [...fillerList].sort((a,b) => a === activeWod ? -1 : b === activeWod ? 1 : a.localeCompare(b)); area.innerHTML = sorted.map(f => { const isWod = (f === activeWod); return `<div class="tally-card ${isWod ? 'wod-active' : ''}" onclick="incTally('${f}')"><div class="tally-del" onclick="delFiller(event, '${f}')">✕</div>${isWod ? '<div class="wod-mini-label">WORD OF DAY</div>' : ''}<div class="count" id="ct-${f}">${currentTally[f]}</div><div class="label">${f}</div><div class="tally-minus" onclick="decTally(event, '${f}')">−</div></div>`; }).join(''); }
-        function incTally(f) { currentTally[f]++; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        function decTally(e, f) { e.stopPropagation(); if (currentTally[f] > 0) currentTally[f]--; document.getElementById(`ct-${f}`).innerText = currentTally[f]; }
-        function delFiller(e, f) { e.stopPropagation(); openModal("Delete?", `Remove "${f}"?`, () => { fillerList = fillerList.filter(word => word !== f); localStorage.setItem(KEY_FILLERS, JSON.stringify(fillerList)); renderTally(); }); }
-        function saveCounterSession() { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); const matchHeader = `${currentSpeaker} | ${selectedTypeLabel} :: `; let existingIdx = logs.findIndex(e => e.startsWith(matchHeader)); if (existingIdx !== -1) { let merged = parseTallyString(logs[existingIdx].split(' :: ')[1]); for (let w in currentTally) if (currentTally[w] > 0) merged[w] = (merged[w] || 0) + currentTally[w]; logs[existingIdx] = matchHeader + serializeTally(merged); } else logs.push(matchHeader + serializeTally(currentTally)); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); openModal("Saved", "Counts merged.", () => { showScreen('menu'); }); }
-        function parseTallyString(s) { let o = {}; if (s === "0 Fillers") return o; s.split(', ').forEach(p => { const [w, c] = p.split(': '); o[w] = parseInt(c); }); return o; }
-        function serializeTally(o) { let r = []; for (let w in o) if (o[w] > 0) r.push(`${w}: ${o[w]}`); return r.length > 0 ? r.join(', ') : "0 Fillers"; }
+    function copyReport() { const t=generateReportText();if(t)navigator.clipboard.writeText(t).then(()=>{openModal("Success","Copied!",()=>{});}); }
+    function shareReport() { const t=generateReportText();if(t&&navigator.share)navigator.share({title:`Report`,text:t}); }
+    function generateReportText() {
+        const logs=JSON.parse(localStorage.getItem(clubKey('logs'))||"[]");
+        const wod=JSON.parse(localStorage.getItem(clubKey('wod_full')));
+        const md=localStorage.getItem(KEY_MD)==='true';
+        let r=md?`# Meeting Report\n`:`Meeting Report\n${'='.repeat(20)}\n`;
+        if(wod){r+=md?`## WOD: ${wod.word.toUpperCase()}\n> ${wod.definition}\n\n`:`WOD: ${wod.word.toUpperCase()}\nDef: ${wod.definition}\n\n`;}
+        if(!logs.length) return r+"No data recorded.";
+        if(md){r+=`| Name | Role | Result |\n| :--- | :--- | :--- |\n`;logs.forEach(l=>{const p=l.split(' | ');const s=p[1].split(' :: ');r+=`| ${p[0]} | ${s[0]} | ${s[1]} |\n`;});}
+        else{logs.forEach(l=>r+=`• ${l.replace(' :: ',': ')}\n`);}
+        return r;
+    }
 
-        /* --- TIMER --- */
-        function startTimer() { elapsed = 0; start = Date.now(); iv = setInterval(() => { elapsed = Math.floor((Date.now() - start) / 1000); let m = Math.floor(elapsed/60).toString().padStart(2,'0'), s = (elapsed%60).toString().padStart(2,'0'); document.getElementById('timer').innerText = `${m}:${s}`; if(elapsed >= lims.r) document.body.style.background = "var(--red)"; else if(elapsed >= lims.y) document.body.style.background = "var(--yellow)"; else if(elapsed >= lims.g) document.body.style.background = "var(--green)"; }, 1000); }
-        function togglePause() { if (iv) { clearInterval(iv); iv = null; } else { start = Date.now() - (elapsed*1000); startTimer(); } }
-        function commitAndExit() { clearInterval(iv); if (elapsed > 0) { let logs = JSON.parse(localStorage.getItem(KEY_LOGS)||"[]"); logs.push(`${currentSpeaker} | ${selectedTypeLabel} :: ${document.getElementById('timer').innerText}`); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); } elapsed = 0; document.body.style.background = "var(--bg)"; showScreen('menu'); }
+    /* ============================================================
+       TRANSCRIPTION
+    ============================================================ */
+    function initTranscription() { transcriptResult="";transcriptCounts={};audioChunks=[];const st=document.getElementById('transcriptionStatus');st.innerText="READY TO RECORD";st.style.color="#8E8E93";st.classList.remove('recording-pulse');document.getElementById('transcriptionContent').innerHTML='<span class="trans-placeholder">Transcript will appear here after recording...</span>';document.getElementById('transcriptionResults').style.display='none';const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText="Start Recording";btn.style.background="var(--red)";btn.onclick=startTranscriptionRecording; }
+    async function startTranscriptionRecording() {
+        const aiKey=(localStorage.getItem(KEY_AI_KEY)||"").trim();
+        if(!aiKey){openModal("API Key Required","Please add your OpenAI Key in Settings first.",()=>{});return;}
+        try {
+            const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+            recordingStream=stream; mediaRecorder=new MediaRecorder(stream); audioChunks=[];
+            mediaRecorder.ondataavailable=(e)=>{if(e.data.size>0)audioChunks.push(e.data);};
+            mediaRecorder.onstop=sendToWhisper; mediaRecorder.start(); recordingStartTime=Date.now();
+            const st=document.getElementById('transcriptionStatus');st.innerText="● RECORDING LIVE...";st.style.color="var(--red)";st.classList.add('recording-pulse');
+            const btn=document.getElementById('transRecordBtn');btn.innerText="End Speech";btn.style.background="var(--accent)";btn.onclick=stopTranscriptionRecording;
+        } catch(e){openModal("Microphone Error","Could not access microphone. Please check permissions.",()=>{});}
+    }
+    function stopTranscriptionRecording() { speechDuration=Math.round((Date.now()-recordingStartTime)/1000);if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}const st=document.getElementById('transcriptionStatus');st.innerText="ANALYZING...";st.style.color="var(--accent)";st.classList.remove('recording-pulse');const btn=document.getElementById('transRecordBtn');btn.disabled=true;btn.innerText="Analyzing...";btn.style.background="#8E8E93"; }
+    async function sendToWhisper() {
+        const aiKey=(localStorage.getItem(KEY_AI_KEY)||"").trim();
+        const blob=new Blob(audioChunks,{type:'audio/webm'});const fd=new FormData();fd.append("file",blob,"recording.webm");fd.append("model","whisper-1");fd.append("prompt","Transcribe literally, capturing all filler words such as um, uh, ah, er, like, so, you know exactly as spoken.");
+        try { const res=await fetch("https://api.openai.com/v1/audio/transcriptions",{method:"POST",headers:{"Authorization":`Bearer ${aiKey}`},body:fd});const data=await res.json();if(data.text){transcriptResult=data.text;analyzeTranscript(data.text);}else showTranscriptionError("Transcription failed. Please try again."); }
+        catch(e){showTranscriptionError("Network error. Please check your connection.");}
+    }
+    function showTranscriptionError(msg) { const st=document.getElementById('transcriptionStatus');st.innerText="ERROR";st.style.color="var(--red)";document.getElementById('transcriptionContent').innerText=msg;const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText="Try Again";btn.style.background="var(--red)";btn.onclick=startTranscriptionRecording; }
+    function analyzeTranscript(rawText) {
+        transcriptCounts={};const upper=rawText.toUpperCase();
+        fillerList.forEach(f=>{if(f==="WORD OF DAY")return;const esc=f.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const m=upper.match(new RegExp(`\\b${esc}\\b`,'gi'));if(m&&m.length>0)transcriptCounts[f]=m.length;});
+        showTranscriptResults(rawText);
+    }
+    function showTranscriptResults(rawText) {
+        const st=document.getElementById('transcriptionStatus');st.innerText="ANALYSIS COMPLETE";st.style.color="var(--green)";
+        const wod=JSON.parse(localStorage.getItem(clubKey('wod_full')));const activeWod=wod?wod.word.toUpperCase():null;
+        let hl=rawText;
+        [...fillerList].filter(f=>f!=="WORD OF DAY").sort((a,b)=>b.length-a.length).forEach(f=>{const esc=f.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const cls=(f===activeWod)?'highlight-wod':'highlight-filler';hl=hl.replace(new RegExp(`\\b${esc}\\b`,'gi'),m=>`<span class="${cls}">${m}</span>`);});
+        document.getElementById('transcriptionContent').innerHTML=hl;
+        const found=Object.keys(transcriptCounts);const tot=Object.values(transcriptCounts).reduce((a,b)=>a+b,0);
+        const tw=rawText.trim().split(/\s+/).filter(w=>w.length>0).length;const pct=tw>0?((tot/tw)*100).toFixed(1):0;
+        const dm=speechDuration>0?(speechDuration/60).toFixed(1):null;const fpm=dm>0?(tot/dm).toFixed(1):null;
+        let sc,sl,sb;if(pct<5){sc='var(--green)';sl='EXCELLENT';sb='#F0FFF4';}else if(pct<=10){sc='#CC8800';sl='GOOD';sb='#FFFBEA';}else{sc='var(--red)';sl='NEEDS WORK';sb='#FFF0EE';}
+        let html=`<div style="background:${sb}; border:2px solid ${sc}; border-radius:16px; padding:16px 20px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-size:13px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Filler Score</div><div style="font-size:28px; font-weight:900; color:${sc};">${pct}%</div><div style="font-size:13px; color:${sc}; font-weight:700;">${tot} filler${tot!==1?'s':''} of ${tw} words</div>${dm?`<div style="font-size:12px; color:#8E8E93; margin-top:3px;">Speech: ${dm} min &nbsp;·&nbsp; Rate: ${fpm} fillers/min</div>`:''}</div><div style="font-size:15px; font-weight:900; color:${sc}; text-align:right; letter-spacing:1px;">${sl}</div></div>`;
+        html+=`<div style="font-weight:800; font-size:13px; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; padding:8px 0;">Fillers Detected</div>`;
+        html+=`<div style="background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden; margin-bottom:10px;">`;
+        if(!found.length) html+=`<div style="padding:20px; text-align:center; color:#8E8E93; font-style:italic; font-size:16px;">No filler words detected</div>`;
+        else found.forEach(f=>{const iw=(f===activeWod);html+=`<div class="trans-result-row"><span class="trans-result-word" style="${iw?'color:var(--gold)':''}">${f}${iw?' ★':''}</span><span class="trans-result-count">${transcriptCounts[f]}</span></div>`;});
+        html+=`</div>`;
+        document.getElementById('transcriptionResults').innerHTML=html;document.getElementById('transcriptionResults').style.display='block';
+        const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText=found.length>0?"Merge to Counter":"Go to Counter";btn.style.background="var(--green)";btn.onclick=mergeTranscriptToCounter;
+    }
+    function mergeTranscriptToCounter() {
+        if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}
+        currentTally={};fillerList.forEach(f=>currentTally[f]=0);for(const f in transcriptCounts){if(currentTally.hasOwnProperty(f))currentTally[f]=transcriptCounts[f];}
+        const saved=JSON.parse(localStorage.getItem(clubKey('transcripts'))||'[]');
+        const hl=document.getElementById('transcriptionContent').innerHTML;
+        const tot=Object.values(transcriptCounts).reduce((a,b)=>a+b,0);const tw=transcriptResult.trim().split(/\s+/).filter(w=>w.length>0).length;
+        const pct=tw>0?((tot/tw)*100).toFixed(1):'0.0';const dm=speechDuration>0?(speechDuration/60).toFixed(1):null;const fpm=dm>0?(tot/dm).toFixed(1):null;
+        const sl=pct<5?'EXCELLENT':pct<=10?'GOOD':'NEEDS WORK';
+        const fs=Object.keys(transcriptCounts).length>0?Object.entries(transcriptCounts).map(([w,c])=>`${w}: ${c}`).join(', '):'0 Fillers';
+        saved.push({speaker:currentSpeaker,role:selectedTypeLabel,date:new Date().toLocaleString(),highlightedHTML:hl,fillerSummary:fs,plainText:transcriptResult,fillerPct:pct,fillerScore:sl,totalWords:tw,totalFillers:tot,fillersPerMin:fpm,durationMins:dm});
+        localStorage.setItem(clubKey('transcripts'),JSON.stringify(saved));
+        showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=currentSpeaker;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;renderTally();
+    }
+    function cancelTranscription() { if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}showScreen('menu'); }
 
-        /* --- REPORT --- */
-        function loadReport() { const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]"); const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL)); let dStr = `Report\nDate: ${new Date().toLocaleDateString()}\n\n`; if (wodData) dStr += `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\nUsage: "${wodData.example}"\n${'-'.repeat(25)}\n\n`; if (logs.length > 0) { dStr += `NAME             | ROLE             | RESULT\n${'-'.repeat(16)}|${'-'.repeat(18)}|${'-'.repeat(20)}\n`; logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); dStr += `${p[0].padEnd(16)} | ${s[0].padEnd(16)} | ${s[1]}\n`; }); } else dStr += "No data recorded."; document.getElementById('reportLog').innerText = dStr; }
-        function exportData() { const d = { speakers: allSpeakers, fillers: fillerList, club: localStorage.getItem(KEY_CLUB) || "", openai: localStorage.getItem(KEY_AI_KEY) || "" }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:'application/json'})); a.download = 'meeting-backup.json'; a.click(); }
-        function handleImportFile(i) { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); if(d.speakers) localStorage.setItem(KEY_SPEAKERS, JSON.stringify(d.speakers)); if(d.fillers) localStorage.setItem(KEY_FILLERS, JSON.stringify(d.fillers)); if(d.club) localStorage.setItem(KEY_CLUB, d.club); if(d.openai) localStorage.setItem(KEY_AI_KEY, d.openai); location.reload(); }; r.readAsText(i.files[0]); }
-        function askClubName() { const cur = localStorage.getItem(KEY_CLUB) || ""; openModal("Club Name", `<input type="text" id="cInput" value="${cur}">`, () => { const v = document.getElementById('cInput').value; localStorage.setItem(KEY_CLUB, v); document.getElementById('clubSubtitle').innerText = v; }); }
-        function askClearLogs() { openModal("Clear?", "Reset logs, WOD, and transcripts?", () => { localStorage.removeItem(KEY_LOGS); localStorage.removeItem(KEY_WOD_FULL); localStorage.removeItem(KEY_TRANSCRIPTS); location.reload(); }); }
-        function openModal(t, b, c) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalConfirm').onclick = () => { c(); document.getElementById('customModal').style.display = 'none'; }; document.getElementById('modalCancel').onclick = () => { document.getElementById('customModal').style.display = 'none'; }; }
-        function askCustomTime(el) { const saved = JSON.parse(localStorage.getItem(KEY_CUSTOM) || '{"g":5,"cy":6,"r":7}'); const title = currentMode === 'timer' ? "Thresholds" : "Enter Custom Role"; const body = currentMode === 'timer' ? `<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">` : `<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`; openModal(title, body, () => { if (currentMode === 'timer') { const g = document.getElementById('cg').value, y = document.getElementById('cy').value, r = document.getElementById('cr').value; lims = { g: g*60, y: y*60, r: r*60 }; localStorage.setItem(KEY_CUSTOM, JSON.stringify({g, cy: y, r})); document.getElementById('customLabel').innerText = `${g}-${r}m`; selectedTypeLabel = "CUSTOM"; } else { selectedTypeLabel = document.getElementById('customRole').value.toUpperCase(); document.getElementById('customLabel').innerText = selectedTypeLabel; } document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }); }
-        function switchMode(m) { currentMode = m; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById(m === 'timer' ? 'tabTimer' : 'tabCounter').classList.add('active'); document.getElementById('modeTitle').innerText = m === 'timer' ? 'Meeting Timer' : 'Ah-Counter'; const tm = document.getElementById('timerMode'); const cm = document.getElementById('counterMode'); tm.style.display = m === 'timer' ? 'block' : 'none'; cm.style.display = m === 'counter' ? 'block' : 'none'; }
+    /* ============================================================
+       TRANSCRIPT LIST & VIEW
+    ============================================================ */
+    function loadTranscriptList() {
+        const area=document.getElementById('transcriptListArea');
+        const tr=JSON.parse(localStorage.getItem(clubKey('transcripts'))||'[]');
+        if(!tr.length){area.innerHTML=`<div style="padding:30px; text-align:center; opacity:0.4; font-size:17px; font-style:italic;">No transcripts saved this meeting.<br>Use "Record Speech" to capture one.</div>`;return;}
+        area.innerHTML=tr.map((t,i)=>`<div style="padding:16px 18px; border-bottom:1px solid var(--bg); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openTranscript(${i})"><div><div style="font-size:20px; font-weight:700; color:var(--accent); text-transform:uppercase;">${t.speaker}</div><div style="font-size:14px; color:var(--subtext); margin-top:2px;">${t.role} &nbsp;·&nbsp; ${t.date}</div><div style="font-size:13px; color:#8E8E93; margin-top:3px; font-family:monospace;">${t.fillerSummary}</div></div><div style="font-size:24px; color:var(--accent); padding-left:12px;">›</div></div>`).join('');
+    }
+    function openTranscript(i) {
+        const tr=JSON.parse(localStorage.getItem(clubKey('transcripts'))||'[]');const t=tr[i];if(!t)return;
+        activeTranscriptIndex=i;
+        document.getElementById('transcriptViewName').innerText=t.speaker;
+        document.getElementById('transcriptViewRole').innerText=t.role+' · '+t.date;
+        let sh='';
+        if(t.fillerPct!==undefined){let sc,sb;if(t.fillerPct<5){sc='var(--green)';sb='#F0FFF4';}else if(t.fillerPct<=10){sc='#CC8800';sb='#FFFBEA';}else{sc='var(--red)';sb='#FFF0EE';} sh+=`<div style="background:${sb}; border:2px solid ${sc}; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-size:12px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Filler Score</div><div style="font-size:26px; font-weight:900; color:${sc};">${t.fillerPct}%</div><div style="font-size:13px; color:${sc}; font-weight:700;">${t.totalFillers} fillers of ${t.totalWords} words</div>${t.durationMins?`<div style="font-size:12px; color:#8E8E93; margin-top:3px;">Speech: ${t.durationMins} min &nbsp;·&nbsp; Rate: ${t.fillersPerMin} fillers/min</div>`:''}</div><div style="font-size:14px; font-weight:900; color:${sc}; letter-spacing:1px;">${t.fillerScore}</div></div>`;}
+        sh+=`<div style="font-size:12px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Filler Summary</div><div style="font-size:15px; font-family:monospace; color:var(--text);">${t.fillerSummary}</div>`;
+        document.getElementById('transcriptViewSummary').innerHTML=sh;
+        document.getElementById('transcriptViewText').innerHTML=t.highlightedHTML;
+        showScreen('transcriptView');
+    }
+    function shareTranscript() {
+        const tr=JSON.parse(localStorage.getItem(clubKey('transcripts'))||'[]');const t=tr[activeTranscriptIndex];if(!t)return;
+        const md=localStorage.getItem(KEY_MD)==='true';
+        const sl=t.fillerPct!==undefined?`Filler Score: ${t.fillerPct}% (${t.fillerScore}) — ${t.totalFillers} fillers of ${t.totalWords} words${t.durationMins?' · Speech: '+t.durationMins+' min · Rate: '+t.fillersPerMin+' fillers/min':''}`: '';
+        const rx=new RegExp('\\b('+fillerList.filter(f=>f!=='WORD OF DAY').join('|')+')\\b','gi');
+        let body;
+        if(md){const mt=t.plainText.replace(rx,m=>'**'+m.toUpperCase()+'**');body='# '+t.speaker+' — Transcript\n'+'**'+t.role+'** · '+t.date+'\n\n'+(sl?'> '+sl+'\n\n':'')+'> **Filler Summary:** '+t.fillerSummary+'\n\n---\n\n'+mt;}
+        else{const mt=t.plainText.replace(rx,m=>'**'+m.toUpperCase()+'**');body='Transcript — '+t.speaker+' ('+t.role+')\n'+t.date+'\n\n'+(sl?sl+'\n':'')+'Filler Summary: '+t.fillerSummary+'\n\n'+mt;}
+        if(navigator.share)navigator.share({title:t.speaker+' Transcript',text:body});
+        else navigator.clipboard.writeText(body).then(()=>openModal("Copied","Transcript copied to clipboard.",()=>{}));
+    }
 
-        /* --- START HANDLER (modified to route to transcription if toggle is on) --- */
-        function handleStart() {
-            const n = document.getElementById('name').value.trim().toUpperCase();
-            if (!n || !selectedTypeLabel) { openModal("Error", "Enter Name & Role.", ()=>{}); return; }
-            currentSpeaker = n;
-            if (currentMode === 'timer') {
-                showScreen('timerDisplay');
-                document.getElementById('spkName').innerText = n;
-                startTimer();
-            } else {
-                if (recordingEnabled) {
-                    showScreen('transcription');
-                    document.getElementById('transcriptionSpeakerName').innerText = n;
-                    document.getElementById('transcriptionSpeakerRole').innerText = selectedTypeLabel;
-                    initTranscription();
-                } else {
-                    showScreen('counterDisplay');
-                    document.getElementById('counterSpeakerName').innerText = n;
-                    document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
-                    initTally();
-                }
-            }
-        }
+</script>
+```
 
-        function copyReport() { const text = generateReportText(); if (text) navigator.clipboard.writeText(text).then(() => { openModal("Success", "Copied!", () => {}); }); }
-        function shareReport() { const text = generateReportText(); if (text && navigator.share) navigator.share({ title: `Report`, text: text }); }
-        
-        function generateReportText() {
-            const logs = JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
-            const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
-            const isMdEnabled = localStorage.getItem(KEY_MD) === 'true';
-            let r = isMdEnabled ? `# Meeting Report\n` : `Meeting Report\n${'='.repeat(20)}\n`;
-            if (wodData) {
-                r += isMdEnabled ? `## WOD: ${wodData.word.toUpperCase()}\n> ${wodData.definition}\n\n` : `WOD: ${wodData.word.toUpperCase()}\nDef: ${wodData.definition}\n\n`;
-            }
-            if (!logs.length) return r + "No data recorded.";
-            if (isMdEnabled) {
-                r += `| Name | Role | Result |\n| :--- | :--- | :--- |\n`;
-                logs.forEach(l => { const p = l.split(' | '); const s = p[1].split(' :: '); r += `| ${p[0]} | ${s[0]} | ${s[1]} |\n`; });
-            } else {
-                logs.forEach(l => r += `• ${l.replace(' :: ', ': ')}\n`);
-            }
-            return r;
-        }
-
-        /* ============================================================
-           NEW: TRANSCRIPTION FUNCTIONS
-           These functions are entirely new and do not modify or 
-           replace any existing function above.
-        ============================================================ */
-
-        function initTranscription() {
-            transcriptResult = "";
-            transcriptCounts = {};
-            audioChunks = [];
-            const status = document.getElementById('transcriptionStatus');
-            status.innerText = "READY TO RECORD";
-            status.style.color = "#8E8E93";
-            status.classList.remove('recording-pulse');
-            document.getElementById('transcriptionContent').innerHTML = '<span class="trans-placeholder">Transcript will appear here after recording...</span>';
-            document.getElementById('transcriptionResults').style.display = 'none';
-            const btn = document.getElementById('transRecordBtn');
-            btn.disabled = false;
-            btn.innerText = "Start Recording";
-            btn.style.background = "var(--red)";
-            btn.onclick = startTranscriptionRecording;
-        }
-
-        async function startTranscriptionRecording() {
-            const aiKey = (localStorage.getItem(KEY_AI_KEY) || "").trim();
-            if (!aiKey) { openModal("API Key Required", "Please add your OpenAI Key in Settings first.", () => {}); return; }
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                recordingStream = stream;
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
-                mediaRecorder.onstop = sendToWhisper;
-                mediaRecorder.start();
-                recordingStartTime = Date.now();
-                const status = document.getElementById('transcriptionStatus');
-                status.innerText = "● RECORDING LIVE...";
-                status.style.color = "var(--red)";
-                status.classList.add('recording-pulse');
-                const btn = document.getElementById('transRecordBtn');
-                btn.innerText = "End Speech";
-                btn.style.background = "var(--accent)";
-                btn.onclick = stopTranscriptionRecording;
-            } catch(e) {
-                openModal("Microphone Error", "Could not access microphone. Please check permissions and try again.", () => {});
-            }
-        }
-
-        function stopTranscriptionRecording() {
-            speechDuration = Math.round((Date.now() - recordingStartTime) / 1000);
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-            if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
-            const status = document.getElementById('transcriptionStatus');
-            status.innerText = "ANALYZING...";
-            status.style.color = "var(--accent)";
-            status.classList.remove('recording-pulse');
-            const btn = document.getElementById('transRecordBtn');
-            btn.disabled = true;
-            btn.innerText = "Analyzing...";
-            btn.style.background = "#8E8E93";
-        }
-
-        async function sendToWhisper() {
-            const aiKey = (localStorage.getItem(KEY_AI_KEY) || "").trim();
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append("file", audioBlob, "recording.webm");
-            formData.append("model", "whisper-1");
-            formData.append("prompt", "Transcribe literally, capturing all filler words such as um, uh, ah, er, like, so, you know exactly as spoken.");
-            try {
-                const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${aiKey}` },
-                    body: formData
-                });
-                const data = await response.json();
-                if (data.text) {
-                    transcriptResult = data.text;
-                    analyzeTranscript(data.text);
-                } else {
-                    showTranscriptionError("Transcription failed. Please try again.");
-                }
-            } catch(e) {
-                showTranscriptionError("Network error. Please check your connection and try again.");
-            }
-        }
-
-        function showTranscriptionError(msg) {
-            const status = document.getElementById('transcriptionStatus');
-            status.innerText = "ERROR";
-            status.style.color = "var(--red)";
-            document.getElementById('transcriptionContent').innerText = msg;
-            const btn = document.getElementById('transRecordBtn');
-            btn.disabled = false;
-            btn.innerText = "Try Again";
-            btn.style.background = "var(--red)";
-            btn.onclick = startTranscriptionRecording;
-        }
-
-        function analyzeTranscript(rawText) {
-            transcriptCounts = {};
-            const upperText = rawText.toUpperCase();
-            fillerList.forEach(f => {
-                if (f === "WORD OF DAY") return; // skip placeholder entry
-                const escaped = f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
-                const matches = upperText.match(regex);
-                if (matches && matches.length > 0) {
-                    transcriptCounts[f] = matches.length;
-                }
-            });
-            showTranscriptResults(rawText);
-        }
-
-        function showTranscriptResults(rawText) {
-            const status = document.getElementById('transcriptionStatus');
-            status.innerText = "ANALYSIS COMPLETE";
-            status.style.color = "var(--green)";
-
-            // Build highlighted transcript — WOD gets gold, other fillers get red
-            const wodData = JSON.parse(localStorage.getItem(KEY_WOD_FULL));
-            const activeWod = wodData ? wodData.word.toUpperCase() : null;
-            let highlighted = rawText;
-            // Sort fillers longest-first to avoid partial replacements (e.g. "YOU KNOW" before "YOU")
-            const sortedFillers = [...fillerList]
-                .filter(f => f !== "WORD OF DAY")
-                .sort((a, b) => b.length - a.length);
-            sortedFillers.forEach(f => {
-                const escaped = f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const isWod = (f === activeWod);
-                const cls = isWod ? 'highlight-wod' : 'highlight-filler';
-                const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
-                highlighted = highlighted.replace(regex, match => `<span class="${cls}">${match}</span>`);
-            });
-            document.getElementById('transcriptionContent').innerHTML = highlighted;
-
-            const foundFillers = Object.keys(transcriptCounts);
-            const totalFillers = Object.values(transcriptCounts).reduce((a, b) => a + b, 0);
-            const totalWords = rawText.trim().split(/\s+/).filter(w => w.length > 0).length;
-            const fillerPct = totalWords > 0 ? ((totalFillers / totalWords) * 100).toFixed(1) : 0;
-            const durationMins = speechDuration > 0 ? (speechDuration / 60).toFixed(1) : null;
-            const fillersPerMin = durationMins > 0 ? (totalFillers / durationMins).toFixed(1) : null;
-
-            // Score: green < 5%, yellow 5-10%, red > 10%
-            let scoreColor, scoreLabel, scoreBg;
-            if (fillerPct < 5) {
-                scoreColor = 'var(--green)'; scoreLabel = 'EXCELLENT'; scoreBg = '#F0FFF4';
-            } else if (fillerPct <= 10) {
-                scoreColor = '#CC8800'; scoreLabel = 'GOOD'; scoreBg = '#FFFBEA';
-            } else {
-                scoreColor = 'var(--red)'; scoreLabel = 'NEEDS WORK'; scoreBg = '#FFF0EE';
-            }
-
-            let html = '';
-
-            // Score card
-            html += `<div style="background:${scoreBg}; border:2px solid ${scoreColor}; border-radius:16px; padding:16px 20px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:13px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Filler Score</div>
-                    <div style="font-size:28px; font-weight:900; color:${scoreColor};">${fillerPct}%</div>
-                    <div style="font-size:13px; color:${scoreColor}; font-weight:700;">${totalFillers} filler${totalFillers !== 1 ? 's' : ''} of ${totalWords} words</div>
-                    ${durationMins ? `<div style="font-size:12px; color:#8E8E93; margin-top:3px;">Speech: ${durationMins} min &nbsp;·&nbsp; Rate: ${fillersPerMin} fillers/min</div>` : ''}
-                </div>
-                <div style="font-size:15px; font-weight:900; color:${scoreColor}; text-align:right; letter-spacing:1px;">${scoreLabel}</div>
-            </div>`;
-
-            html += `<div style="font-weight:800; font-size:13px; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; padding:8px 0 8px;">Fillers Detected</div>`;
-            html += `<div style="background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden; margin-bottom:10px;">`;
-            if (foundFillers.length === 0) {
-                html += `<div style="padding:20px; text-align:center; color:#8E8E93; font-style:italic; font-size:16px;">No filler words detected</div>`;
-            } else {
-                foundFillers.forEach(f => {
-                    const isWod = (f === activeWod);
-                    html += `<div class="trans-result-row">
-                        <span class="trans-result-word" style="${isWod ? 'color:var(--gold)' : ''}">${f}${isWod ? ' ★' : ''}</span>
-                        <span class="trans-result-count">${transcriptCounts[f]}</span>
-                    </div>`;
-                });
-            }
-            html += `</div>`;
-
-            const resultsDiv = document.getElementById('transcriptionResults');
-            resultsDiv.innerHTML = html;
-            resultsDiv.style.display = 'block';
-
-            const btn = document.getElementById('transRecordBtn');
-            btn.disabled = false;
-            btn.innerText = foundFillers.length > 0 ? "Merge to Counter" : "Go to Counter";
-            btn.style.background = "var(--green)";
-            btn.onclick = mergeTranscriptToCounter;
-        }
-
-        function mergeTranscriptToCounter() {
-            if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
-            // Build tally from fillerList, then overlay transcript counts
-            currentTally = {};
-            fillerList.forEach(f => currentTally[f] = 0);
-            for (const f in transcriptCounts) {
-                if (currentTally.hasOwnProperty(f)) currentTally[f] = transcriptCounts[f];
-            }
-            // --- Save transcript for sharing ---
-            const savedTranscripts = JSON.parse(localStorage.getItem(KEY_TRANSCRIPTS) || '[]');
-            const highlightedHTML = document.getElementById('transcriptionContent').innerHTML;
-            const totalFillersMerge = Object.values(transcriptCounts).reduce((a, b) => a + b, 0);
-            const totalWordsMerge = transcriptResult.trim().split(/\s+/).filter(w => w.length > 0).length;
-            const fillerPctMerge = totalWordsMerge > 0 ? ((totalFillersMerge / totalWordsMerge) * 100).toFixed(1) : '0.0';
-            const durationMinsMerge = speechDuration > 0 ? (speechDuration / 60).toFixed(1) : null;
-            const fillersPerMinMerge = durationMinsMerge > 0 ? (totalFillersMerge / durationMinsMerge).toFixed(1) : null;
-            let scoreLabel = fillerPctMerge < 5 ? 'EXCELLENT' : fillerPctMerge <= 10 ? 'GOOD' : 'NEEDS WORK';
-            const fillerSummary = Object.keys(transcriptCounts).length > 0
-                ? Object.entries(transcriptCounts).map(([w, c]) => `${w}: ${c}`).join(', ')
-                : '0 Fillers';
-            savedTranscripts.push({
-                speaker: currentSpeaker,
-                role: selectedTypeLabel,
-                date: new Date().toLocaleString(),
-                highlightedHTML,
-                fillerSummary,
-                plainText: transcriptResult,
-                fillerPct: fillerPctMerge,
-                fillerScore: scoreLabel,
-                totalWords: totalWordsMerge,
-                totalFillers: totalFillersMerge,
-                fillersPerMin: fillersPerMinMerge,
-                durationMins: durationMinsMerge
-            });
-            localStorage.setItem(KEY_TRANSCRIPTS, JSON.stringify(savedTranscripts));
-            // ------------------------------------
-            showScreen('counterDisplay');
-            document.getElementById('counterSpeakerName').innerText = currentSpeaker;
-            document.getElementById('counterSpeakerRole').innerText = selectedTypeLabel;
-            renderTally();
-        }
-
-        function cancelTranscription() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-            if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
-            showScreen('menu');
-        }
-
-        /* ============================================================
-           NEW: TRANSCRIPT LIST & VIEW FUNCTIONS (v2.11.2)
-        ============================================================ */
-
-        let activeTranscriptIndex = -1;
-
-        function loadTranscriptList() {
-            const area = document.getElementById('transcriptListArea');
-            const transcripts = JSON.parse(localStorage.getItem(KEY_TRANSCRIPTS) || '[]');
-            if (!transcripts.length) {
-                area.innerHTML = `<div style="padding:30px; text-align:center; opacity:0.4; font-size:17px; font-style:italic;">No transcripts saved this meeting.<br>Use "Record Speech" to capture one.</div>`;
-                return;
-            }
-            area.innerHTML = transcripts.map((t, i) => `
-                <div style="padding:16px 18px; border-bottom:1px solid var(--bg); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openTranscript(${i})">
-                    <div>
-                        <div style="font-size:20px; font-weight:700; color:var(--accent); text-transform:uppercase;">${t.speaker}</div>
-                        <div style="font-size:14px; color:var(--subtext); margin-top:2px;">${t.role} &nbsp;·&nbsp; ${t.date}</div>
-                        <div style="font-size:13px; color:#8E8E93; margin-top:3px; font-family:monospace;">${t.fillerSummary}</div>
-                    </div>
-                    <div style="font-size:24px; color:var(--accent); padding-left:12px;">›</div>
-                </div>
-            `).join('');
-        }
-
-        function openTranscript(i) {
-            const transcripts = JSON.parse(localStorage.getItem(KEY_TRANSCRIPTS) || '[]');
-            const t = transcripts[i];
-            if (!t) return;
-            activeTranscriptIndex = i;
-            document.getElementById('transcriptViewName').innerText = t.speaker;
-            document.getElementById('transcriptViewRole').innerText = t.role + ' · ' + t.date;
-
-            // Build score card if stats available
-            let summaryHTML = '';
-            if (t.fillerPct !== undefined) {
-                let scoreColor, scoreBg;
-                if (t.fillerPct < 5) { scoreColor = 'var(--green)'; scoreBg = '#F0FFF4'; }
-                else if (t.fillerPct <= 10) { scoreColor = '#CC8800'; scoreBg = '#FFFBEA'; }
-                else { scoreColor = 'var(--red)'; scoreBg = '#FFF0EE'; }
-                summaryHTML += `<div style="background:${scoreBg}; border:2px solid ${scoreColor}; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size:12px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Filler Score</div>
-                        <div style="font-size:26px; font-weight:900; color:${scoreColor};">${t.fillerPct}%</div>
-                        <div style="font-size:13px; color:${scoreColor}; font-weight:700;">${t.totalFillers} fillers of ${t.totalWords} words</div>
-                        ${t.durationMins ? `<div style="font-size:12px; color:#8E8E93; margin-top:3px;">Speech: ${t.durationMins} min &nbsp;·&nbsp; Rate: ${t.fillersPerMin} fillers/min</div>` : ''}
-                    </div>
-                    <div style="font-size:14px; font-weight:900; color:${scoreColor}; letter-spacing:1px;">${t.fillerScore}</div>
-                </div>`;
-            }
-            summaryHTML += `<div style="font-size:12px; font-weight:800; color:#8E8E93; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Filler Summary</div>
-                <div style="font-size:15px; font-family:monospace; color:var(--text);">${t.fillerSummary}</div>`;
-
-            document.getElementById('transcriptViewSummary').innerHTML = summaryHTML;
-            document.getElementById('transcriptViewText').innerHTML = t.highlightedHTML;
-            showScreen('transcriptView');
-        }
-
-
-        function shareTranscript() {
-            const transcripts = JSON.parse(localStorage.getItem(KEY_TRANSCRIPTS) || '[]');
-            const t = transcripts[activeTranscriptIndex];
-            if (!t) return;
-            const isMd = localStorage.getItem(KEY_MD) === 'true';
-            const scoreLine = t.fillerPct !== undefined
-                ? `Filler Score: ${t.fillerPct}% (${t.fillerScore}) — ${t.totalFillers} fillers of ${t.totalWords} words${t.durationMins ? ' · Speech: ' + t.durationMins + ' min · Rate: ' + t.fillersPerMin + ' fillers/min' : ''}`
-                : '';
-            let body;
-            if (isMd) {
-                const mdText = t.plainText.replace(new RegExp('\\b(' + fillerList.filter(f => f !== 'WORD OF DAY').join('|') + ')\\b', 'gi'), (m) => '**' + m.toUpperCase() + '**');
-                body = '# ' + t.speaker + ' — Transcript\n' +
-                       '**' + t.role + '** · ' + t.date + '\n\n' +
-                       (scoreLine ? '> ' + scoreLine + '\n\n' : '') +
-                       '> **Filler Summary:** ' + t.fillerSummary + '\n\n' +
-                       '---\n\n' + mdText;
-            } else {
-                const markedText = t.plainText.replace(new RegExp('\\b(' + fillerList.filter(f => f !== 'WORD OF DAY').join('|') + ')\\b', 'gi'), (m) => '**' + m.toUpperCase() + '**');
-                body = 'Transcript — ' + t.speaker + ' (' + t.role + ')\n' +
-                       t.date + '\n\n' +
-                       (scoreLine ? scoreLine + '\n' : '') +
-                       'Filler Summary: ' + t.fillerSummary + '\n\n' +
-                       markedText;
-            }
-            if (navigator.share) {
-                navigator.share({ title: t.speaker + ' Transcript', text: body });
-            } else {
-                navigator.clipboard.writeText(body).then(() => openModal("Copied", "Transcript copied to clipboard.", () => {}));
-            }
-        }
-
-    </script>
 </body>
 </html>
