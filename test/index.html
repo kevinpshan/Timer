@@ -392,7 +392,7 @@ const db = firebase.firestore();
 /* ============ KEY ARCHITECTURE v3.1.0 ============ */
 const isTest = window.location.pathname.toLowerCase().includes('/test/');
 const prefix = isTest ? 'test_' : 'prod_';
-const KEY_CLUBS='clubs',KEY_ACTIVE_CLUB='active_club',KEY_MD='md_toggle',KEY_AI_KEY='openai_key';
+const KEY_CLUBS='clubs',KEY_ACTIVE_CLUB='active_club',KEY_MD='md_toggle',KEY_AI_KEY='openai_key',KEY_DEVICE_NAME='device_name';
 const pk = k => prefix + k;
 const DEFAULT_FILLERS = ["AH","UH","UM","ER","SO","LIKE","YOU KNOW","WORD OF DAY"];
 
@@ -689,11 +689,36 @@ async function writeSession(sessionData) {
     const club=getActiveClub();
     if(!club||!club.syncKey||club.practiceOnly) return;
     try {
+        const recordedBy=localStorage.getItem(pk(KEY_DEVICE_NAME))||'Unknown';
         await db.collection('clubs').doc(club.syncKey).collection('sessions').add({
             ...sessionData,
+            recordedBy,
             createdAt:firebase.firestore.FieldValue.serverTimestamp()
         });
     } catch(e) { console.warn('Session cloud write failed:',e.message); }
+}
+
+/* Prompt for device name if not set, then run callback */
+function getDeviceName(callback) {
+    const stored = localStorage.getItem(pk(KEY_DEVICE_NAME));
+    if (stored) { callback(stored); return; }
+    openModal(
+        "Your Name",
+        `<div style="font-size:15px;color:var(--subtext);margin-bottom:12px;">Enter your full name so sessions you record can be identified. This is stored on this device only.</div>
+        <input type="text" id="deviceNameInput" placeholder="First Last" style="text-transform:uppercase;">`,
+        () => {
+            const val = document.getElementById('deviceNameInput').value.trim().toUpperCase();
+            if (!val) { getDeviceName(callback); return; }
+            const parts = val.split(' ').filter(p=>p.length>0);
+            if (parts.length < 2) {
+                openModal("Full Name Required", "Please enter both your first and last name so your sessions can be identified.", () => getDeviceName(callback), "OK", "");
+                return;
+            }
+            localStorage.setItem(pk(KEY_DEVICE_NAME), val);
+            callback(val);
+        },
+        "Cancel", "Save"
+    );
 }
 
 /* ============ CLUB SWITCHER ============ */
@@ -838,7 +863,7 @@ async function openSpeakerProgress(encodedName) {
     const club=getActiveClub(); if(!club||!club.syncKey)return;
     try {
         const snap=await db.collection('clubs').doc(club.syncKey).collection('sessions').where('speaker','==',name).get();
-        const sessions=snap.docs.map(d=>d.data()).sort((a,b)=>{
+        const sessions=snap.docs.map(d=>({...d.data(),_docId:d.id})).sort((a,b)=>{
             const ta=a.createdAt?.toMillis?a.createdAt.toMillis():(a.createdAt||0);
             const tb=b.createdAt?.toMillis?b.createdAt.toMillis():(b.createdAt||0);
             return ta-tb;
@@ -864,14 +889,46 @@ async function openSpeakerProgress(encodedName) {
         }
         document.getElementById('speakerProgressSummary').innerHTML=summaryHTML;
         const reversed=[...sessions].reverse();
+        const syncKey=club.syncKey;
         document.getElementById('speakerProgressSessions').innerHTML=reversed.map(s=>{
             let statsLine='';
             if(s.type==='counter'){if(s.fillerPct!==undefined){const c=parseFloat(s.fillerPct)<5?'var(--green)':parseFloat(s.fillerPct)<=10?'#CC8800':'var(--red)';statsLine=`<span style="color:${c};font-weight:800;">${s.fillerPct}%</span> · ${s.totalFillers} filler${s.totalFillers!==1?'s':''} of ${s.totalWords} words${s.fillersPerMin?' · '+s.fillersPerMin+'/min':''}`;}}else if(s.type==='timer'){statsLine=`Timer · ${s.result||''}`;}
-            return `<div class="session-row"><div class="session-date">${s.date||'Unknown date'}</div><div class="session-role">${s.role}</div>${statsLine?`<div class="session-stats">${statsLine}</div>`:''}</div>`;
+            const recordedBy=s.recordedBy?`<span style="color:#8E8E93;">recorded by ${s.recordedBy}</span>`:'';
+            return `<div class="session-row" style="position:relative;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <div class="session-date">${s.date||'Unknown date'}</div>
+                        <div class="session-role">${s.role}</div>
+                        ${statsLine?`<div class="session-stats">${statsLine}</div>`:''}
+                        ${recordedBy?`<div style="font-size:12px;margin-top:4px;">${recordedBy}</div>`:''}
+                    </div>
+                    <button onclick="deleteSession('${syncKey}','${s._docId}',this)" style="background:none;border:none;color:#C7C7CC;font-size:20px;cursor:pointer;padding:4px 8px;flex-shrink:0;line-height:1;" title="Delete this session">✕</button>
+                </div>
+            </div>`;
         }).join('');
     } catch(e) {
         document.getElementById('speakerProgressSessions').innerHTML=`<div style="padding:30px;text-align:center;color:var(--red);">Could not load sessions.</div>`;
     }
+}
+
+async function deleteSession(syncKey, docId, btnEl) {
+    openModal(
+        "Delete Session?",
+        "Remove this session from the history? This cannot be undone.",
+        async () => {
+            try {
+                await db.collection('clubs').doc(syncKey).collection('sessions').doc(docId).delete();
+                // Remove the row from the DOM immediately
+                const row = btnEl.closest('.session-row');
+                if (row) row.remove();
+                // Refresh summary stats
+                const name = document.getElementById('speakerProgressName').innerText;
+                openSpeakerProgress(encodeURIComponent(name));
+            } catch(e) {
+                openModal("Error", "Could not delete session. Check your connection.", ()=>{});
+            }
+        }
+    );
 }
 
 /* ============ WOD ============ */
@@ -1010,8 +1067,10 @@ function handleStart(){
     const n=document.getElementById('name').value.trim().toUpperCase();
     if(!n||!selectedTypeLabel){openModal("Error","Enter Name & Role.",()=>{});return;}
     currentSpeaker=n;
-    if(currentMode==='timer'){showScreen('timerDisplay');document.getElementById('spkName').innerText=n;startTimer();}
-    else{if(recordingEnabled){showScreen('transcription');document.getElementById('transcriptionSpeakerName').innerText=n;document.getElementById('transcriptionSpeakerRole').innerText=selectedTypeLabel;initTranscription();}else{showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=n;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;initTally();}}
+    getDeviceName(()=>{
+        if(currentMode==='timer'){showScreen('timerDisplay');document.getElementById('spkName').innerText=n;startTimer();}
+        else{if(recordingEnabled){showScreen('transcription');document.getElementById('transcriptionSpeakerName').innerText=n;document.getElementById('transcriptionSpeakerRole').innerText=selectedTypeLabel;initTranscription();}else{showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=n;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;initTally();}}
+    });
 }
 
 function copyReport(){const t=generateReportText();if(t)navigator.clipboard.writeText(t).then(()=>{openModal("Success","Copied!",()=>{});});}
