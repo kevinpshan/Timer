@@ -420,7 +420,7 @@ function initApp() {
     loadClubData(); updateClubUI();
     document.getElementById('mdToggle').checked = (localStorage.getItem(pk(KEY_MD))==='true');
     document.getElementById('openaiKey').value = localStorage.getItem(pk(KEY_AI_KEY))||'';
-    document.getElementById('versionLabel').innerText = 'Version 3.1.3'+(isTest?' (TEST)':'');
+    document.getElementById('versionLabel').innerText = 'Version 3.1.4'+(isTest?' (TEST)':'');
     refreshRoster(); nextWod();
     // Auto-pull roster & fillers silently on startup
     autoSyncDown();
@@ -535,7 +535,8 @@ async function syncUp(clubId) {
     const spk=clubId===activeClubId?allSpeakers:JSON.parse(localStorage.getItem(prefix+'club_'+clubId+'_speakers')||'[]');
     const fil=clubId===activeClubId?fillerList:JSON.parse(localStorage.getItem(prefix+'club_'+clubId+'_fillers')||JSON.stringify(DEFAULT_FILLERS));
     try {
-        await db.collection('clubs').doc(club.syncKey).update({name:club.name,speakers:spk,fillers:fil,lastUpdated:firebase.firestore.FieldValue.serverTimestamp()});
+        const apiKey = localStorage.getItem(pk(KEY_AI_KEY)) || '';
+        await db.collection('clubs').doc(club.syncKey).update({name:club.name,speakers:spk,fillers:fil,apiKey:apiKey,lastUpdated:firebase.firestore.FieldValue.serverTimestamp()});
         setSyncStatus(clubId,'Pushed '+new Date().toLocaleTimeString());
     } catch(e) { setSyncStatus(clubId,'Push failed — check connection'); }
 }
@@ -551,6 +552,7 @@ async function syncDown(clubId) {
         const merged=[...new Set([...localSpk,...(data.speakers||[])])].sort();
         localStorage.setItem(prefix+'club_'+clubId+'_speakers',JSON.stringify(merged));
         if(data.fillers) localStorage.setItem(prefix+'club_'+clubId+'_fillers',JSON.stringify(data.fillers));
+        if(data.apiKey){ localStorage.setItem(pk(KEY_AI_KEY),data.apiKey); const el=document.getElementById('openaiKey'); if(el&&clubId===activeClubId){el.value=data.apiKey;el.placeholder='Shared by club ☁';} }
         if(clubId===activeClubId){allSpeakers=merged;fillerList=data.fillers||fillerList;}
         setSyncStatus(clubId,'Pulled '+new Date().toLocaleTimeString());
         if(clubId===activeClubId) refreshRoster();
