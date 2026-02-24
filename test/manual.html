@@ -344,15 +344,14 @@
         window.scrollTo(0, 0);
     }
 
-    // Honour deep links — if URL has #officer or arrives from a dev link, switch tab
+    // Deep link support — manual.html#officers opens Officers tab directly
     if (window.location.hash === '#officers') {
-        switchTab('officers');
-        // Re-apply tab active state since event is synthetic
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-officers').classList.add('active');
         document.querySelectorAll('.tab')[1].classList.add('active');
-        document.querySelectorAll('.tab')[0].classList.remove('active');
     }
 </script>
-```
 
 </body>
 </html>
