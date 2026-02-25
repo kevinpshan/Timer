@@ -992,7 +992,19 @@ function doAddSpeaker(n){
     autoSyncUp();refreshRoster();
 }
 function selectSpeaker(n){const el=document.getElementById('name');el.value=n;const btn=document.getElementById('nameClearBtn');if(btn)btn.style.display=n.length>0?'block':'none';}
-function handleNameInput(el){el.value=el.value.toUpperCase();renderSpeakerListFiltered(allSpeakers.filter(s=>s.includes(el.value)));}
+function handleNameInput(el){
+    el.value=el.value.toUpperCase();
+    const btn=document.getElementById('nameClearBtn');
+    if(btn)btn.style.display=el.value.length>0?'block':'none';
+    renderSpeakerListFiltered(allSpeakers.filter(s=>s.includes(el.value)));
+}
+function clearNameInput(){
+    const el=document.getElementById('name');
+    if(el){el.value='';el.focus();}
+    const btn=document.getElementById('nameClearBtn');
+    if(btn)btn.style.display='none';
+    refreshRoster();
+}
 function renderSpeakerListFiltered(f){const area=document.getElementById('speakerArea');area.innerHTML=f.map(n=>`<div style="padding:14px 18px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;"><div style="font-size:22px;flex:1;color:var(--accent);font-weight:600;text-transform:uppercase;cursor:pointer;" onclick="selectSpeaker('${n}')">${n}</div><div style="padding:5px 12px;color:var(--red);font-weight:800;font-size:22px;cursor:pointer;" onclick="askDeleteSpeaker('${n}')">✕</div></div>`).join('');}
 function askDeleteSpeaker(n){openModal("Delete?",`Remove ${n}?`,()=>{allSpeakers=allSpeakers.filter(s=>s!==n);localStorage.setItem(clubKey('speakers'),JSON.stringify(allSpeakers));autoSyncUp();refreshRoster();});}
 
