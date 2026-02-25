@@ -500,7 +500,7 @@ function showWelcomeJoin() {
                 if(data.fillers)   localStorage.setItem(prefix+'club_'+clubId+'_fillers',JSON.stringify(data.fillers));
                 if(data.apiKey)    localStorage.setItem(pk(KEY_AI_KEY),data.apiKey);
                 loadClubData(); updateClubUI();
-                document.getElementById('openaiKey').value = data.apiKey||'';
+                const keyEl=document.getElementById('openaiKey'); if(keyEl){keyEl.value=data.apiKey||''; if(data.apiKey)keyEl.placeholder='Shared by club ☁';}
                 refreshRoster(); nextWod(); autoSyncDown();
                 showScreen('menu');
             } catch(e) {
@@ -988,6 +988,7 @@ function showScreen(id){
     if(id==='setup'){selectedTypeLabel='';renderSetupGrid();refreshRoster();recordingEnabled=false;const rt=document.getElementById('recordToggle');if(rt)rt.checked=false;const rr=document.getElementById('recordToggleRow');if(rr)rr.style.display=currentMode==='counter'?'flex':'none';}
     if(id==='report')loadReport();
     if(id==='transcriptList')loadTranscriptList();
+    if(id==='wod'){const wi=document.getElementById('wodManualInput');if(wi)wi.value='';}
     if(id==='fillerManager')renderFillerManager();
     if(id==='clubManager')renderClubManager();
     if(id==='progress')loadProgress();
@@ -1069,7 +1070,7 @@ function handleStart(){
     if(!n||!selectedTypeLabel){openModal("Error","Enter Name & Role.",()=>{});return;}
     currentSpeaker=n;
     getDeviceName(()=>{
-        if(currentMode==='timer'){showScreen('timerDisplay');document.getElementById('spkName').innerText=n;startTimer();}
+        if(currentMode==='timer'){elapsed=0;document.getElementById('timer').innerText='00:00';document.body.style.background='var(--bg)';showScreen('timerDisplay');document.getElementById('spkName').innerText=n;startTimer();}
         else{if(recordingEnabled){showScreen('transcription');document.getElementById('transcriptionSpeakerName').innerText=n;document.getElementById('transcriptionSpeakerRole').innerText=selectedTypeLabel;initTranscription();}else{showScreen('counterDisplay');document.getElementById('counterSpeakerName').innerText=n;document.getElementById('counterSpeakerRole').innerText=selectedTypeLabel;initTally();}}
     });
 }
@@ -1166,7 +1167,7 @@ function shareTranscript(){
     // Derive annotated text from highlightedHTML: fillers become *word*, WOD becomes [word]
     function annotateHTML(html){
         return html
-            .replace(/<span class="highlight-filler">([^<]*)<\/span>/gi,'*$1*')
+            .replace(/<span class="highlight-filler">([^<]*)<\/span>/gi, md ? '**$1**' : '*$1*')
             .replace(/<span class="highlight-wod">([^<]*)<\/span>/gi,'[$1]')
             .replace(/<[^>]+>/g,'')
             .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ')
