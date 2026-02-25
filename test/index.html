@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meeting Tools v3.1.0</title>
+    <title>Meeting Tools v3.2.3</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -246,7 +246,24 @@
 
 <div id="report" class="screen">
     <div class="header"><h1 id="reportPageTitle">Report</h1></div>
-    <div class="container"><div id="reportLog" style="background:var(--card);border-radius:18px;padding:20px;flex:1;overflow-y:auto;font-family:monospace;font-size:17px;border:1px solid var(--border);color:#000;white-space:pre-wrap;"></div></div>
+    <div class="tab-container" style="margin:0 20px 10px;">
+        <div id="reportTabLocal" class="tab active" onclick="switchReportTab('local')">This Device</div>
+        <div id="reportTabCloud" class="tab" onclick="switchReportTab('cloud')">&#9729; Cloud</div>
+    </div>
+    <div class="container">
+        <!-- LOCAL PANEL -->
+        <div id="reportLocalPanel" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+            <div id="reportLog" style="background:var(--card);border-radius:18px;padding:20px;flex:1;overflow-y:auto;font-family:monospace;font-size:17px;border:1px solid var(--border);color:#000;white-space:pre-wrap;"></div>
+        </div>
+        <!-- CLOUD PANEL -->
+        <div id="reportCloudPanel" style="display:none;flex-direction:column;flex:1;min-height:0;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+                <div id="reportCloudStatus" style="font-size:13px;color:#8E8E93;font-weight:600;">All devices &middot; Today</div>
+                <button onclick="loadCloudReport()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;">&#8635; Refresh</button>
+            </div>
+            <div id="reportCloudLog" style="background:var(--card);border-radius:18px;padding:20px;flex:1;overflow-y:auto;font-family:monospace;font-size:17px;border:1px solid var(--border);color:#000;white-space:pre-wrap;"></div>
+        </div>
+    </div>
     <div class="button-row"><button class="footer-btn secondary-btn" onclick="copyReport()">Copy</button><button class="footer-btn secondary-btn" onclick="shareReport()">Share</button><button class="footer-btn" onclick="showScreen('menu')">Done</button></div>
 </div>
 
@@ -379,7 +396,7 @@
             </div>
         </div>
     </div>
-    <div style="padding:20px;text-align:center;opacity:0.4;font-size:13px;">Meeting Tools v3.1.5 · Southern Dutchess Toastmasters</div>
+    <div style="padding:20px;text-align:center;opacity:0.4;font-size:13px;">Meeting Tools v3.2.3 · Southern Dutchess Toastmasters</div>
 </div>
 
 <script>
@@ -474,13 +491,13 @@ function initApp() {
         document.getElementById('welcome').classList.add('active');
         document.getElementById('mdToggle').checked = false;
         document.getElementById('openaiKey').value = '';
-        document.getElementById('versionLabel').innerText = 'Version 3.2.2'+(isTest?' (TEST)':'');
+        document.getElementById('versionLabel').innerText = 'Version 3.2.3'+(isTest?' (TEST)':'');
         return;
     }
     loadClubData(); updateClubUI();
     document.getElementById('mdToggle').checked = (localStorage.getItem(pk(KEY_MD))==='true');
     document.getElementById('openaiKey').value = localStorage.getItem(pk(KEY_AI_KEY))||'';
-    document.getElementById('versionLabel').innerText = 'Version 3.2.2'+(isTest?' (TEST)':'');
+    document.getElementById('versionLabel').innerText = 'Version 3.2.3'+(isTest?' (TEST)':'');
     refreshRoster(); nextWod();
     autoSyncDown();
     checkStaleBanner();
@@ -1021,7 +1038,7 @@ function showScreen(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     if(id==='setup'){selectedTypeLabel='';renderSetupGrid();refreshRoster();recordingEnabled=false;const rt=document.getElementById('recordToggle');if(rt)rt.checked=false;const rr=document.getElementById('recordToggleRow');if(rr)rr.style.display=currentMode==='counter'?'flex':'none';const nb=document.getElementById('nameClearBtn');if(nb)nb.style.display='none';}
-    if(id==='report')loadReport();
+    if(id==='report'){switchReportTab('local');loadReport();}
     if(id==='menu')checkStaleBanner();
     if(id==='transcriptList')loadTranscriptList();
     if(id==='wod'){const wi=document.getElementById('wodManualInput');if(wi)wi.value='';}
@@ -1045,7 +1062,21 @@ function renderSetupGrid(){
 function selectRole(el,g,y,r,label){document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');selectedTypeLabel=label;lims={g,y,r};}
 
 /* ============ WOD SELECT ============ */
-function selectWod(){if(!activeWodData)return;const wu=activeWodData.word.toUpperCase();localStorage.setItem(clubKey('wod_full'),JSON.stringify(activeWodData));fillerList=fillerList.filter(f=>f!=='WORD OF DAY');if(!fillerList.includes(wu)){fillerList.push(wu);localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));}openModal("WOD Selected",`${wu} is active.`,()=>{showScreen('menu');});}
+function selectWod(){
+    if(!activeWodData)return;
+    const wu=activeWodData.word.toUpperCase();
+    localStorage.setItem(clubKey('wod_full'),JSON.stringify(activeWodData));
+    fillerList=fillerList.filter(f=>f!=='WORD OF DAY');
+    if(!fillerList.includes(wu)){fillerList.push(wu);localStorage.setItem(clubKey('fillers'),JSON.stringify(fillerList));}
+    const club=getActiveClub();
+    if(club&&club.syncKey&&!club.practiceOnly){
+        db.collection('clubs').doc(club.syncKey).update({
+            wod:{word:activeWodData.word,definition:activeWodData.definition,example:activeWodData.example},
+            wodDate:new Date().toDateString()
+        }).catch(e=>console.warn('WOD cloud write failed:',e.message));
+    }
+    openModal("WOD Selected",`${wu} is active.`,()=>{showScreen('menu');});
+}
 
 /* ============ TALLY ============ */
 function initTally(){currentTally={};fillerList.forEach(f=>currentTally[f]=0);renderTally();}
@@ -1178,9 +1209,136 @@ function handleStart(){
     });
 }
 
+/* ============ REPORT TABS ============ */
+let activeReportTab = 'local';
+
+function switchReportTab(tab) {
+    activeReportTab = tab;
+    document.getElementById('reportTabLocal').classList.toggle('active', tab === 'local');
+    document.getElementById('reportTabCloud').classList.toggle('active', tab === 'cloud');
+    document.getElementById('reportLocalPanel').style.display  = tab === 'local'  ? 'flex' : 'none';
+    document.getElementById('reportCloudPanel').style.display  = tab === 'cloud' ? 'flex' : 'none';
+    if(tab === 'cloud') loadCloudReport();
+}
+
+async function loadCloudReport() {
+    const el = document.getElementById('reportCloudLog');
+    const club = getActiveClub();
+
+    if(!club || !club.syncKey || club.practiceOnly) {
+        el.innerText = 'Cloud sync is not enabled for this club.
+Enable it in Settings > Clubs to use Cloud Report.';
+        return;
+    }
+
+    const statusEl = document.getElementById('reportCloudStatus');
+    if(statusEl) statusEl.innerText = 'Loading…';
+    el.innerText = 'Loading from cloud…';
+
+    try {
+        // Build today date range
+        const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+        const todayEnd   = new Date(); todayEnd.setHours(23,59,59,999);
+
+        // Fetch todays sessions and club doc (WOD) in parallel
+        const [snap, clubDoc] = await Promise.all([
+            db.collection('clubs').doc(club.syncKey)
+              .collection('sessions')
+              .where('createdAt', '>=', firebase.firestore.Timestamp.fromDate(todayStart))
+              .where('createdAt', '<=', firebase.firestore.Timestamp.fromDate(todayEnd))
+              .orderBy('createdAt', 'asc')
+              .get(),
+            db.collection('clubs').doc(club.syncKey).get()
+        ]);
+
+        const clubData = clubDoc.data() || {};
+        const wod = clubData.wod || null;
+        const wodDate = clubData.wodDate || null;
+        const isToday = wodDate === new Date().toDateString();
+        const md = localStorage.getItem(pk(KEY_MD)) === 'true';
+
+        let out = md ? '# Cloud Meeting Report
+' : 'Cloud Meeting Report
+' + '='.repeat(22) + '
+';
+        out += 'Date: ' + new Date().toLocaleDateString() + '
+';
+        out += 'Club: ' + (club.name || club.syncKey) + '
+
+';
+
+        if(wod && isToday) {
+            out += md
+                ? '## WOD: ' + wod.word.toUpperCase() + '
+> ' + wod.definition + '
+
+'
+                : 'WOD: ' + wod.word.toUpperCase() + '
+Def: ' + wod.definition + '
+' + '-'.repeat(25) + '
+
+';
+        }
+
+        if(snap.empty) {
+            out += 'No sessions recorded today via cloud.
+
+';
+            out += 'Sessions appear here when members use cloud-synced devices.';
+            el.innerText = out;
+            return;
+        }
+
+        const sessions = snap.docs.map(d => d.data());
+
+        if(md) {
+            out += '| Name | Role | Result | By |
+| :--- | :--- | :--- | :--- |
+';
+            sessions.forEach(s => {
+                const result = s.type === 'timer' ? (s.result || '--') : (s.totalFillers != null ? s.totalFillers + ' fillers' : '--');
+                out += '| ' + (s.speaker||'?') + ' | ' + (s.role||'?') + ' | ' + result + ' | ' + (s.recordedBy||'?') + ' |
+';
+            });
+        } else {
+            out += 'NAME             | ROLE             | RESULT           | BY
+';
+            out += '-'.repeat(16) + '|' + '-'.repeat(18) + '|' + '-'.repeat(18) + '|' + '-'.repeat(16) + '
+';
+            sessions.forEach(s => {
+                const result = s.type === 'timer' ? (s.result || '--') : (s.totalFillers != null ? s.totalFillers + ' fillers' : '--');
+                out += (s.speaker||'?').padEnd(16) + ' | ' + (s.role||'?').padEnd(16) + ' | ' + result.padEnd(16) + ' | ' + (s.recordedBy||'?') + '
+';
+            });
+        }
+
+        // Update status line with count and load time
+        const statusEl = document.getElementById('reportCloudStatus');
+        if(statusEl) statusEl.innerText = sessions.length + ' session' + (sessions.length !== 1 ? 's' : '') + ' · loaded ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+        el.innerText = out;
+
+    } catch(e) {
+        el.innerText = 'Error loading cloud report:
+' + e.message;
+        console.warn('Cloud report error:', e);
+    }
+}
+
 function copyReport(){const t=generateReportText();if(t)navigator.clipboard.writeText(t).then(()=>{openModal("Success","Copied!",()=>{});});}
 function shareReport(){const t=generateReportText();if(t&&navigator.share)navigator.share({title:'Report',text:t});}
-function generateReportText(){const logs=JSON.parse(localStorage.getItem(clubKey('logs'))||'[]');const wod=JSON.parse(localStorage.getItem(clubKey('wod_full')));const md=localStorage.getItem(pk(KEY_MD))==='true';let r=md?`# Meeting Report\n`:`Meeting Report\n${'='.repeat(20)}\n`;if(wod){r+=md?`## WOD: ${wod.word.toUpperCase()}\n> ${wod.definition}\n\n`:`WOD: ${wod.word.toUpperCase()}\nDef: ${wod.definition}\n\n`;}if(!logs.length)return r+'No data recorded.';if(md){r+=`| Name | Role | Result |\n| :--- | :--- | :--- |\n`;logs.forEach(l=>{const p=l.split(' | ');const s=p[1].split(' :: ');r+=`| ${p[0]} | ${s[0]} | ${s[1]} |\n`;});}else{logs.forEach(l=>r+=`• ${l.replace(' :: ',': ')}\n`);}return r;}
+function generateReportText(){
+    if(activeReportTab==='cloud'){return document.getElementById('reportCloudLog').innerText||'';}
+    const logs=JSON.parse(localStorage.getItem(clubKey('logs'))||'[]');
+    const wod=JSON.parse(localStorage.getItem(clubKey('wod_full')));
+    const md=localStorage.getItem(pk(KEY_MD))==='true';
+    let r=md?`# Meeting Report\n`:`Meeting Report\n${'='.repeat(20)}\n`;
+    if(wod){r+=md?`## WOD: ${wod.word.toUpperCase()}\n> ${wod.definition}\n\n`:`WOD: ${wod.word.toUpperCase()}\nDef: ${wod.definition}\n\n`;}
+    if(!logs.length)return r+'No data recorded.';
+    if(md){r+=`| Name | Role | Result |\n| :--- | :--- | :--- |\n`;logs.forEach(l=>{const p=l.split(' | ');const s=p[1].split(' :: ');r+=`| ${p[0]} | ${s[0]} | ${s[1]} |\n`;});}
+    else{logs.forEach(l=>r+=`• ${l.replace(' :: ',': ')}\n`);}
+    return r;
+}
 
 /* ============ TRANSCRIPTION ============ */
 function initTranscription(){transcriptResult='';transcriptCounts={};audioChunks=[];const st=document.getElementById('transcriptionStatus');st.innerText='READY TO RECORD';st.style.color='#8E8E93';st.classList.remove('recording-pulse');document.getElementById('transcriptionContent').innerHTML='<span style="color:#8E8E93;font-style:italic;">Transcript will appear here after recording...</span>';document.getElementById('transcriptionResults').style.display='none';const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText='Start Recording';btn.style.background='var(--red)';btn.onclick=startTranscriptionRecording;}

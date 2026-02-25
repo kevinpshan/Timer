@@ -92,11 +92,35 @@
 <div id="panel-released" class="tab-panel active">
 
 ```
+<!-- v3.2.3 -->
+<div class="release">
+    <div class="release-header">
+        <div><div class="version-num">v3.2.3</div><div class="release-date">February 2026 &middot; Production</div></div>
+        <span class="release-tag tag-current">Current</span>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New &mdash; Cloud Meeting Report</div>
+            <ul>
+                <li>Report screen now has two tabs: <strong>This Device</strong> (existing local report) and <strong>&#9729; Cloud</strong></li>
+                <li>Cloud tab queries today&rsquo;s Firestore sessions across all devices &mdash; timer and Ah-Counter combined in one view</li>
+                <li>Columns: Name | Role | Result | By (device name of recorder)</li>
+                <li>WOD appears at top of cloud report if selected today &mdash; written to Firestore on Select</li>
+                <li>Respects Markdown Export toggle &mdash; cloud report copies/shares as markdown table if enabled</li>
+                <li>Inline <strong>&#8635; Refresh</strong> button re-queries Firestore if sessions are still coming in</li>
+                <li>Status line shows session count and last-loaded timestamp</li>
+                <li>Copy and Share buttons work on whichever tab is active</li>
+                <li>Practice-only clubs see a clear message instead of a cloud query</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <!-- v3.2.2 -->
 <div class="release">
     <div class="release-header">
         <div><div class="version-num">v3.2.2</div><div class="release-date">February 2026 &middot; Production</div></div>
-        <span class="release-tag tag-current">Current</span>
         <span class="release-tag tag-feature">Feature</span>
         <span class="release-tag tag-fix">Fix</span>
     </div>
@@ -324,33 +348,7 @@
 <div id="panel-roadmap" class="tab-panel">
 
 ```
-<div class="alert">Items move from this tab to Released when shipped. Last updated: v3.2.2</div>
-
-<div class="milestone-divider">&#8212;&#8212; High Priority &#8212;&#8212;</div>
-
-<!-- Cloud Meeting Report -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Cloud Meeting Report</div><div class="release-date">Discussed Feb 25 session</div></div>
-        <span class="release-tag tag-high">High</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem</div>
-            <p class="note">Timer and Ah-Counter are run by different people on different devices. There's no way for the VP-PR to pull a combined meeting report without asking everyone to manually share their local reports.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Solution</div>
-            <ul>
-                <li>Add a "Cloud Report" view to the existing Report screen</li>
-                <li>Queries today's Firestore sessions across all devices, filtered by date automatically</li>
-                <li>Assembles into the same Name | Role | Result format as the local report</li>
-                <li>Write active WOD to Firestore club document on Select &mdash; appears in cloud report</li>
-                <li>Use case: VP-PR opens app after the meeting at home, taps Cloud Report, sees the full picture for the newsletter</li>
-            </ul>
-        </div>
-    </div>
-</div>
+<div class="alert">Items move from this tab to Released when shipped. Last updated: v3.2.3</div>
 
 <div class="milestone-divider">&#8212;&#8212; Medium Priority &#8212;&#8212;</div>
 
