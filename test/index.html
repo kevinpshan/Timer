@@ -207,7 +207,7 @@
     <div class="header"><h1 id="setupHeader">Setup</h1></div>
     <div class="container">
         <div style="display:flex;gap:10px;flex-shrink:0;align-items:center;">
-            <input type="text" id="name" placeholder="FIRST LAST (e.g. KEVIN SHAN)" style="flex:1;" oninput="handleNameInput(this)">
+            <input type="text" id="name" placeholder="FIRST LAST (e.g. JOHN SMITH)" style="flex:1;" oninput="handleNameInput(this)">
             <button class="footer-btn" style="flex:0;padding:15px 25px;font-size:18px;height:54px;display:flex;align-items:center;" onclick="saveSpeaker()">Add</button>
         </div>
         <div id="speakerArea" style="background:var(--card);border-radius:16px;padding:2px;flex:1;overflow-y:auto;border:1px solid var(--border);min-height:120px;margin-bottom:10px;"></div>
@@ -961,7 +961,7 @@ function saveSpeaker(){
     // Warn if single word (likely first name only)
     if(!n.includes(' ')){
         openModal("First Name Only?",
-            `<div style="font-size:17px;line-height:1.5;">For accurate tracking, use full names like <strong>KEVIN SHAN</strong>.<br><br>Single names can cause duplicates across meetings.</div>
+            `<div style="font-size:17px;line-height:1.5;">For accurate tracking, use full names like <strong>JOHN SMITH</strong>.<br><br>Single names can cause duplicates across meetings.</div>
             <div style="margin-top:15px;font-size:15px;color:var(--subtext);">Adding: <strong>${n}</strong></div>`,
             ()=>{ doAddSpeaker(n); },
             "Update", "Add Anyway"
