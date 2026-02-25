@@ -522,7 +522,7 @@ function showWelcomeCreate() {
         </div>`,
         ()=>{
             const name=document.getElementById('newClubName').value.trim();
-            if(!name){openModal("Name Required","Please enter a club name.",()=>{});return;}
+            if(!name){openModal("Name Required","Please enter a club name.",()=>{showWelcomeCreate();});return;}
             const practiceOnly=document.getElementById('newClubPractice').checked;
             const clubId='c'+Date.now();
             clubs=JSON.parse(localStorage.getItem(pk(KEY_CLUBS))||'[]');
@@ -795,7 +795,7 @@ function askAddClub() {
     );
 }
 function askEditClub(id) { const club=clubs.find(c=>c.id===id);if(!club)return; openModal("Rename Club",`<input type="text" id="editClubName" value="${club.name}" style="text-transform:none;">`,()=>{ const name=document.getElementById('editClubName').value.trim(); if(!name)return; club.name=name; localStorage.setItem(pk(KEY_CLUBS),JSON.stringify(clubs)); updateClubUI();renderClubManager(); }); }
-function askDeleteClub(id) { const club=clubs.find(c=>c.id===id);if(!club)return; openModal("Delete Club?",`Remove "${club.name}" and all its local data?`,()=>{ ['logs','speakers','fillers','wod_full','custom_limits','transcripts'].forEach(k=>localStorage.removeItem(prefix+'club_'+id+'_'+k)); clubs=clubs.filter(c=>c.id!==id); localStorage.setItem(pk(KEY_CLUBS),JSON.stringify(clubs)); if(activeClubId===id&&clubs.length>0)switchClub(clubs[0].id); renderClubManager(); }); }
+function askDeleteClub(id) { const club=clubs.find(c=>c.id===id);if(!club)return; if(id===activeClubId){openModal("Cannot Delete Active Club","Switch to a different club before deleting this one.",()=>{});return;} openModal("Delete Club?",`Remove "${club.name}" and all its local data?`,()=>{ ['logs','speakers','fillers','wod_full','custom_limits','transcripts'].forEach(k=>localStorage.removeItem(prefix+'club_'+id+'_'+k)); clubs=clubs.filter(c=>c.id!==id); localStorage.setItem(pk(KEY_CLUBS),JSON.stringify(clubs)); if(activeClubId===id&&clubs.length>0)switchClub(clubs[0].id); renderClubManager(); }); }
 
 /* ============ FILLER MANAGER ============ */
 function renderFillerManager() {
@@ -892,7 +892,7 @@ async function openSpeakerProgress(encodedName) {
         const syncKey=club.syncKey;
         document.getElementById('speakerProgressSessions').innerHTML=reversed.map(s=>{
             let statsLine='';
-            if(s.type==='counter'){if(s.fillerPct!==undefined){const c=parseFloat(s.fillerPct)<5?'var(--green)':parseFloat(s.fillerPct)<=10?'#CC8800':'var(--red)';statsLine=`<span style="color:${c};font-weight:800;">${s.fillerPct}%</span> · ${s.totalFillers} filler${s.totalFillers!==1?'s':''} of ${s.totalWords} words${s.fillersPerMin?' · '+s.fillersPerMin+'/min':''}`;}}else if(s.type==='timer'){statsLine=`Timer · ${s.result||''}`;}
+            if(s.type==='counter'){if(s.fillerPct!==undefined){const c=parseFloat(s.fillerPct)<5?'var(--green)':parseFloat(s.fillerPct)<=10?'#CC8800':'var(--red)';statsLine=`<span style="color:${c};font-weight:800;">${s.fillerPct}%</span> · ${s.totalFillers} filler${s.totalFillers!==1?'s':''} of ${s.totalWords} words${s.fillersPerMin?' · '+s.fillersPerMin+'/min':''}`;}else if(s.totalFillers!==undefined){const details=s.fillerDetail?Object.entries(s.fillerDetail).map(([w,c])=>`${w}:${c}`).join(', '):'';statsLine=`<span style="color:#8E8E93;font-weight:800;">${s.totalFillers} filler${s.totalFillers!==1?'s':''} (manual)</span>${details?' · <span style="font-size:12px;color:#8E8E93;">'+details+'</span>':''}`;}}else if(s.type==='timer'){statsLine=`Timer · ${s.result||''}`;}
             const recordedBy=s.recordedBy?`<span style="color:#8E8E93;">recorded by ${s.recordedBy}</span>`:'';
             return `<div class="session-row" style="position:relative;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;">
