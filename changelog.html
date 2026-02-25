@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Tools — Changelog</title>
+    <style>
+        :root {
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF;
+            --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
+            --gold: #BF941A; --green: #34C759; --red: #FF3B30;
+        }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; padding: 40px 20px; }
+        .content { max-width: 800px; margin: 0 auto; }
+        .header-card { background: var(--card); padding: 30px 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 0 0 4px; }
+        .header-sub { font-size: 15px; color: #8E8E93; }
+        .release { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
+        .release-header { padding: 18px 25px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+        .version-num { font-size: 22px; font-weight: 800; color: var(--text); }
+        .release-date { font-size: 14px; color: #8E8E93; font-weight: 500; }
+        .release-tag { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tag-major { background: #E8F2FF; color: #004499; }
+        .tag-feature { background: #F0FFF4; color: #1a7a1a; }
+        .tag-fix { background: #FFF9E6; color: #7A5C00; }
+        .tag-current { background: var(--accent); color: white; }
+        .release-body { padding: 18px 25px; }
+        .change-group { margin-bottom: 16px; }
+        .change-group-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #8E8E93; margin-bottom: 6px; }
+        ul { margin: 0; padding-left: 20px; }
+        li { font-size: 15px; margin-bottom: 5px; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 24px; font-size: 17px; }
+        .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
+        .milestone-divider { text-align: center; padding: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #8E8E93; margin: 8px 0; }
+    </style>
+</head>
+<body>
+<div class="content">
+    <a href="manual.html#officers" class="btn-back">← Back to Manual</a>
+
+```
+<div class="header-card">
+    <h1>Changelog</h1>
+    <p class="header-sub">Meeting Tools &nbsp;·&nbsp; Southern Dutchess Toastmasters &nbsp;·&nbsp; All releases from v2.8 onward</p>
+</div>
+
+<!-- ============ v3.2.2 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.2.2</div>
+            <div class="release-date">Current</div>
+        </div>
+        <span class="release-tag tag-current">Current</span>
+        <span class="release-tag tag-fix">Fix</span>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Timer</div>
+            <ul>
+                <li>Added <strong>Reset</strong> button to timer screen — resets clock to 00:00 and immediately restarts for the same speaker (3-button layout: Reset | Pause | Commit &amp; Exit)</li>
+                <li>Fixed Pause/Resume — second tap now resumes from exact elapsed time instead of resetting. Button label toggles PAUSE ↔ RESUME</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Ah-Counter</div>
+            <ul>
+                <li>Add filler word on the fly during a live session — tap <strong>+ ADD WORD</strong> card at the end of the tally grid. Word starts at count 1. Toggle to save permanently to club list (on by default, auto-syncs to cloud)</li>
+                <li>Name input now has an inline <strong>✕ clear button</strong> — appears when field has content, clears field and resets roster list</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Club Management</div>
+            <ul>
+                <li>Sync code now masked as ••••-•••• by default in Club Manager — tap 👁 to reveal</li>
+                <li>Attempting to delete the currently active club now shows a clear error modal instead of silently allowing it</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Stale Data Warning</div>
+            <ul>
+                <li>If meeting data from 3 or more hours ago is still present when the app is opened, a yellow warning banner appears on the menu screen with an inline Clear button — designed for back-to-back meeting days</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Progress Screen</div>
+            <ul>
+                <li>Progress list now filters to current roster members only — deleted members' cloud history is preserved but hidden</li>
+                <li>Manual counter sessions (no transcription) now show filler count and per-word breakdown in speaker detail instead of appearing as blank rows</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Welcome &amp; Club Flow</div>
+            <ul>
+                <li>Create Club: blank name validation now re-opens the create modal so the user stays in the flow</li>
+                <li>Join Club: API key field now updates immediately in Settings after joining</li>
+                <li>WOD search field no longer pre-populates with club name on first visit</li>
+                <li>Timer display no longer briefly shows stale time from previous session on new start</li>
+                <li>Full name validation modal now reads "JOHN SMITH" instead of developer's name</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Documentation</div>
+            <ul>
+                <li>Manual, Technical Reference, Test Plan, and Changelog all updated for v3.2.2</li>
+                <li>Test plan expanded with 10 new test cases (TM-09, CM-06, CM-07, AC-07–09, PR-05–06, DM-04–06)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.9 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.9</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-fix">Fix</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Bug Batch</div>
+            <ul>
+                <li>WS-03: API key field in Settings now updates live after joining a club via sync code</li>
+                <li>WS-05: Blank name in Create Club flow now re-prompts instead of silently closing the modal</li>
+                <li>WOD search field clears when navigating to WOD screen</li>
+                <li>Timer display resets to 00:00 before showing timer screen (no stale time flash)</li>
+                <li>Full name validation placeholder changed from developer name to "JOHN SMITH"</li>
+                <li>Transcript share: fillers marked **bold** in markdown mode, *italic* in plain mode</li>
+                <li>Cannot delete active club — error modal instead of silent deletion</li>
+                <li>Manual counter sessions show filler count in Progress detail instead of blank row</li>
+                <li>Name input clear button fully functional (clearNameInput function was missing from JS)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.6 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.6</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+        <span class="release-tag tag-fix">Fix</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Device Name &amp; Session Audit</div>
+            <ul>
+                <li>First-time users prompted for their full name (first + last required) — stored as device identity</li>
+                <li>Every committed session now records <code>recordedBy</code> field in Firestore</li>
+                <li>Speaker Progress detail shows "recorded by [name]" on each session row</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Session Delete</div>
+            <ul>
+                <li>Sessions in Speaker Progress detail now have a ✕ delete button</li>
+                <li>Delete removes the Firestore document and the DOM row — no page reload required</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Transcript Share</div>
+            <ul>
+                <li>Share button now handles AbortError (user dismissed share sheet) gracefully — no silent failure</li>
+                <li>Shared transcript now includes filler highlights instead of raw plain text</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Duplicate Session</div>
+            <ul>
+                <li>Transcription flow no longer writes two Firestore sessions — <code>sessionFromTranscript</code> flag prevents double-write when user taps Save Results after Merge to Counter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.5 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.5</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Welcome Screen</div>
+            <ul>
+                <li>Fresh installs now show a proper onboarding screen instead of landing in the app with an auto-created club</li>
+                <li>Three paths: Join Existing Club (enter sync code), Create New Club (with Practice Only option), or Just Exploring (TEST CLUB)</li>
+                <li>Joining by code on the welcome screen pulls roster, fillers, and API key immediately</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Fresh Install</div>
+            <ul>
+                <li>TEST CLUB now seeds correctly on every fresh install — was previously blocked by migration code running first</li>
+                <li>Removed auto-creation of "My Toastmasters Club" which appeared uninvited on every new incognito session</li>
+                <li>v2 migration code now correctly distinguishes a genuine new install from a returning v2 user</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Documentation</div>
+            <ul>
+                <li>Manual fully rewritten for v3.x — covers all new features, cloud sync, progress tracking</li>
+                <li>Technical reference converted to HTML, updated for multi-club architecture and all new functions</li>
+                <li>Test plan added — 55 test cases across 14 sections with priority levels</li>
+                <li>Changelog added (this document)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.4 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.4</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-fix">Fix</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Fixed — Sync</div>
+            <ul>
+                <li>Manual Push button now includes API key — previously only roster and fillers were sent</li>
+                <li>Manual Pull now receives and applies API key — Settings field updates live with "Shared by club ☁" placeholder</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.3 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.3</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Practice Only Clubs</div>
+            <ul>
+                <li>Clubs can be flagged as Practice Only — local data only, no cloud sync, no Firestore session writes</li>
+                <li>TEST CLUB is automatically marked Practice Only on fresh install</li>
+                <li>Club Manager hides Enable Cloud Sync button for practice clubs, shows ⚗ indicator instead</li>
+                <li>New Club dialog includes Practice Only toggle</li>
+                <li>autoSyncUp() and writeSession() both skip practice clubs automatically</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.2 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.2</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Club-Level API Key Sharing</div>
+            <ul>
+                <li>API key moved from device-level to club-level storage in Firestore</li>
+                <li>Key syncs to all club members automatically — one officer sets it up, everyone benefits</li>
+                <li>Settings shows "Shared by club ☁" placeholder when key comes from cloud sync</li>
+                <li>Changing key in Settings immediately pushes to club</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — TEST CLUB Seed</div>
+            <ul>
+                <li>Fresh installs automatically create TEST CLUB (Practice) with five sample speakers</li>
+                <li>Sample speakers: Jane Doe, John Smith, Mary Johnson, Robert Brown, Susan Davis</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Full Name Enforcement</div>
+            <ul>
+                <li>Warning modal when adding a single-word name to the roster</li>
+                <li>Explains why full names matter for accurate tracking</li>
+                <li>Two options: go back to fix, or add anyway for edge cases</li>
+                <li>openModal() updated to support custom button labels</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.1 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.1</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Auto-Sync</div>
+            <ul>
+                <li>Eliminated manual push/pull for routine operations</li>
+                <li>Auto-pull on app open: silently fetches latest roster and fillers for synced clubs</li>
+                <li>Auto-pull on club switch: immediately pulls data for the newly selected club</li>
+                <li>Auto-push on roster changes: any speaker add or delete triggers instant push</li>
+                <li>Auto-push on filler changes: any filler add, edit, or delete triggers instant push</li>
+                <li>Offline-safe: all auto-sync operations fail silently with no user interruption</li>
+                <li>Manual Push/Pull buttons remain available in Club Manager for force-sync</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v3.1.0 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.1.0</div>
+            <div class="release-date">February 2026</div>
+        </div>
+        <span class="release-tag tag-major">Major</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Firebase Cloud Sync</div>
+            <ul>
+                <li>Firebase Firestore integration for club roster and filler word synchronization</li>
+                <li>Officers can enable cloud sync from Club Manager — generates unique 8-character sync code</li>
+                <li>Members join by entering sync code — roster, fillers, and settings download immediately</li>
+                <li>Manual Push ↑ and Pull ↓ buttons for controlled sync</li>
+                <li>Session history written to Firestore after every committed session</li>
+                <li>Sync code format: XXXX-XXXX using unambiguous character set (no 0/O/1/I)</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Progress Tracking</div>
+            <ul>
+                <li>Progress screen reads Firestore session history to show speaker improvement over time</li>
+                <li>Overview list with latest filler rate, trend indicator (↑↓→), and session count per speaker</li>
+                <li>Speaker detail view with Latest, Average, and Best filler percentages</li>
+                <li>Session-by-session log with date, role, filler %, word count, and fillers-per-minute</li>
+                <li>Trend calculated by comparing first-half vs second-half of session history</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Filler Manager</div>
+            <ul>
+                <li>Dedicated screen for managing club filler words — add, rename, delete</li>
+                <li>Changes sync to cloud automatically for all club members</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="milestone-divider">── v3.0 Multi-Club Architecture ──</div>
+
+<!-- ============ v3.0.0 ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v3.0.0</div>
+            <div class="release-date">January 2026</div>
+        </div>
+        <span class="release-tag tag-major">Major</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Multi-Club Architecture</div>
+            <ul>
+                <li>Complete data model redesign — all data now scoped to clubs</li>
+                <li>Club Manager screen: create, rename, delete, and switch between clubs</li>
+                <li>Club switcher accessible from main menu header tap</li>
+                <li>All localStorage keys updated to club-scoped format</li>
+                <li>Automatic migration from v2 single-club data to v3 club structure</li>
+                <li>Test and production data remain fully isolated by URL prefix</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Filler Scoring</div>
+            <ul>
+                <li>Filler score calculation after transcription: fillers as percentage of total words</li>
+                <li>Color-coded ratings: Excellent (&lt;5%), Good (5–10%), Needs Work (&gt;10%)</li>
+                <li>Score, word count, total fillers, and fillers-per-minute displayed and saved</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="milestone-divider">── v2.x Foundation ──</div>
+
+<!-- ============ v2.10.x ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v2.10.x</div>
+            <div class="release-date">Late 2025</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New — Speech Transcription</div>
+            <ul>
+                <li>OpenAI Whisper integration for automatic speech-to-text transcription</li>
+                <li>Filler word detection with highlighted HTML output (red for fillers, gold for WOD)</li>
+                <li>Merge to Counter — auto-detected counts populate the tally grid directly</li>
+                <li>Record Speech toggle on Setup screen routes to transcription flow</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New — Transcript Archive</div>
+            <ul>
+                <li>All merged transcripts saved for the current meeting</li>
+                <li>Transcript list with per-speaker view and highlighted full text</li>
+                <li>Share transcript via Web Share API in plain text or markdown format</li>
+                <li>Transcripts cleared with Clear Meeting Data</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ v2.8.x ============ -->
+<div class="release">
+    <div class="release-header">
+        <div>
+            <div class="version-num">v2.8.x</div>
+            <div class="release-date">Mid 2025</div>
+        </div>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Foundation Features</div>
+            <ul>
+                <li>Core Timer with green/yellow/red threshold presets (Table Topics, Evaluation, Ice Breaker, Speech)</li>
+                <li>Custom timer thresholds</li>
+                <li>Ah-Counter tally grid with increment, decrement, and delete per filler</li>
+                <li>Session merge for same speaker within one meeting</li>
+                <li>Meeting Report with plain text and markdown export modes</li>
+                <li>Word of the Day with ChatGPT (GPT-4o-mini) definitions and usage examples</li>
+                <li>WOD library of 1,000+ sophisticated words</li>
+                <li>WOD pins to top of tally grid with gold badge when selected</li>
+                <li>Speaker roster with persistence across sessions</li>
+                <li>Live roster filter while typing speaker name</li>
+                <li>OpenAI API key stored locally in Settings</li>
+                <li>Backup / Restore via JSON export and import</li>
+                <li>Clear Meeting Data resets logs and WOD, preserves roster</li>
+                <li>PWA manifest and service worker for installable offline app</li>
+                <li>iOS safe area inset support</li>
+                <li>Test/prod isolation via URL path prefix detection</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="footer">Meeting Tools &nbsp;·&nbsp; Changelog &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+```
+
+</div>
+</body>
+</html>

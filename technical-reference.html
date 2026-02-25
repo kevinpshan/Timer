@@ -1,199 +1,536 @@
-# Meeting Tools — Technical Reference
-> Developer contract for `index.html` v2.10.3. Every item below must survive unchanged in any new version.
+<!DOCTYPE html>
 
----
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Tools — Technical Reference</title>
+    <style>
+        :root {
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF;
+            --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
+            --gold: #BF941A; --green: #34C759; --red: #FF3B30;
+        }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; padding: 40px 20px; }
+        .content { max-width: 960px; margin: 0 auto; }
+        .card { background: var(--card); padding: 30px 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 4px; color: #000; }
+        .subtitle { font-size: 15px; color: #8E8E93; margin-bottom: 0; }
+        h2 { font-size: 20px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: var(--accent); border-bottom: 2px solid var(--bg); padding-bottom: 8px; }
+        h3 { font-size: 16px; color: var(--gold); margin-top: 20px; margin-bottom: 8px; font-weight: 700; }
+        p { margin: 10px 0; font-size: 15px; }
+        code { background: #F2F2F7; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-size: 13px; font-weight: 600; }
+        pre { background: #1C1C1E; color: #F8F8F2; padding: 16px 20px; border-radius: 12px; font-family: monospace; font-size: 13px; overflow-x: auto; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+        th { background: #F2F2F7; padding: 9px 12px; text-align: left; font-weight: 700; border: 1px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--subtext); }
+        td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
+        td code { font-size: 12px; }
+        .rule { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 12px 16px; border-radius: 8px; margin: 8px 0; font-size: 14px; }
+        .new-badge { display: inline-block; background: var(--green); color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; margin-left: 6px; vertical-align: middle; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 24px; font-size: 17px; }
+        .toc { background: var(--card); border-radius: 12px; padding: 18px 22px; border: 1px solid var(--border); margin-bottom: 24px; }
+        .toc a { color: var(--accent); text-decoration: none; font-size: 14px; display: inline-block; margin-right: 16px; margin-bottom: 4px; }
+        .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <a href="manual.html#officers" class="btn-back">← Back to Manual</a>
 
-## LocalStorage Keys
-Every key is prefixed dynamically based on URL path (`prod_` or `test_`) via:
-```javascript
-const prefix = window.location.pathname.toLowerCase().includes('/test/') ? 'test_' : 'prod_';
+```
+    <div class="card">
+        <h1>Technical Reference</h1>
+        <p class="subtitle">Meeting Tools v3.2.2 &nbsp;·&nbsp; Developer contract for <code>index.html</code> &nbsp;·&nbsp; Southern Dutchess Toastmasters</p>
+    </div>
+
+    <div class="toc">
+        <strong style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#8E8E93;display:block;margin-bottom:8px;">Sections</strong>
+        <a href="#architecture">Architecture</a>
+        <a href="#firebase">Firebase</a>
+        <a href="#localstorage">LocalStorage Keys</a>
+        <a href="#state">Global State</a>
+        <a href="#screens">Screens</a>
+        <a href="#functions">Functions</a>
+        <a href="#css">CSS</a>
+        <a href="#data">Data Schemas</a>
+        <a href="#rules">Rules for Safe Changes</a>
+        <a href="#deployment">Deployment</a>
+    </div>
+
+    <!-- ARCHITECTURE -->
+    <div class="card" id="architecture">
+        <h2>Architecture Overview</h2>
+        <p>Meeting Tools is a <strong>single-file PWA</strong> (<code>index.html</code>) with no build system, no bundler, and no external CSS files. All styles, markup, and JavaScript live in one file. Firebase SDKs are loaded via CDN at runtime.</p>
+
+        <h3>Multi-Club Data Model (v3.x)</h3>
+        <p>As of v3.0.0, all data is scoped to a <strong>club</strong>. Each club has a unique local ID. The active club ID is stored in localStorage. Data keys are prefixed with both the environment prefix and the club ID:</p>
+        <pre>prefix + 'club_' + clubId + '_' + dataType
 ```
 
-| Constant | Full Key (prod) | Stores |
-|---|---|---|
-| `KEY_LOGS` | `prod_sdtm_logs` | Array of session log strings |
-| `KEY_CLUB` | `prod_sdtm_club_name` | Club name string |
-| `KEY_SPEAKERS` | `prod_sdtm_speakers` | Array of speaker name strings |
-| `KEY_FILLERS` | `prod_sdtm_fillers` | Array of filler word strings |
-| `KEY_MD` | `prod_sdtm_md_toggle` | Boolean string for markdown export |
-| `KEY_WOD_FULL` | `prod_sdtm_wod_full` | Object `{word, definition, example}` |
-| `KEY_CUSTOM` | `prod_sdtm_custom_limits` | Object `{g, cy, r}` in minutes |
-| `KEY_AI_KEY` | `prod_sdtm_openai_key` | OpenAI API key string |
-| `KEY_TRANSCRIPTS` | `prod_sdtm_transcripts` | Array of transcript objects `{speaker, role, date, highlightedHTML, fillerSummary, plainText}` |
+// e.g. prod_club_c1234567890_speakers</pre>
 
----
+```
+        <h3>Environment Detection</h3>
+        <pre>const isTest = window.location.pathname.toLowerCase().includes('/test/');
+```
 
-## Global State Variables
+const prefix = isTest ? ‘test_’ : ‘prod_’;</pre>
+<p>This means the same file deployed at <code>/test/index.html</code> and <code>/index.html</code> maintains fully isolated data in the same browser with zero code changes.</p>
 
-| Variable | Type | Purpose |
-|---|---|---|
-| `currentMode` | string | `'timer'` or `'counter'` |
-| `currentSpeaker` | string | Active speaker's name |
-| `currentTally` | object | `{fillerWord: count}` for current session |
-| `iv` | interval | Timer interval handle |
-| `start` | number | Timestamp when timer started |
-| `elapsed` | number | Seconds elapsed |
-| `lims` | object | `{g, y, r}` thresholds in seconds |
-| `selectedTypeLabel` | string | Selected role label (e.g. "SPEECH") |
-| `fillerList` | array | Current list of filler words |
-| `allSpeakers` | array | Roster of all speakers |
-| `activeWodData` | object | `{word, definition, example}` from current WOD session |
-| `WOD_LIBRARY` | array | ~1000 words hardcoded |
-| `recordingEnabled` | boolean | Whether "Record Speech" toggle is on |
-| `recordingStream` | MediaStream | Active microphone stream (null when idle) |
-| `transcriptResult` | string | Plain text from last Whisper transcription |
-| `transcriptCounts` | object | `{fillerWord: count}` auto-detected from transcript |
-| `activeTranscriptIndex` | number | Index of transcript currently open in transcript viewer |
+```
+        <h3>Club Object Schema</h3>
+        <pre>{
+```
 
----
+id: string,          // ‘c’ + Date.now() — unique local ID
+name: string,        // Display name
+syncKey: string,     // Firestore document ID (empty string if no sync)
+practiceOnly: bool   // If true: no cloud sync, no session writes
+}</pre>
+</div>
 
-## Screens
+```
+    <!-- FIREBASE -->
+    <div class="card" id="firebase">
+        <h2>Firebase Integration <span class="new-badge">v3.1</span></h2>
 
-All screens use the `showScreen(id)` pattern — hides all `.screen` divs, shows the target.
+        <h3>Configuration</h3>
+        <pre>const firebaseConfig = {
+```
 
-| Screen ID | Purpose |
-|---|---|
-| `menu` | Main hub, has timer/counter tab toggle |
-| `wod` | Word of the Day — search/generate/select |
-| `setup` | Speaker name input + roster + record toggle + role grid |
-| `counterDisplay` | Live tally grid during counter session |
-| `timerDisplay` | Live countdown/countup timer |
-| `report` | Displays formatted log of all sessions |
-| `settings` | API key, markdown toggle, backup/restore, clear |
-| `transcriptionDisplay` | Shows live Whisper transcript with highlights; merge button sends to counter |
-| `transcriptList` | List of all saved transcripts for the current meeting |
-| `transcriptView` | Shows a single saved transcript with filler summary and Share button |
+apiKey: “AIzaSyC2QfJzXrVg9TmUasmtfLbegSlUGmg5JR4”,
+authDomain: “sdtm-tm-app.firebaseapp.com”,
+projectId: “sdtm-tm-app”,
+storageBucket: “sdtm-tm-app.firebasestorage.app”,
+messagingSenderId: “429843202069”,
+appId: “1:429843202069:web:eec66b741bc3fc90934e1c”
+};</pre>
+<p>Uses Firebase compat API v9.23.0 loaded via CDN. No bundler required.</p>
 
----
+```
+        <h3>Firestore Structure</h3>
+        <pre>clubs/
+```
 
-## Every Function
+[syncKey]/                     ← 8-char code e.g. “ABCD-EF3G”
+name: string
+speakers: string[]
+fillers: string[]
+apiKey: string
+createdAt: timestamp
+lastUpdated: timestamp
+sessions/
+[auto-id]/
+speaker: string
+role: string
+date: string
+type: ‘timer’ | ‘counter’
+createdAt: timestamp
+// Timer sessions also include:
+result: string            ← e.g. “05:23”
+elapsedSeconds: number
+// Counter sessions also include:
+fillerDetail: object      ← {fillerWord: count}
+totalFillers: number
+// Transcription sessions also include:
+totalWords: number
+fillerPct: string         ← e.g. “4.2”
+fillerScore: string       ← “EXCELLENT” | “GOOD” | “NEEDS WORK”
+fillersPerMin: string
+durationMins: string</pre>
 
-| Function | What it does |
-|---|---|
-| `initApp()` | Runs on body load — loads club name, toggle state, API key, version label, refreshes roster, loads first WOD |
-| `nextWod()` | Picks random word from library, calls `fetchWordDetails()` |
-| `searchWod()` | Reads manual input field, calls `fetchWordDetails()` |
-| `fetchWordDetails(word)` | Calls OpenAI GPT-4o-mini, renders definition + example in WOD card |
-| `selectWod()` | Pins active WOD to fillerList and localStorage |
-| `saveSettings()` | Writes markdown toggle + API key to localStorage |
-| `refreshRoster()` | Renders full speaker list in `speakerArea` |
-| `saveSpeaker()` | Adds new name to roster, sorts, saves |
-| `selectSpeaker(n)` | Fills name input when a roster name is tapped |
-| `handleNameInput(el)` | Filters roster live as user types, uppercases input |
-| `renderSpeakerListFiltered(f)` | Renders a filtered subset of the roster |
-| `askDeleteSpeaker(n)` | Opens modal to confirm speaker deletion |
-| `showScreen(id)` | Hides all screens, shows target; triggers `renderSetupGrid()`, `loadReport()`, or `loadTranscriptList()` as needed |
-| `renderSetupGrid()` | Builds role card grid — timer presets or counter roles depending on `currentMode` |
-| `selectRole(el, g, y, r, label)` | Sets `lims`, `selectedTypeLabel`, highlights selected card |
-| `askCustomTime(el)` | Opens modal with inputs for custom thresholds (timer) or custom role name (counter) |
-| `switchMode(m)` | Switches between timer and counter tabs |
-| `handleStart()` | Validates name + role; if `recordingEnabled` routes to `transcriptionDisplay`, else to `timerDisplay` or `counterDisplay` |
-| `startRecording()` | Requests mic, starts MediaRecorder, updates UI |
-| `stopRecording()` | Stops MediaRecorder, triggers Whisper transcription |
-| `sendToWhisper()` | POSTs audio blob to OpenAI Whisper API, calls `analyzeTranscript()` |
-| `analyzeTranscript(text)` | Detects fillers in transcript, builds highlighted HTML, stores counts |
-| `mergeTranscriptToCounter()` | Stops stream, merges transcript counts into tally, saves transcript to `KEY_TRANSCRIPTS`, navigates to counterDisplay |
-| `initTally()` | Resets `currentTally` to zero for all fillers, calls `renderTally()` |
-| `renderTally()` | Builds tally grid cards, sorts WOD to top |
-| `incTally(f)` | Increments a filler count |
-| `decTally(e, f)` | Decrements a filler count (min 0) |
-| `delFiller(e, f)` | Removes a filler from `fillerList` via modal confirm |
-| `saveCounterSession()` | Saves/merges tally to `KEY_LOGS`, shows confirmation modal |
-| `parseTallyString(s)` | Deserializes a tally log string back to object |
-| `serializeTally(o)` | Serializes tally object to log string |
-| `startTimer()` | Starts interval, updates display, changes `body` background on thresholds |
-| `togglePause()` | Pauses/resumes the timer interval |
-| `commitAndExit()` | Saves timer result to logs, resets background, returns to menu |
-| `loadReport()` | Builds formatted report string from logs + WOD, renders to `reportLog` |
-| `generateReportText()` | Returns plain or markdown report string (used by copy + share) |
-| `copyReport()` | Copies report to clipboard via modal confirm |
-| `shareReport()` | Uses Web Share API |
-| `exportData()` | Downloads JSON backup of speakers, fillers, club name, API key (transcripts excluded) |
-| `handleImportFile(i)` | Reads uploaded JSON, restores all data, reloads page |
-| `askClubName()` | Modal to set club name |
-| `askClearLogs()` | Modal to confirm full reset of logs, WOD, and transcripts |
-| `openModal(t, b, c)` | Core modal function — sets title, body HTML, confirm callback |
-| `loadTranscriptList()` | Renders list of saved transcripts in `transcriptListArea` |
-| `openTranscript(i)` | Loads a single transcript into the viewer screen |
-| `shareTranscript()` | Shares transcript via Web Share API; format depends on markdown toggle — full markdown if on, plain text with `**fillers**` if off |
+```
+        <h3>Sync Functions</h3>
+        <table>
+            <tr><th>Function</th><th>Direction</th><th>Trigger</th></tr>
+            <tr><td><code>autoSyncDown()</code></td><td>Cloud → Local</td><td>App open, club switch</td></tr>
+            <tr><td><code>autoSyncUp()</code></td><td>Local → Cloud</td><td>Speaker add/delete, filler change, settings save</td></tr>
+            <tr><td><code>syncUp(clubId)</code></td><td>Local → Cloud</td><td>Manual Push button</td></tr>
+            <tr><td><code>syncDown(clubId)</code></td><td>Cloud → Local</td><td>Manual Pull button</td></tr>
+            <tr><td><code>writeSession(data)</code></td><td>Local → Cloud</td><td>Commit &amp; Exit, Save Results, Merge to Counter</td></tr>
+        </table>
+        <p>All sync functions are fire-and-forget with silent catch — a failed sync never interrupts the user. <code>practiceOnly</code> clubs are always skipped.</p>
 
----
+        <h3>Roster Merge Strategy</h3>
+        <p>Pull operations use a <strong>union merge</strong> — the merged roster is the combination of local and cloud speakers, sorted. This means additions always propagate but deletions currently do not sync automatically. The manual Push button pushes the exact local state.</p>
 
-## Default Filler List
-`["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]`
+        <h3>Sync Code Format</h3>
+        <p>8 characters, split with a hyphen after position 4. Character set excludes confusable characters (no 0, O, 1, I): <code>ABCDEFGHJKLMNPQRSTUVWXYZ23456789</code>. The sync code is the Firestore document ID.</p>
 
-"WORD OF DAY" is a placeholder replaced by the active WOD word when one is selected.
+        <h3>Security</h3>
+        <p>Current Firestore rules: <code>allow read, write: if true</code> (open access). The sync code acts as the shared secret — knowing the code is required to access a club's data. Rules should be tightened before wide public distribution.</p>
+    </div>
 
----
+    <!-- LOCALSTORAGE -->
+    <div class="card" id="localstorage">
+        <h2>LocalStorage Keys</h2>
 
-## CSS — Key Classes to Preserve
+        <h3>Global Keys (not club-scoped)</h3>
+        <table>
+            <tr><th>Constant</th><th>Full Key (prod)</th><th>Stores</th></tr>
+            <tr><td><code>KEY_CLUBS</code></td><td><code>prod_clubs</code></td><td>JSON array of club objects</td></tr>
+            <tr><td><code>KEY_ACTIVE_CLUB</code></td><td><code>prod_active_club</code></td><td>Active club ID string</td></tr>
+            <tr><td><code>KEY_MD</code></td><td><code>prod_md_toggle</code></td><td>Boolean string for markdown export</td></tr>
+            <tr><td><code>KEY_AI_KEY</code></td><td><code>prod_openai_key</code></td><td>OpenAI API key string</td></tr>
+            <tr><td><code>KEY_DEVICE_NAME</code></td><td><code>prod_device_name</code></td><td>Full name of this device's user for session audit trail</td></tr>
+            <tr><td><code>KEY_LAST_SESSION</code></td><td><code>prod_last_session_ts</code></td><td>Alias — actual storage is club-scoped (see below)</td></tr>
+        </table>
 
-| Class/ID | Purpose |
-|---|---|
-| `.screen` / `.screen.active` | Show/hide screen system |
-| `.tab` / `.tab.active` | Mode switcher tabs |
-| `.main-menu-card` | Menu item cards |
-| `.role-card` / `.role-card.selected` | Setup grid cards |
-| `.tally-card` / `.tally-card.wod-active` | Counter grid cards |
-| `.tally-del` / `.tally-minus` | Delete/decrement buttons on tally cards |
-| `.wod-card-big`, `.wod-word`, `.wod-def`, `.wod-example` | WOD display layout |
-| `.footer-btn` / `.secondary-btn` | All action buttons |
-| `.button-row` | Button container at screen bottom |
-| `.credit-footer` | Bottom branding area on menu |
-| `#customModal` | Modal overlay |
-| `.highlight-filler` | Red highlight on filler words in transcript |
-| `.highlight-wod` | Gold highlight on Word of the Day in transcript |
-| `body` background | Changes to `--green`, `--yellow`, `--red` during timing — must be `var(--bg)` at rest |
+        <h3>Club-Scoped Keys</h3>
+        <p>Pattern: <code>prefix + 'club_' + clubId + '_' + type</code></p>
+        <table>
+            <tr><th>Type Suffix</th><th>Example Full Key</th><th>Stores</th></tr>
+            <tr><td><code>speakers</code></td><td><code>prod_club_c123_speakers</code></td><td>JSON array of speaker name strings</td></tr>
+            <tr><td><code>fillers</code></td><td><code>prod_club_c123_fillers</code></td><td>JSON array of filler word strings</td></tr>
+            <tr><td><code>logs</code></td><td><code>prod_club_c123_logs</code></td><td>JSON array of session log strings</td></tr>
+            <tr><td><code>wod_full</code></td><td><code>prod_club_c123_wod_full</code></td><td>Object <code>{word, definition, example}</code></td></tr>
+            <tr><td><code>custom_limits</code></td><td><code>prod_club_c123_custom_limits</code></td><td>Object <code>{g, cy, r}</code> in minutes</td></tr>
+            <tr><td><code>transcripts</code></td><td><code>prod_club_c123_transcripts</code></td><td>JSON array of transcript objects</td></tr>
+            <tr><td><code>last_session_ts</code></td><td><code>prod_club_c123_last_session_ts</code></td><td>Unix timestamp (ms) of last committed session — used for stale data banner</td></tr>
+        </table>
 
----
+        <h3>Legacy v2 Keys (migration source only)</h3>
+        <p>The following keys are read once during migration from v2 and never written again:</p>
+        <table>
+            <tr><th>Key</th><th>Purpose</th></tr>
+            <tr><td><code>prod_sdtm_club_name</code></td><td>V2 club name — triggers migration if present</td></tr>
+            <tr><td><code>prod_sdtm_speakers</code></td><td>V2 roster</td></tr>
+            <tr><td><code>prod_sdtm_logs</code></td><td>V2 logs</td></tr>
+            <tr><td><code>prod_sdtm_fillers</code></td><td>V2 filler list</td></tr>
+            <tr><td><code>prod_sdtm_wod_full</code></td><td>V2 WOD</td></tr>
+            <tr><td><code>prod_sdtm_transcripts</code></td><td>V2 transcripts</td></tr>
+        </table>
+    </div>
 
-## CSS Variables (`:root`)
+    <!-- GLOBAL STATE -->
+    <div class="card" id="state">
+        <h2>Global State Variables</h2>
+        <table>
+            <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+            <tr><td><code>clubs</code></td><td>array</td><td>All club objects for this device</td></tr>
+            <tr><td><code>activeClubId</code></td><td>string</td><td>ID of the currently active club</td></tr>
+            <tr><td><code>currentMode</code></td><td>string</td><td><code>'timer'</code> or <code>'counter'</code></td></tr>
+            <tr><td><code>currentSpeaker</code></td><td>string</td><td>Active speaker's name (uppercased)</td></tr>
+            <tr><td><code>currentTally</code></td><td>object</td><td><code>{fillerWord: count}</code> for current session</td></tr>
+            <tr><td><code>iv</code></td><td>interval</td><td>Timer interval handle</td></tr>
+            <tr><td><code>start</code></td><td>number</td><td>Timestamp when timer last started/resumed</td></tr>
+            <tr><td><code>elapsed</code></td><td>number</td><td>Seconds elapsed in current timer session</td></tr>
+            <tr><td><code>lims</code></td><td>object</td><td><code>{g, y, r}</code> thresholds in seconds</td></tr>
+            <tr><td><code>selectedTypeLabel</code></td><td>string</td><td>Selected role label e.g. "SPEECH"</td></tr>
+            <tr><td><code>fillerList</code></td><td>array</td><td>Active club's filler word list</td></tr>
+            <tr><td><code>allSpeakers</code></td><td>array</td><td>Active club's roster</td></tr>
+            <tr><td><code>activeWodData</code></td><td>object</td><td><code>{word, definition, example}</code> from current WOD</td></tr>
+            <tr><td><code>recordingEnabled</code></td><td>boolean</td><td>Whether Record Speech toggle is on</td></tr>
+            <tr><td><code>mediaRecorder</code></td><td>MediaRecorder</td><td>Active recorder instance (null when idle)</td></tr>
+            <tr><td><code>recordingStream</code></td><td>MediaStream</td><td>Active microphone stream (null when idle)</td></tr>
+            <tr><td><code>audioChunks</code></td><td>array</td><td>Collected audio data blobs</td></tr>
+            <tr><td><code>transcriptResult</code></td><td>string</td><td>Plain text from last Whisper transcription</td></tr>
+            <tr><td><code>transcriptCounts</code></td><td>object</td><td><code>{fillerWord: count}</code> auto-detected from transcript</td></tr>
+            <tr><td><code>recordingStartTime</code></td><td>number</td><td>Timestamp when recording started</td></tr>
+            <tr><td><code>speechDuration</code></td><td>number</td><td>Seconds of recorded speech</td></tr>
+            <tr><td><code>activeTranscriptIndex</code></td><td>number</td><td>Index of transcript currently open in viewer</td></tr>
+            <tr><td><code>sessionFromTranscript</code></td><td>boolean</td><td>Flag set true by mergeTranscriptToCounter() to prevent saveCounterSession() from writing a duplicate session</td></tr>
+        </table>
+    </div>
 
-| Variable | Value | Usage |
-|---|---|---|
-| `--bg` | `#F2F2F7` | Page background |
-| `--card` | `#FFFFFF` | Card/surface background |
-| `--accent` | `#007AFF` | Primary blue (buttons, names, tabs) |
-| `--text` | `#000000` | Primary text |
-| `--subtext` | `#3A3A3C` | Secondary text |
-| `--red` | `#FF3B30` | Timer max / delete actions |
-| `--green` | `#34C759` | Timer min / save actions |
-| `--yellow` | `#FFCC00` | Timer target |
-| `--gold` | `#BF941A` | WOD accent color |
-| `--border` | `#D1D1D6` | Card and input borders |
+    <!-- SCREENS -->
+    <div class="card" id="screens">
+        <h2>Screens</h2>
+        <p>All screens use <code>showScreen(id)</code> — hides all <code>.screen</code> divs, shows target. Additional setup runs for certain screens (see function table).</p>
+        <table>
+            <tr><th>Screen ID</th><th>Purpose</th><th>On Show</th></tr>
+            <tr><td><code>welcome</code></td><td>First-run onboarding — Join, Create, or Explore</td><td>—</td></tr>
+            <tr><td><code>menu</code></td><td>Main hub with Timer / Ah-Counter tab toggle</td><td>—</td></tr>
+            <tr><td><code>wod</code></td><td>Word of the Day — search, generate, select</td><td>—</td></tr>
+            <tr><td><code>setup</code></td><td>Speaker name input + roster + record toggle + role grid</td><td><code>renderSetupGrid()</code>, <code>refreshRoster()</code></td></tr>
+            <tr><td><code>counterDisplay</code></td><td>Live tally grid during counter session</td><td>—</td></tr>
+            <tr><td><code>timerDisplay</code></td><td>Live countdown/countup timer</td><td>—</td></tr>
+            <tr><td><code>report</code></td><td>Formatted log of all sessions this meeting</td><td><code>loadReport()</code></td></tr>
+            <tr><td><code>settings</code></td><td>API key, markdown toggle, backup/restore, clear</td><td>—</td></tr>
+            <tr><td><code>clubManager</code></td><td>Manage clubs, sync codes, push/pull</td><td><code>renderClubManager()</code></td></tr>
+            <tr><td><code>fillerManager</code></td><td>Add/edit/delete filler words for active club</td><td><code>renderFillerManager()</code></td></tr>
+            <tr><td><code>progress</code></td><td>Speaker improvement overview from Firestore</td><td><code>loadProgress()</code></td></tr>
+            <tr><td><code>speakerProgress</code></td><td>Individual speaker session history</td><td><code>openSpeakerProgress(name)</code></td></tr>
+            <tr><td><code>transcription</code></td><td>Whisper recording, transcript, and filler analysis</td><td><code>initTranscription()</code></td></tr>
+            <tr><td><code>transcriptList</code></td><td>List of all saved transcripts this meeting</td><td><code>loadTranscriptList()</code></td></tr>
+            <tr><td><code>transcriptView</code></td><td>Single transcript with summary and share</td><td><code>openTranscript(i)</code></td></tr>
+        </table>
+    </div>
 
----
+    <!-- FUNCTIONS -->
+    <div class="card" id="functions">
+        <h2>Functions</h2>
 
-## Transcript Data Architecture
-- Transcripts are saved on `mergeTranscriptToCounter()` to `KEY_TRANSCRIPTS` as a JSON array
-- Each entry: `{ speaker, role, date, highlightedHTML, fillerSummary, plainText }`
-- `highlightedHTML` — rendered HTML with `.highlight-filler` and `.highlight-wod` spans (for display)
-- `plainText` — raw Whisper transcript string (for sharing)
-- Transcripts are **excluded from backup export** (meeting-specific, session-only data)
-- Transcripts are **cleared with "Clear Meeting Data"** along with logs and WOD
+        <h3>Init &amp; Club Management</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>initApp()</code></td><td>Body onload — runs migration, checks for fresh install, loads club data, sets UI state, calls autoSyncDown(). Shows welcome screen if no clubs exist.</td></tr>
+            <tr><td><code>migrateIfNeeded()</code></td><td>Detects v2 data and migrates to v3 club structure. No-ops on fresh installs.</td></tr>
+            <tr><td><code>loadClubData()</code></td><td>Reads clubs array and active club's speakers/fillers from localStorage into globals.</td></tr>
+            <tr><td><code>updateClubUI()</code></td><td>Updates subtitle, footer, and settings labels to reflect active club name + sync status.</td></tr>
+            <tr><td><code>getActiveClub()</code></td><td>Returns the active club object from the clubs array.</td></tr>
+            <tr><td><code>clubKey(suffix)</code></td><td>Returns scoped localStorage key for active club: <code>prefix+'club_'+activeClubId+'_'+suffix</code></td></tr>
+            <tr><td><code>showClubSwitcher()</code></td><td>Shows the bottom sheet club switcher overlay.</td></tr>
+            <tr><td><code>closeClubSwitcher(event)</code></td><td>Closes the club switcher. Closes on backdrop tap.</td></tr>
+            <tr><td><code>switchClub(id)</code></td><td>Sets activeClubId, reloads club data, updates UI, triggers autoSyncDown().</td></tr>
+            <tr><td><code>renderClubManager()</code></td><td>Builds club manager list with sync controls for each club.</td></tr>
+            <tr><td><code>askAddClub()</code></td><td>Modal to create a new club with name and Practice Only toggle.</td></tr>
+            <tr><td><code>askEditClub(id)</code></td><td>Modal to rename a club.</td></tr>
+            <tr><td><code>askDeleteClub(id)</code></td><td>Modal to delete a club and all its local data. Blocks deletion of the currently active club with an error modal.</td></tr>
+        </table>
 
-## Share Behavior (Transcript)
-- **Markdown ON:** Shares full markdown — `# Header`, `**role**`, `> filler summary`, `---`, fillers as `**BOLD CAPS**`
-- **Markdown OFF:** Shares plain text with `**filler**` markers only — compatible with email, Notes, Messages
+        <h3>Firebase Sync</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>generateSyncCode()</code></td><td>Returns an 8-char sync code (format XXXX-XXXX) using unambiguous characters.</td></tr>
+            <tr><td><code>enableSync(clubId)</code></td><td>Generates code, creates Firestore document with roster/fillers/apiKey, saves code to club object.</td></tr>
+            <tr><td><code>askJoinByCode()</code></td><td>Modal prompts for sync code, fetches club from Firestore, creates local club, pulls all data.</td></tr>
+            <tr><td><code>autoSyncDown()</code></td><td>Silent pull on app open/club switch. Merges roster (union), cloud wins on fillers and apiKey.</td></tr>
+            <tr><td><code>autoSyncUp()</code></td><td>Silent push on any roster or filler change. Skips if no syncKey or practiceOnly.</td></tr>
+            <tr><td><code>syncUp(clubId)</code></td><td>Manual push — sends speakers, fillers, apiKey to Firestore. Updates status label.</td></tr>
+            <tr><td><code>syncDown(clubId)</code></td><td>Manual pull — fetches and merges speakers, fillers, apiKey. Updates status label.</td></tr>
+            <tr><td><code>setSyncStatus(clubId, msg)</code></td><td>Updates sync status text in club manager UI.</td></tr>
+            <tr><td><code>writeSession(data)</code></td><td>Fire-and-forget write to sessions subcollection. Skips if no syncKey or practiceOnly.</td></tr>
+        </table>
 
----
+        <h3>Welcome Screen</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>showWelcomeJoin()</code></td><td>Modal for sync code entry. Joins club, pulls all data, proceeds to menu.</td></tr>
+            <tr><td><code>showWelcomeCreate()</code></td><td>Modal for new club name + Practice Only toggle. Creates club, proceeds to menu.</td></tr>
+            <tr><td><code>showWelcomePractice()</code></td><td>Sets active club to TEST CLUB and proceeds directly to menu.</td></tr>
+        </table>
 
-## Deployment Notes
-- The `prefix` variable auto-detects `/test/` in the URL path and uses `test_` for all localStorage keys, otherwise `prod_`
-- Copying the file from `/test/index.html` to `/index.html` requires **zero changes** — the prefix shifts automatically
-- Test and production data are fully isolated in localStorage on the same device
-- Version label is rendered dynamically by `initApp()` into `#versionLabel`
+        <h3>Filler Manager</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>renderFillerManager()</code></td><td>Builds list of current club's filler words with edit/delete buttons.</td></tr>
+            <tr><td><code>askAddFiller()</code></td><td>Modal to add a new filler word. Pushes to cloud on confirm.</td></tr>
+            <tr><td><code>askEditFiller(oldWord)</code></td><td>Modal to rename a filler word. Pushes to cloud on confirm.</td></tr>
+            <tr><td><code>askDeleteFiller(word)</code></td><td>Modal to remove a filler word. Pushes to cloud on confirm.</td></tr>
+        </table>
 
----
+        <h3>Progress</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>loadProgress()</code></td><td>Fetches last 500 sessions from Firestore, groups by speaker, filters to current roster members only, renders list with rates and trends.</td></tr>
+            <tr><td><code>openSpeakerProgress(encodedName)</code></td><td>Fetches all sessions for a speaker, renders summary stats and session-by-session history.</td></tr>
+        </table>
 
-## Rules for Safe Feature Addition
-1. Every function name above must remain identical
-2. Every localStorage key constant name must remain identical
-3. Every screen ID must remain identical
-4. No existing CSS class may be renamed or removed
-5. New screens are added as new `<div id="newscreen" class="screen">` blocks — `showScreen()` handles them automatically
-6. New localStorage keys get new constant names with the same `prefix +` pattern
-7. New global variables must not shadow any existing variable name
-8. The `body` background must always return to `var(--bg)` when leaving the timer screen
-9. `openModal(t, b, c)` is the only modal system — no `alert()` or `confirm()` calls
-10. Transcripts are never included in backup export JSON
+        <h3>Word of the Day</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>nextWod()</code></td><td>Picks random word from WOD_LIBRARY, calls fetchWordDetails().</td></tr>
+            <tr><td><code>searchWod()</code></td><td>Reads manual input, calls fetchWordDetails().</td></tr>
+            <tr><td><code>fetchWordDetails(word)</code></td><td>Calls GPT-4o-mini for definition + example JSON. Renders to WOD card.</td></tr>
+            <tr><td><code>selectWod()</code></td><td>Pins active WOD to fillerList, saves to wod_full in localStorage.</td></tr>
+        </table>
+
+        <h3>Roster</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>refreshRoster()</code></td><td>Renders full speaker list in speakerArea.</td></tr>
+            <tr><td><code>saveSpeaker()</code></td><td>Validates name, warns if single word, adds to roster, auto-pushes to cloud.</td></tr>
+            <tr><td><code>doAddSpeaker(n)</code></td><td>Performs the actual add after single-name warning is accepted.</td></tr>
+            <tr><td><code>selectSpeaker(n)</code></td><td>Fills name input when a roster name is tapped.</td></tr>
+            <tr><td><code>handleNameInput(el)</code></td><td>Uppercases input, filters roster live as user types.</td></tr>
+            <tr><td><code>renderSpeakerListFiltered(f)</code></td><td>Renders a filtered subset of the roster.</td></tr>
+            <tr><td><code>askDeleteSpeaker(n)</code></td><td>Modal to confirm deletion. Auto-pushes to cloud on confirm.</td></tr>
+            <tr><td><code>clearNameInput()</code></td><td>Clears the name input field and resets roster to full list. Called by the inline ✕ clear button.</td></tr>
+        </table>
+
+        <h3>Navigation &amp; Setup</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>showScreen(id)</code></td><td>Hides all screens, shows target. Triggers setup functions for relevant screens.</td></tr>
+            <tr><td><code>renderSetupGrid()</code></td><td>Builds role card grid — timer presets or counter roles depending on currentMode.</td></tr>
+            <tr><td><code>selectRole(el, g, y, r, label)</code></td><td>Sets lims and selectedTypeLabel, highlights selected card.</td></tr>
+            <tr><td><code>askCustomTime(el)</code></td><td>Modal with threshold inputs (timer) or custom role name (counter).</td></tr>
+            <tr><td><code>switchMode(m)</code></td><td>Switches between timer and counter tabs, updates UI accordingly.</td></tr>
+            <tr><td><code>handleStart()</code></td><td>Validates name + role. Routes to transcription, timerDisplay, or counterDisplay.</td></tr>
+        </table>
+
+        <h3>Tally (Counter)</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>initTally()</code></td><td>Resets currentTally to zero for all fillers, renders grid.</td></tr>
+            <tr><td><code>renderTally()</code></td><td>Builds tally cards, sorts WOD to top.</td></tr>
+            <tr><td><code>incTally(f)</code></td><td>Increments a filler count.</td></tr>
+            <tr><td><code>decTally(e, f)</code></td><td>Decrements a filler count (min 0).</td></tr>
+            <tr><td><code>delFiller(e, f)</code></td><td>Removes filler from current session via modal confirm.</td></tr>
+            <tr><td><code>saveCounterSession()</code></td><td>Saves/merges tally to club logs. Calls writeSession() for cloud history.</td></tr>
+            <tr><td><code>parseTallyString(s)</code></td><td>Deserializes log string back to object.</td></tr>
+            <tr><td><code>serializeTally(o)</code></td><td>Serializes tally object to log string.</td></tr>
+            <tr><td><code>addFillerOnTheFly()</code></td><td>Opens modal to add a new filler during a live session. Starts count at 1. Toggle saves permanently to club list (default on).</td></tr>
+        </table>
+
+        <h3>Timer</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>startTimer()</code></td><td>Starts interval, updates display, changes body background on thresholds.</td></tr>
+            <tr><td><code>togglePause()</code></td><td>Pauses/resumes the timer interval. Button label toggles PAUSE ↔ RESUME. Resume uses inline interval to preserve exact elapsed time.</td></tr>
+            <tr><td><code>resetTimer()</code></td><td>Stops interval, resets elapsed to 0, resets display and background, restarts clock.</td></tr>
+            <tr><td><code>commitAndExit()</code></td><td>Saves result to logs, calls writeSession(), resets background, returns to menu.</td></tr>
+        </table>
+
+        <h3>Report</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>loadReport()</code></td><td>Builds formatted report string from club logs + WOD, renders to reportLog.</td></tr>
+            <tr><td><code>generateReportText()</code></td><td>Returns plain or markdown report string (used by copy + share).</td></tr>
+            <tr><td><code>copyReport()</code></td><td>Copies report to clipboard.</td></tr>
+            <tr><td><code>shareReport()</code></td><td>Uses Web Share API.</td></tr>
+        </table>
+
+        <h3>Transcription</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>initTranscription()</code></td><td>Resets all transcription state, sets up record button.</td></tr>
+            <tr><td><code>startTranscriptionRecording()</code></td><td>Requests microphone, starts MediaRecorder, updates UI.</td></tr>
+            <tr><td><code>stopTranscriptionRecording()</code></td><td>Stops MediaRecorder and stream, triggers Whisper.</td></tr>
+            <tr><td><code>sendToWhisper()</code></td><td>POSTs audio blob to OpenAI Whisper API, calls analyzeTranscript().</td></tr>
+            <tr><td><code>analyzeTranscript(text)</code></td><td>Detects fillers in transcript text, computes score and stats.</td></tr>
+            <tr><td><code>showTranscriptResults(text)</code></td><td>Renders highlighted HTML, score card, and filler breakdown.</td></tr>
+            <tr><td><code>showTranscriptionError(msg)</code></td><td>Renders error state with retry button.</td></tr>
+            <tr><td><code>mergeTranscriptToCounter()</code></td><td>Saves transcript to localStorage, calls writeSession(), navigates to counterDisplay.</td></tr>
+            <tr><td><code>cancelTranscription()</code></td><td>Stops stream if active, returns to menu.</td></tr>
+        </table>
+
+        <h3>Transcript List &amp; View</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>loadTranscriptList()</code></td><td>Renders list of saved transcripts from club localStorage.</td></tr>
+            <tr><td><code>openTranscript(i)</code></td><td>Loads transcript at index i into the viewer screen.</td></tr>
+            <tr><td><code>shareTranscript()</code></td><td>Shares active transcript via Web Share API or clipboard.</td></tr>
+        </table>
+
+        <h3>Settings &amp; Data</h3>
+        <table>
+            <tr><th>Function</th><th>What it does</th></tr>
+            <tr><td><code>saveSettings()</code></td><td>Saves markdown toggle and API key. Calls autoSyncUp().</td></tr>
+            <tr><td><code>exportData()</code></td><td>Downloads JSON backup of active club's speakers, fillers, name, and API key.</td></tr>
+            <tr><td><code>handleImportFile(i)</code></td><td>Reads JSON backup, restores speakers/fillers/apiKey, reloads page.</td></tr>
+            <tr><td><code>askClearLogs()</code></td><td>Modal to confirm reset of club logs, WOD, transcripts, and last_session_ts.</td></tr>
+            <tr><td><code>checkStaleBanner()</code></td><td>Reads last_session_ts — shows yellow stale data banner if data is 3+ hours old and logs exist. Called on menu show and initApp.</td></tr>
+            <tr><td><code>toggleSyncCodeVisibility(clubId, syncKey)</code></td><td>Toggles sync code display between masked (••••-••••) and revealed in Club Manager.</td></tr>
+            <tr><td><code>openModal(t, b, c, cancelLabel, confirmLabel)</code></td><td>Core modal. cancelLabel and confirmLabel are optional — default to "Cancel" / "OK".</td></tr>
+        </table>
+    </div>
+
+    <!-- CSS -->
+    <div class="card" id="css">
+        <h2>CSS</h2>
+
+        <h3>CSS Variables (<code>:root</code>)</h3>
+        <table>
+            <tr><th>Variable</th><th>Value</th><th>Usage</th></tr>
+            <tr><td><code>--bg</code></td><td><code>#F2F2F7</code></td><td>Page background</td></tr>
+            <tr><td><code>--card</code></td><td><code>#FFFFFF</code></td><td>Card / surface background</td></tr>
+            <tr><td><code>--accent</code></td><td><code>#007AFF</code></td><td>Primary blue — buttons, names, tabs</td></tr>
+            <tr><td><code>--text</code></td><td><code>#000000</code></td><td>Primary text</td></tr>
+            <tr><td><code>--subtext</code></td><td><code>#3A3A3C</code></td><td>Secondary text</td></tr>
+            <tr><td><code>--red</code></td><td><code>#FF3B30</code></td><td>Timer max / delete actions</td></tr>
+            <tr><td><code>--green</code></td><td><code>#34C759</code></td><td>Timer min / save actions</td></tr>
+            <tr><td><code>--yellow</code></td><td><code>#FFCC00</code></td><td>Timer target</td></tr>
+            <tr><td><code>--gold</code></td><td><code>#BF941A</code></td><td>WOD accent color</td></tr>
+            <tr><td><code>--border</code></td><td><code>#D1D1D6</code></td><td>Card and input borders</td></tr>
+        </table>
+
+        <h3>Key Classes to Preserve</h3>
+        <table>
+            <tr><th>Class / ID</th><th>Purpose</th></tr>
+            <tr><td><code>.screen</code> / <code>.screen.active</code></td><td>Show/hide screen system — do not rename</td></tr>
+            <tr><td><code>.tab</code> / <code>.tab.active</code></td><td>Mode switcher tabs</td></tr>
+            <tr><td><code>.main-menu-card</code></td><td>Menu item cards</td></tr>
+            <tr><td><code>.role-card</code> / <code>.role-card.selected</code></td><td>Setup grid role cards</td></tr>
+            <tr><td><code>.tally-card</code> / <code>.tally-card.wod-active</code></td><td>Counter tally cards</td></tr>
+            <tr><td><code>.tally-del</code> / <code>.tally-minus</code></td><td>Delete/decrement on tally cards</td></tr>
+            <tr><td><code>.wod-card-big</code>, <code>.wod-word</code>, <code>.wod-def</code>, <code>.wod-example</code></td><td>WOD display layout</td></tr>
+            <tr><td><code>.footer-btn</code> / <code>.secondary-btn</code></td><td>All action buttons</td></tr>
+            <tr><td><code>.button-row</code></td><td>Button container at screen bottom</td></tr>
+            <tr><td><code>.credit-footer</code></td><td>Bottom branding area on menu</td></tr>
+            <tr><td><code>#customModal</code></td><td>Modal overlay — sole modal system</td></tr>
+            <tr><td><code>.highlight-filler</code></td><td>Red highlight on filler words in transcript</td></tr>
+            <tr><td><code>.highlight-wod</code></td><td>Gold highlight on Word of the Day in transcript</td></tr>
+            <tr><td><code>.sync-code-box</code></td><td>Sync code display in club manager</td></tr>
+            <tr><td><code>.progress-speaker-row</code></td><td>Clickable speaker row in progress list</td></tr>
+            <tr><td><code>.session-row</code></td><td>Individual session entry in speaker history</td></tr>
+            <tr><td><code>.spinner</code></td><td>Loading animation for async operations</td></tr>
+        </table>
+    </div>
+
+    <!-- DATA SCHEMAS -->
+    <div class="card" id="data">
+        <h2>Data Schemas</h2>
+
+        <h3>Transcript Object (localStorage)</h3>
+        <pre>{
+```
+
+speaker: string,
+role: string,
+date: string,           // toLocaleString()
+highlightedHTML: string, // rendered HTML with highlight spans
+fillerSummary: string,   // e.g. “UM: 3, AH: 2”
+plainText: string,       // raw Whisper transcript
+fillerPct: string,       // e.g. “4.2”
+fillerScore: string,     // “EXCELLENT” | “GOOD” | “NEEDS WORK”
+totalWords: number,
+totalFillers: number,
+fillersPerMin: string,
+durationMins: string
+}</pre>
+
+```
+        <h3>Log String Format (localStorage)</h3>
+        <pre>"SPEAKER NAME | ROLE LABEL :: RESULT"
+```
+
+// Timer example:   “KEVIN SHAN | SPEECH :: 05:42”
+// Counter example: “KEVIN SHAN | AH COUNTER :: UM: 3, AH: 2”
+// No fillers:      “KEVIN SHAN | GRAMMARIAN :: 0 Fillers”</pre>
+
+```
+        <h3>Default Filler List</h3>
+        <pre>["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]</pre>
+        <p><code>WORD OF DAY</code> is a placeholder replaced by the active WOD word's uppercase form when a WOD is selected.</p>
+    </div>
+
+    <!-- RULES -->
+    <div class="card" id="rules">
+        <h2>Rules for Safe Feature Addition</h2>
+        <div class="rule">1. Every existing function name must remain identical — callers in HTML use string names.</div>
+        <div class="rule">2. Every localStorage key constant name must remain identical.</div>
+        <div class="rule">3. Every screen ID must remain identical — <code>showScreen()</code> references them by string.</div>
+        <div class="rule">4. No existing CSS class may be renamed or removed without updating all references.</div>
+        <div class="rule">5. New screens are added as <code>&lt;div id="newscreen" class="screen"&gt;</code> blocks — <code>showScreen()</code> handles them automatically.</div>
+        <div class="rule">6. New localStorage keys must follow the <code>prefix + 'club_' + clubId + '_'</code> pattern for club-scoped data, or <code>pk(NEW_CONSTANT)</code> for global keys.</div>
+        <div class="rule">7. New global variables must not shadow any existing variable name.</div>
+        <div class="rule">8. The <code>body</code> background must always return to <code>var(--bg)</code> when leaving the timer screen.</div>
+        <div class="rule">9. <code>openModal(t, b, c)</code> is the only modal system — never use <code>alert()</code> or <code>confirm()</code>.</div>
+        <div class="rule">10. Transcripts are never included in backup export JSON — they are meeting-specific session data.</div>
+        <div class="rule">11. <code>writeSession()</code> must always be a fire-and-forget call — never await it in a user-blocking context.</div>
+        <div class="rule">12. The <code>practiceOnly</code> flag must be checked before any Firestore write. Use <code>autoSyncUp()</code> and <code>writeSession()</code> which check it automatically.</div>
+        <div class="rule">13. Never prompt for localStorage access in incognito — the app must work fully offline and in private browsing.</div>
+    </div>
+
+    <!-- DEPLOYMENT -->
+    <div class="card" id="deployment">
+        <h2>Deployment Notes</h2>
+        <ul>
+            <li>The <code>prefix</code> variable auto-detects <code>/test/</code> in the URL and uses <code>test_</code> for all keys. No code changes needed when promoting from test to production.</li>
+            <li>Copying <code>/test/index.html</code> to <code>/index.html</code> is the full deployment process.</li>
+            <li>Test and production data are fully isolated in localStorage on the same device.</li>
+            <li>Test and production Firestore data are also isolated — test clubs created at <code>/test/</code> write to Firestore with <code>test_</code>-prefixed sync codes. (Note: sync codes are generated independently, not prefixed — but test users only share codes with other test users.)</li>
+            <li>The version label is rendered dynamically by <code>initApp()</code> into <code>#versionLabel</code>.</li>
+            <li>Service worker (<code>sw.js</code>) uses network-first strategy — new deployments are served immediately without cache busting required.</li>
+            <li>Firebase Firestore security rules are currently open (<code>if true</code>). Tighten before wide public distribution.</li>
+        </ul>
+    </div>
+
+    <div class="footer">Meeting Tools v3.2.2 &nbsp;·&nbsp; Technical Reference &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+</div>
+```
+
+</body>
+</html>
