@@ -528,6 +528,40 @@
 
 <div class="milestone-divider">&#8212;&#8212; Lower Priority &#8212;&#8212;</div>
 
+<!-- Dev/Test/Prod Pipeline -->
+<div class="release">
+    <div class="release-header">
+        <div><div class="version-num">Dev / Test / Prod Pipeline</div><div class="release-date">Discussed Feb 26 session</div></div>
+        <span class="release-tag tag-low">Low</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Goal</div>
+            <p class="note">Formalize a three-stage release pipeline so changes can be validated by beta testers before going live. Currently only two environments exist: <code>test/</code> (developer) and root (prod).</p>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Proposed Structure</div>
+            <ul>
+                <li><strong>dev/</strong> &mdash; active development, breaks allowed, not shared</li>
+                <li><strong>test/</strong> &mdash; feature-complete build shared with beta testers for validation</li>
+                <li><strong>root (prod)</strong> &mdash; confirmed stable, deployed to all members</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">GitHub Actions</div>
+            <ul>
+                <li>Extend existing Deploy workflow with a <strong>dev &rarr; test</strong> promotion step alongside the current test &rarr; prod step</li>
+                <li>Each promotion requires a manual <code>DEPLOY</code> confirmation to prevent accidental pushes</li>
+                <li>Beta testers access <code>kevinpshan.github.io/TMTools/test/</code> directly during the test window</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">localStorage Isolation</div>
+            <p class="note">Each environment needs its own localStorage prefix so dev, test, and prod data never collide. Currently <code>test/</code> uses <code>test_</code> prefix and prod uses <code>prod_</code>. A <code>dev/</code> folder would add a <code>dev_</code> prefix &mdash; one-line change in the URL path detection logic.</p>
+        </div>
+    </div>
+</div>
+
 <!-- Delete Propagation -->
 <div class="release">
     <div class="release-header">
