@@ -1254,10 +1254,18 @@ async function loadCloudReport() {
         const isToday  = wodDate === new Date().toDateString();
         const md       = localStorage.getItem(pk(KEY_MD)) === 'true';
 
-        let out = md ? '# Cloud Meeting Report\n' : 'Cloud Meeting Report\n' + '='.repeat(22) + '\n';
+        const sessions = snap.docs.map(d => d.data());
+        const timerSessions   = sessions.filter(s => s.type === 'timer');
+        const counterSessions = sessions.filter(s => s.type === 'counter');
+
+        let out = '';
+
+        // ── Header ───────────────────────────────────────────────────────
+        out += md ? '# Cloud Meeting Report\n' : 'Cloud Meeting Report\n' + '='.repeat(22) + '\n';
         out += 'Date: ' + new Date().toLocaleDateString() + '\n';
         out += 'Club: ' + (club.name || club.syncKey) + '\n\n';
 
+        // ── Word of the Day ───────────────────────────────────────────────
         if(wod && isToday) {
             out += md
                 ? '## WOD: ' + wod.word.toUpperCase() + '\n> ' + wod.definition + '\n\n'
@@ -1271,25 +1279,60 @@ async function loadCloudReport() {
             return;
         }
 
-        const sessions = snap.docs.map(d => d.data());
-
-        if(md) {
-            out += '| Name | Role | Result | By |\n| :--- | :--- | :--- | :--- |\n';
-            sessions.forEach(s => {
-                const result = s.type === 'timer' ? (s.result || '--') : (s.totalFillers != null ? s.totalFillers + ' fillers' : '--');
-                out += '| ' + (s.speaker||'?') + ' | ' + (s.role||'?') + ' | ' + result + ' | ' + (s.recordedBy||'?') + ' |\n';
-            });
+        // ── Timing Report ─────────────────────────────────────────────────
+        if(timerSessions.length > 0) {
+            if(md) {
+                out += '## \u23f1 Timing Report\n';
+                out += '| Name | Role | Time | By |\n| :--- | :--- | :--- | :--- |\n';
+                timerSessions.forEach(s => {
+                    out += '| ' + (s.speaker||'?') + ' | ' + (s.role||'?') + ' | ' + (s.result||'--') + ' | ' + (s.recordedBy||'?') + ' |\n';
+                });
+                out += '\n';
+            } else {
+                out += '\u23f1 TIMING REPORT\n' + '-'.repeat(60) + '\n';
+                out += 'NAME             | ROLE             | TIME     | BY\n';
+                out += '-'.repeat(16) + '|' + '-'.repeat(18) + '|' + '-'.repeat(10) + '|' + '-'.repeat(16) + '\n';
+                timerSessions.forEach(s => {
+                    out += (s.speaker||'?').padEnd(16) + ' | ' + (s.role||'?').padEnd(16) + ' | ' + (s.result||'--').padEnd(8) + ' | ' + (s.recordedBy||'?') + '\n';
+                });
+                out += '\n';
+            }
         } else {
-            out += 'NAME             | ROLE             | RESULT           | BY\n';
-            out += '-'.repeat(16) + '|' + '-'.repeat(18) + '|' + '-'.repeat(18) + '|' + '-'.repeat(16) + '\n';
-            sessions.forEach(s => {
-                const result = s.type === 'timer' ? (s.result || '--') : (s.totalFillers != null ? s.totalFillers + ' fillers' : '--');
-                out += (s.speaker||'?').padEnd(16) + ' | ' + (s.role||'?').padEnd(16) + ' | ' + result.padEnd(16) + ' | ' + (s.recordedBy||'?') + '\n';
-            });
+            out += (md ? '## \u23f1 Timing Report\n' : '\u23f1 TIMING REPORT\n' + '-'.repeat(60) + '\n');
+            out += 'No timer sessions recorded today.\n\n';
+        }
+
+        // ── Counter Report ────────────────────────────────────────────────
+        if(counterSessions.length > 0) {
+            if(md) {
+                out += '## \u270d Counter Report\n';
+                out += '| Name | Role | Total Fillers | Breakdown | By |\n| :--- | :--- | :--- | :--- | :--- |\n';
+                counterSessions.forEach(s => {
+                    const total = s.totalFillers != null ? s.totalFillers : '--';
+                    const detail = s.fillerDetail
+                        ? Object.entries(s.fillerDetail).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([w,c])=>w+': '+c).join(', ') || 'none'
+                        : '--';
+                    out += '| ' + (s.speaker||'?') + ' | ' + (s.role||'?') + ' | ' + total + ' | ' + detail + ' | ' + (s.recordedBy||'?') + ' |\n';
+                });
+                out += '\n';
+            } else {
+                out += '\u270d COUNTER REPORT\n' + '-'.repeat(60) + '\n';
+                counterSessions.forEach(s => {
+                    const total = s.totalFillers != null ? s.totalFillers : '--';
+                    const detail = s.fillerDetail
+                        ? Object.entries(s.fillerDetail).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([w,c])=>w+': '+c).join(', ') || 'none'
+                        : '--';
+                    out += (s.speaker||'?').padEnd(16) + ' | ' + (s.role||'?').padEnd(16) + ' | ' + String(total).padEnd(6) + ' | ' + detail + '  [' + (s.recordedBy||'?') + ']\n';
+                });
+                out += '\n';
+            }
+        } else {
+            out += (md ? '## \u270d Counter Report\n' : '\u270d COUNTER REPORT\n' + '-'.repeat(60) + '\n');
+            out += 'No counter sessions recorded today.\n\n';
         }
 
         el.innerText = out;
-        if(statusEl) statusEl.innerText = sessions.length + ' session' + (sessions.length !== 1 ? 's' : '') + ' \u00b7 loaded ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        if(statusEl) statusEl.innerText = timerSessions.length + ' timer, ' + counterSessions.length + ' counter \u00b7 loaded ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
     } catch(e) {
         el.innerText = 'Error loading cloud report:\n' + e.message;
