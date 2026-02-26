@@ -1,0 +1,33 @@
+name: Deploy Test to Prod
+
+on:
+workflow_dispatch:
+inputs:
+confirm:
+description: ‘Type DEPLOY to confirm’
+required: true
+
+jobs:
+deploy:
+runs-on: ubuntu-latest
+if: github.event.inputs.confirm == ‘DEPLOY’
+
+```
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Copy test files to prod
+    run: |
+      cp test/index.html index.html
+      cp test/sw.js sw.js
+      cp test/manifest.json manifest.json
+
+  - name: Commit and push
+    run: |
+      git config user.name "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      git add index.html sw.js manifest.json
+      git diff --staged --quiet || git commit -m "Deploy: promote test to prod [skip ci]"
+      git push
+```
