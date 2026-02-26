@@ -292,6 +292,7 @@
         <div id="clubManagerList" style="background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);flex-shrink:0;"></div>
         <button class="add-item-btn" onclick="askAddClub()">+ New Club</button>
         <button class="add-item-btn" onclick="askJoinByCode()" style="border-color:var(--green);color:var(--green);">☁ Join Existing Club by Code</button>
+        <div style="font-size:13px;color:#8E8E93;text-align:center;padding:4px 10px 10px;line-height:1.5;">Use this to add the club to a <strong>new device</strong>. If your club is already listed above, your sync code is intact — no need to rejoin.</div>
     </div>
     <div class="button-row"><button class="footer-btn" onclick="showScreen('settings')">Done</button></div>
 </div>
@@ -596,11 +597,16 @@ async function autoSyncDown() {
             const el = document.getElementById('openaiKey');
             if (el) { el.value = data.apiKey; el.placeholder = 'Shared by club ☁'; }
         }
+        // Record last sync time so Club Manager can show connection status
+        const timeStr = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        localStorage.setItem(prefix+'club_'+activeClubId+'_last_sync', timeStr);
+        setSyncStatus(activeClubId, '✓ Connected · synced at ' + timeStr);
         refreshRoster();
         updateClubUI();
     } catch(e) {
         // Silent fail — offline or unreachable, local data still works
         console.log('Auto-sync skipped:', e.message);
+        setSyncStatus(activeClubId, 'Offline · using local data');
     }
 }
 
@@ -788,7 +794,7 @@ function renderClubManager() {
                     <button class="sync-btn sync-btn-up" onclick="syncUp('${c.id}')">↑ Push to Cloud</button>
                     <button class="sync-btn sync-btn-down" onclick="syncDown('${c.id}')">↓ Pull from Cloud</button>
                 </div>
-                <div class="sync-status" id="syncStatus_${c.id}">Tap Push or Pull to sync</div>
+                <div class="sync-status" id="syncStatus_${c.id}">${(()=>{ const t=localStorage.getItem(prefix+'club_'+c.id+'_last_sync'); return t ? '✓ Connected · last synced at '+t : 'Opening app will auto-sync'; })()}</div>
             `:`
                 <div style="padding:6px 18px 14px;">
                     <button onclick="enableSync('${c.id}')" style="width:100%;background:#E8F5E9;color:var(--green);border:2px solid var(--green);border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;">☁ Enable Cloud Sync</button>
