@@ -86,7 +86,7 @@
         <a href="index.html" class="btn-back">← App</a>
         <div style="text-align:center;">
             <div class="header-title">Manual</div>
-            <div class="header-version">v3.2.2 · Southern Dutchess Toastmasters</div>
+            <div class="header-version">v3.2.3 · Southern Dutchess Toastmasters</div>
         </div>
         <div style="width:40px;"></div>
     </div>
@@ -107,10 +107,11 @@
             <a href="#wod">2. Word of the Day</a>
             <a href="#timer">3. Timer</a>
             <a href="#counter">4. Ah-Counter &amp; Filler Words</a>
-            <a href="#transcription">5. Speech Recording &amp; Transcription</a>
-            <a href="#transcripts">6. Transcripts</a>
-            <a href="#progress">7. Progress Tracking</a>
-            <a href="#settings-member">8. Settings</a>
+            <a href="#report">5. Meeting Report</a>
+            <a href="#transcription">6. Speech Recording &amp; Transcription</a>
+            <a href="#transcripts">7. Transcripts</a>
+            <a href="#progress">8. Progress Tracking</a>
+            <a href="#settings-member">9. Settings</a>
         </div>
 
         <h2 id="firstrun">1. First Time Setup</h2>
@@ -129,7 +130,7 @@
         <ul>
             <li><strong>Random:</strong> Tap <em>Random</em> to pick from a library of over 1,000 sophisticated words.</li>
             <li><strong>Search:</strong> Type any word and tap 🔍 to fetch a custom AI definition and usage sentence.</li>
-            <li><strong>Select:</strong> Tap <em>Select</em> to activate the word. It pins to the top of the Ah-Counter tally grid with a gold <strong>WORD OF DAY</strong> badge and is highlighted in gold during transcription.</li>
+            <li><strong>Select:</strong> Tap <em>Select</em> to activate the word. It pins to the top of the Ah-Counter tally grid with a gold <strong>WORD OF DAY</strong> badge and is highlighted in gold during transcription. The word is also written to Firestore so it appears automatically at the top of the Cloud Meeting Report for any device that opens it today.</li>
         </ul>
         <div class="alert">
             <strong>AI Key Required.</strong> If your club officer has set up cloud sync, the key is shared automatically — you don't need to do anything.
@@ -167,8 +168,30 @@
         <p>During a live tracking session, tap the <strong>+ ADD WORD</strong> card at the end of the tally grid to add a filler word you just heard. The word is immediately counted as 1. A toggle lets you save it permanently to the club list (on by default).</p>
         <h3>Full Name Tip</h3>
         <p>Use full names (First Last) when adding speakers — this ensures accurate tracking when multiple members share a first name.</p>
+        <h3>Filler Scoring (Manual Sessions)</h3>
+        <p>When you tap <strong>SAVE RESULTS</strong>, the app automatically estimates a filler score based on how long the session ran:</p>
+        <ul>
+            <li><strong>15 seconds or longer</strong> — a score card appears showing filler percentage, rate per minute, and an EXCELLENT / GOOD / NEEDS WORK rating. Word count is estimated at 130 words per minute and the result is labeled <em>estimated</em>.</li>
+            <li><strong>Under 15 seconds</strong> — raw counts are saved with no score. This protects against accidental early saves where an estimate would be meaningless.</li>
+        </ul>
+        <p>Scored manual sessions appear in the Progress tracker with the same color-coded percentage as transcribed sessions. The score also writes to Firestore and appears in the Cloud Meeting Report.</p>
 
-        <h2 id="transcription">5. Speech Recording &amp; Transcription</h2>
+        <h2 id="report">5. Meeting Report</h2>
+        <p>Access via Timer → Meeting Report or Ah-Counter → Counter Report.</p>
+        <h3>This Device Tab</h3>
+        <p>Shows all sessions recorded on this device during the current meeting — same Name | Role | Result format as before.</p>
+        <h3>☁ Cloud Tab</h3>
+        <p>Queries Firestore for every session recorded across <em>all</em> club devices today. Results are split into two sections:</p>
+        <ul>
+            <li><strong>⏱ Timing Report</strong> — Name | Role | Time | By</li>
+            <li><strong>✍ Counter Report</strong> — Name | Role | Total Fillers | Breakdown | By</li>
+        </ul>
+        <p>The Word of the Day appears at the top if it was selected today. A <strong>↺ Refresh</strong> button re-queries Firestore while the meeting is still in progress. Copy and Share work on whichever tab is active — useful for the VP-PR assembling the newsletter after the meeting.</p>
+        <div class="alert-blue">
+            <strong>Cloud sync required.</strong> Practice-only clubs will see a message instead of data. If the cloud query fails on first use, Firebase may need a one-time composite index — it will provide a direct link in the browser console.
+        </div>
+
+        <h2 id="transcription">6. Speech Recording &amp; Transcription</h2>
         <p>Record a speaker, transcribe with <strong>OpenAI Whisper</strong>, and automatically detect filler words.</p>
         <ol>
             <li>On the Setup screen in Ah-Counter mode, toggle <strong>Record Speech</strong> on.</li>
@@ -185,7 +208,7 @@
         </ul>
         <p>Filler words appear in <span class="highlight-filler">red</span>. The Word of the Day appears in <span class="highlight-wod">gold</span>.</p>
 
-        <h2 id="transcripts">6. Transcripts</h2>
+        <h2 id="transcripts">7. Transcripts</h2>
         <p>Every transcribed speech is saved for the current meeting so you can share it with the speaker.</p>
         <ul>
             <li><strong>Access:</strong> Ah-Counter menu → Transcripts.</li>
@@ -194,7 +217,7 @@
             <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap Clear Meeting Data in Settings.</li>
         </ul>
 
-        <h2 id="progress">7. Progress Tracking</h2>
+        <h2 id="progress">8. Progress Tracking</h2>
         <p>The Progress screen shows how speakers are improving their filler usage over time across multiple meetings.</p>
         <div class="alert-blue">
             <strong>Cloud sync required.</strong> Progress reads from Firestore session history. The screen will prompt you to enable sync if it isn't active.
@@ -206,7 +229,7 @@
             <li>Each session shows who recorded it and when. Tap <strong>✕</strong> to delete a session that was entered in error.</li>
         </ul>
 
-        <h2 id="settings-member">8. Settings</h2>
+        <h2 id="settings-member">9. Settings</h2>
         <ul>
             <li><strong>Markdown Export</strong> — reports and transcripts use markdown formatting for Slack and email.</li>
             <li><strong>ChatGPT API Key</strong> — pre-filled automatically if your officer set one up via cloud sync.</li>
@@ -298,6 +321,7 @@
             <tr><td>Filler word list</td><td>✓</td><td>✓ (synced)</td></tr>
             <tr><td>API key</td><td>✓</td><td>✓ (synced)</td></tr>
             <tr><td>Session history</td><td>—</td><td>✓ (Progress screen)</td></tr>
+            <tr><td>Word of Day (today)</td><td>✓</td><td>✓ (Cloud Report)</td></tr>
             <tr><td>Meeting logs</td><td>✓</td><td>—</td></tr>
             <tr><td>Transcripts</td><td>✓ (meeting only)</td><td>—</td></tr>
             <tr><td>Practice club data</td><td>✓</td><td>Never</td></tr>
@@ -319,7 +343,7 @@
             <a href="test-plan.html" class="resource-card">
                 <div class="rc-icon">✅</div>
                 <div class="rc-title">Test Plan</div>
-                <div class="rc-desc">60+ test cases across 14 sections. Use before every release to production.</div>
+                <div class="rc-desc">98 test cases across 15 sections. Use before every release to production.</div>
             </a>
             <a href="changelog.html" class="resource-card">
                 <div class="rc-icon">📋</div>
@@ -338,7 +362,7 @@
 </div><!-- end content -->
 
 <div class="page-footer">
-    Meeting Tools v3.2.2 &nbsp;·&nbsp; Southern Dutchess Toastmasters
+    Meeting Tools v3.2.3 &nbsp;·&nbsp; Southern Dutchess Toastmasters
 </div>
 
 <script>

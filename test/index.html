@@ -917,7 +917,7 @@ async function openSpeakerProgress(encodedName) {
             const best=Math.min(...rates).toFixed(1);
             const latest=rates[rates.length-1].toFixed(1);
             let trendText='',trendColor='#8E8E93';
-            if(cs.length>=2){const fh=rates.slice(0,Math.floor(rates.length/2));const sh=rates.slice(Math.floor(rates.length/2));const fa=fh.reduce((a,b)=>a+b,0)/fh.length;const sa=sh.reduce((a,b)=>a+b,0)/sh.length;if(sa<fa-0.5){trendText='↑ Improving';trendColor='var(--green)';}else if(sa>fa+0.5){trendText='↓ Worsening';trendColor='var(--red)';}else{trendText='→ Steady';trendColor='#8E8E93';}}
+            if(cs.length>=2){const oldestRate=rates[0];const newestRate=rates[rates.length-1];if(newestRate<oldestRate-0.5){trendText='↑ Improving';trendColor='var(--green)';}else if(newestRate>oldestRate+0.5){trendText='↓ Worsening';trendColor='var(--red)';}else{trendText='→ Steady';trendColor='#8E8E93';}}
             const lc=parseFloat(latest)<5?'var(--green)':parseFloat(latest)<=10?'#CC8800':'var(--red)';
             summaryHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
                 <div style="text-align:center;"><div style="font-size:11px;font-weight:800;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;">Latest</div><div style="font-size:28px;font-weight:900;color:${lc};">${latest}%</div></div>

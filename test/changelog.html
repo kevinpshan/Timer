@@ -114,6 +114,18 @@
                 <li>Practice-only clubs see a clear message instead of a cloud query</li>
             </ul>
         </div>
+        <div class="change-group">
+            <div class="change-group-label">New &mdash; Manual Filler Scoring</div>
+            <ul>
+                <li>Manual counter sessions (tap-to-count) now produce an estimated filler score on save</li>
+                <li>App records session duration invisibly from the moment the tally screen opens</li>
+                <li>On SAVE RESULTS, estimates word count at 130 wpm and computes filler %, rate per minute, and EXCELLENT / GOOD / NEEDS WORK rating</li>
+                <li>Score card displays in the save modal with green / yellow / red color coding, labeled <em>estimated</em> and footnoted "Word count estimated at 130 wpm"</li>
+                <li>Sessions under 15 seconds skip scoring — protects against accidental early saves</li>
+                <li>Scored sessions write the same Firestore fields as transcription sessions (<code>fillerPct</code>, <code>fillerScore</code>, <code>totalWords</code>, <code>fillersPerMin</code>, <code>durationMins</code>) — Progress tracker trend line and Cloud Report work automatically</li>
+                <li>Older sessions already in the system display as "counted, no score" in the Progress tracker to distinguish them from newly scored sessions</li>
+            </ul>
+        </div>
     </div>
 </div>
 

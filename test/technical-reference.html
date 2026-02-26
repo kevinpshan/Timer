@@ -119,6 +119,8 @@ fillers: string[]
 apiKey: string
 createdAt: timestamp
 lastUpdated: timestamp
+wod: object           ← {word, definition, example} — written by selectWod()
+wodDate: string       ← toDateString() of date WOD was selected
 sessions/
 [auto-id]/
 speaker: string
@@ -132,7 +134,7 @@ elapsedSeconds: number
 // Counter sessions also include:
 fillerDetail: object      ← {fillerWord: count}
 totalFillers: number
-// Transcription sessions also include:
+// Transcription and scored manual sessions (≥15s) also include:
 totalWords: number
 fillerPct: string         ← e.g. “4.2”
 fillerScore: string       ← “EXCELLENT” | “GOOD” | “NEEDS WORK”
@@ -230,6 +232,8 @@ durationMins: string</pre>
             <tr><td><code>speechDuration</code></td><td>number</td><td>Seconds of recorded speech</td></tr>
             <tr><td><code>activeTranscriptIndex</code></td><td>number</td><td>Index of transcript currently open in viewer</td></tr>
             <tr><td><code>sessionFromTranscript</code></td><td>boolean</td><td>Flag set true by mergeTranscriptToCounter() to prevent saveCounterSession() from writing a duplicate session</td></tr>
+            <tr><td><code>counterStartTime</code></td><td>number</td><td>Timestamp (ms) recorded when initTally() runs — used to compute manual session duration for filler scoring</td></tr>
+            <tr><td><code>activeReportTab</code></td><td>string</td><td><code>'local'</code> or <code>'cloud'</code> — tracks which tab is active on the report screen</td></tr>
         </table>
     </div>
 
@@ -245,7 +249,7 @@ durationMins: string</pre>
             <tr><td><code>setup</code></td><td>Speaker name input + roster + record toggle + role grid</td><td><code>renderSetupGrid()</code>, <code>refreshRoster()</code></td></tr>
             <tr><td><code>counterDisplay</code></td><td>Live tally grid during counter session</td><td>—</td></tr>
             <tr><td><code>timerDisplay</code></td><td>Live countdown/countup timer</td><td>—</td></tr>
-            <tr><td><code>report</code></td><td>Formatted log of all sessions this meeting</td><td><code>loadReport()</code></td></tr>
+            <tr><td><code>report</code></td><td>Two-tab report: This Device (local log) and Cloud (all devices today via Firestore)</td><td><code>switchReportTab('local')</code>, <code>loadReport()</code></td></tr>
             <tr><td><code>settings</code></td><td>API key, markdown toggle, backup/restore, clear</td><td>—</td></tr>
             <tr><td><code>clubManager</code></td><td>Manage clubs, sync codes, push/pull</td><td><code>renderClubManager()</code></td></tr>
             <tr><td><code>fillerManager</code></td><td>Add/edit/delete filler words for active club</td><td><code>renderFillerManager()</code></td></tr>
@@ -323,7 +327,7 @@ durationMins: string</pre>
             <tr><td><code>nextWod()</code></td><td>Picks random word from WOD_LIBRARY, calls fetchWordDetails().</td></tr>
             <tr><td><code>searchWod()</code></td><td>Reads manual input, calls fetchWordDetails().</td></tr>
             <tr><td><code>fetchWordDetails(word)</code></td><td>Calls GPT-4o-mini for definition + example JSON. Renders to WOD card.</td></tr>
-            <tr><td><code>selectWod()</code></td><td>Pins active WOD to fillerList, saves to wod_full in localStorage.</td></tr>
+            <tr><td><code>selectWod()</code></td><td>Pins active WOD to fillerList, saves to wod_full in localStorage. Also writes <code>wod</code> and <code>wodDate</code> fields to the Firestore club document for use by Cloud Meeting Report.</td></tr>
         </table>
 
         <h3>Roster</h3>
@@ -353,12 +357,12 @@ durationMins: string</pre>
         <h3>Tally (Counter)</h3>
         <table>
             <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>initTally()</code></td><td>Resets currentTally to zero for all fillers, renders grid.</td></tr>
+            <tr><td><code>initTally()</code></td><td>Resets currentTally to zero for all fillers, records <code>counterStartTime = Date.now()</code> for manual scoring, renders grid.</td></tr>
             <tr><td><code>renderTally()</code></td><td>Builds tally cards, sorts WOD to top.</td></tr>
             <tr><td><code>incTally(f)</code></td><td>Increments a filler count.</td></tr>
             <tr><td><code>decTally(e, f)</code></td><td>Decrements a filler count (min 0).</td></tr>
             <tr><td><code>delFiller(e, f)</code></td><td>Removes filler from current session via modal confirm.</td></tr>
-            <tr><td><code>saveCounterSession()</code></td><td>Saves/merges tally to club logs. Calls writeSession() for cloud history.</td></tr>
+            <tr><td><code>saveCounterSession()</code></td><td>Saves/merges tally to club logs. For sessions ≥15 seconds, estimates word count at 130 wpm and computes fillerPct, fillerScore, fillersPerMin, durationMins — same fields as transcription sessions. Shows score card in modal before dismissing. Calls writeSession() with full stats.</td></tr>
             <tr><td><code>parseTallyString(s)</code></td><td>Deserializes log string back to object.</td></tr>
             <tr><td><code>serializeTally(o)</code></td><td>Serializes tally object to log string.</td></tr>
             <tr><td><code>addFillerOnTheFly()</code></td><td>Opens modal to add a new filler during a live session. Starts count at 1. Toggle saves permanently to club list (default on).</td></tr>
@@ -376,10 +380,12 @@ durationMins: string</pre>
         <h3>Report</h3>
         <table>
             <tr><th>Function</th><th>What it does</th></tr>
-            <tr><td><code>loadReport()</code></td><td>Builds formatted report string from club logs + WOD, renders to reportLog.</td></tr>
-            <tr><td><code>generateReportText()</code></td><td>Returns plain or markdown report string (used by copy + share).</td></tr>
-            <tr><td><code>copyReport()</code></td><td>Copies report to clipboard.</td></tr>
-            <tr><td><code>shareReport()</code></td><td>Uses Web Share API.</td></tr>
+            <tr><td><code>loadReport()</code></td><td>Builds formatted report string from club logs + WOD, renders to reportLog (This Device tab).</td></tr>
+            <tr><td><code>switchReportTab(tab)</code></td><td>Switches between 'local' and 'cloud' report panels. Sets activeReportTab. Calls loadCloudReport() on first cloud switch.</td></tr>
+            <tr><td><code>loadCloudReport()</code></td><td>Async. Queries Firestore for today's sessions across all devices. Fetches club doc for WOD. Renders Timing Report and Counter Report sections separately with full breakdown. Updates status line with count and timestamp.</td></tr>
+            <tr><td><code>generateReportText()</code></td><td>Returns plain or markdown report string. If activeReportTab is 'cloud', returns the rendered cloud panel text directly.</td></tr>
+            <tr><td><code>copyReport()</code></td><td>Copies active tab's report to clipboard.</td></tr>
+            <tr><td><code>shareReport()</code></td><td>Shares active tab's report via Web Share API.</td></tr>
         </table>
 
         <h3>Transcription</h3>
@@ -525,10 +531,11 @@ durationMins: string
             <li>The version label is rendered dynamically by <code>initApp()</code> into <code>#versionLabel</code>.</li>
             <li>Service worker (<code>sw.js</code>) uses network-first strategy — new deployments are served immediately without cache busting required.</li>
             <li>Firebase Firestore security rules are currently open (<code>if true</code>). Tighten before wide public distribution.</li>
+            <li>The Cloud Meeting Report uses a date-range query on <code>createdAt</code> with <code>orderBy</code>. This requires a composite index on the sessions subcollection. Firebase will log a direct link to create it on first use if it doesn't exist.</li>
         </ul>
     </div>
 
-    <div class="footer">Meeting Tools v3.2.2 &nbsp;·&nbsp; Technical Reference &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+    <div class="footer">Meeting Tools v3.2.3 &nbsp;·&nbsp; Technical Reference &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
 </div>
 ```
 

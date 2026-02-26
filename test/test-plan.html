@@ -332,6 +332,13 @@
             <td>WOD without API key<br><ol class="steps"><li>Clear API key in Settings</li><li>Go to WOD screen, tap Random</li></ol></td>
             <td class="expected">Word displays but no definition. Prompt to add API key in Settings.</td>
         </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Select WOD writes to Firestore<br><ol class="steps"><li>Open Firebase Console → club doc</li><li>In app, select a WOD</li><li>Confirm modal</li><li>Refresh console</li></ol></td>
+            <td class="expected">Club document has <code>wod</code> field with word/definition/example and <code>wodDate</code> matching today's date string. Cloud report will use this data.</td>
+        </tr>
     </table>
 </div>
 
@@ -726,14 +733,14 @@
         </tr>
         <tr>
             <td><span class="pass-box"></span></td>
-            <td class="test-id">DM-04</td>
+            <td class="test-id">DM-07</td>
             <td><span class="priority p-high">High</span></td>
             <td>Report copy<br><ol class="steps"><li>Have at least one logged session</li><li>Report screen → Copy</li><li>Paste into a text editor</li></ol></td>
             <td class="expected">Full report text pasted correctly, formatted per markdown toggle state.</td>
         </tr>
         <tr>
             <td><span class="pass-box"></span></td>
-            <td class="test-id">DM-05</td>
+            <td class="test-id">DM-08</td>
             <td><span class="priority p-medium">Medium</span></td>
             <td>Markdown report format<br><ol class="steps"><li>Enable Markdown Export</li><li>Copy report</li></ol></td>
             <td class="expected">Report has markdown table with | Name | Role | Result | header row.</td>
@@ -741,10 +748,135 @@
     </table>
 </div>
 
+<!-- ============ CLOUD REPORT ============ -->
+<div class="section" id="cloud-report">
+    <div class="section-header">
+        <h2>13. Cloud Meeting Report</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Report screen shows two tabs<br><ol class="steps"><li>Timer tab → Meeting Report</li></ol></td>
+            <td class="expected">Report screen shows "This Device" and "☁ Cloud" tabs. "This Device" is active by default. Local report content is visible.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Cloud tab loads today's sessions from all devices<br><ol class="steps"><li>Record at least two sessions on two different devices (or two different browsers) for the same club</li><li>On either device, open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">"Loading from cloud…" briefly appears, then all today's sessions from both devices display in Name | Role | Result | By columns. Status line shows session count and load timestamp.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>WOD appears in cloud report when selected today<br><ol class="steps"><li>Ah-Counter → Word of the Day → select any word</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud report header includes WOD word and definition above the session table.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>WOD does not appear if selected on a different day<br><ol class="steps"><li>In Firebase Console, set <code>wodDate</code> on the club doc to yesterday's date string</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud report loads without a WOD section — only today's date matches.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Refresh button re-queries Firestore<br><ol class="steps"><li>Open Report → ☁ Cloud tab</li><li>On a second device, commit a new session</li><li>Tap ↺ Refresh on first device</li></ol></td>
+            <td class="expected">Cloud report reloads. New session from second device now appears. Status line timestamp updates.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-06</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Copy on Cloud tab copies cloud content<br><ol class="steps"><li>Open Report → ☁ Cloud tab (with data loaded)</li><li>Tap Copy</li><li>Paste into a text editor</li></ol></td>
+            <td class="expected">Pasted text is the cloud report content (not the local report). Includes all sessions from all devices.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Practice-only club shows clear message<br><ol class="steps"><li>Switch to a Practice Only club</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud panel shows "Cloud sync is not enabled for this club. Enable it in Settings > Clubs to use Cloud Report." No Firestore query is attempted.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-08</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Report tab resets to This Device on re-open<br><ol class="steps"><li>Open Report → tap ☁ Cloud tab</li><li>Tap Done → navigate back to Report</li></ol></td>
+            <td class="expected">"This Device" tab is active on re-entry. Local report is shown. Cloud tab does not auto-load.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ MANUAL FILLER SCORING ============ -->
+<div class="section" id="manual-scoring">
+    <div class="section-header">
+        <h2>14. Manual Filler Scoring</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Score card shown after session ≥15 seconds<br><ol class="steps"><li>Start a counter session for any speaker</li><li>Wait 15+ seconds, tap 2–3 fillers</li><li>Tap SAVE RESULTS</li></ol></td>
+            <td class="expected">Modal shows a color-coded score card with filler %, EXCELLENT / GOOD / NEEDS WORK label, duration, and rate. Labeled "Filler Score (estimated)" with "Word count estimated at 130 wpm" footnote. Button reads "Done".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>No score card for sessions under 15 seconds<br><ol class="steps"><li>Start a counter session</li><li>Immediately tap SAVE RESULTS (under 15s)</li></ol></td>
+            <td class="expected">Modal shows plain "Counts saved." text — no score card, no percentage. Raw counts are saved normally.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Score color reflects filler rate<br><ol class="steps"><li>Run a 20-second session with 0 fillers (EXCELLENT expected)</li><li>Run a 30-second session with 3 fillers (rate ~6/min = ~GOOD)</li><li>Run a 20-second session with 10 fillers (NEEDS WORK expected)</li></ol></td>
+            <td class="expected">Card border and text color are green for EXCELLENT (&lt;5%), yellow/amber for GOOD (5–10%), red for NEEDS WORK (&gt;10%).</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Scored session appears in Progress tracker<br><ol class="steps"><li>Complete a scored manual session (MF-01)</li><li>Open Ah-Counter → Progress → tap the speaker</li></ol></td>
+            <td class="expected">Session appears in history with color-coded filler percentage — same display as a transcription session. Not labeled "counted, no score".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Scored session appears in Cloud Report counter section<br><ol class="steps"><li>Complete a scored manual session</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Counter Report section shows the session. Filler breakdown visible.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Unscored sessions labeled "counted, no score" in Progress<br><ol class="steps"><li>View a speaker who has older sessions from before v3.2.3 (no fillerPct field)</li><li>Open their progress history</li></ol></td>
+            <td class="expected">Old sessions display as "X fillers (counted, no score)" — distinct from new sessions which show a percentage. No crashes or blank entries.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Transcription path not affected<br><ol class="steps"><li>Run a full transcription session (Record Speech on)</li><li>Merge to Counter → Save Results</li></ol></td>
+            <td class="expected">Transcription score card shows exact word count and exact percentage (not estimated). No "estimated" label. sessionFromTranscript prevents duplicate writeSession call.</td>
+        </tr>
+    </table>
+</div>
+
 <!-- ============ OFFLINE ============ -->
 <div class="section" id="offline">
     <div class="section-header">
-        <h2>13. Offline &amp; Edge Cases</h2>
+        <h2>15. Offline &amp; Edge Cases</h2>
     </div>
     <table>
         <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
@@ -803,7 +935,7 @@
 <!-- ============ PWA ============ -->
 <div class="section" id="pwa">
     <div class="section-header">
-        <h2>14. PWA</h2>
+        <h2>16. PWA</h2>
     </div>
     <table>
         <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
@@ -845,7 +977,7 @@
     </table>
 </div>
 
-<div class="footer">Meeting Tools v3.2.2 &nbsp;·&nbsp; Test Plan &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+<div class="footer">Meeting Tools v3.2.3 &nbsp;·&nbsp; Test Plan &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
 ```
 
 </div>
