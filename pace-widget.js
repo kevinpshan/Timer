@@ -36,7 +36,7 @@ var API_KEY    = 'AIzaSyC2QfJzXrVg9TmUasmtfLbegSlUGmg5JR4';
 // ── Firestore REST query ────────────────────────────────────────────────
 function firestoreQuery() {
     var url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT_ID +
-              '/databases/(default)/documents:runQuery?key=' + API_KEY;
+              '/databases/(default)/documents/clubs/' + clubCode + ':runQuery?key=' + API_KEY;
     var body = {
         structuredQuery: {
             from: [{ collectionId: 'pace_entries', allDescendants: false }],
@@ -44,12 +44,11 @@ function firestoreQuery() {
                 compositeFilter: {
                     op: 'AND',
                     filters: [
-                        { fieldFilter: { field: { fieldPath: 'date' }, op: 'GREATER_THAN_OR_EQUAL',    value: { stringValue: bounds.start } } },
-                        { fieldFilter: { field: { fieldPath: 'date' }, op: 'LESS_THAN_OR_EQUAL',       value: { stringValue: bounds.end   } } }
+                        { fieldFilter: { field: { fieldPath: 'date' }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: bounds.start } } },
+                        { fieldFilter: { field: { fieldPath: 'date' }, op: 'LESS_THAN_OR_EQUAL',    value: { stringValue: bounds.end   } } }
                     ]
                 }
-            },
-            parent: 'projects/' + PROJECT_ID + '/databases/(default)/documents/clubs/' + clubCode
+            }
         }
     };
     return fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) })
