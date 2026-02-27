@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACE Historical Import — SDTM 2025-26</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #F2F2F7; color: #1C1C1E; }
+  h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .subtitle { color: #007AFF; font-weight: 700; margin-bottom: 30px; }
+  .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid #D1D1D6; }
+  input { width: 100%; box-sizing: border-box; padding: 14px; border: 2px solid #D1D1D6; border-radius: 12px; font-size: 18px; font-family: monospace; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  button { width: 100%; padding: 18px; border-radius: 14px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+  .btn-primary { background: #007AFF; color: white; }
+  .btn-green { background: #34C759; color: white; }
+  .btn-red { background: #FF3B30; color: white; }
+  .btn-secondary { background: #E5E5EA; color: #000; }
+  .btn-disabled { background: #D1D1D6; color: #8E8E93; cursor: not-allowed; }
+  .log { background: #1C1C1E; color: #34C759; border-radius: 12px; padding: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+  .log .err { color: #FF3B30; }
+  .log .info { color: #007AFF; }
+  .log .warn { color: #FFCC00; }
+  .stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #F2F2F7; font-size: 16px; }
+  .stat:last-child { border-bottom: none; }
+  .stat-val { font-weight: 800; color: #007AFF; }
+  .role-list { font-size: 13px; color: #8E8E93; margin-top: 10px; line-height: 1.8; }
+  .warning { background: #FFF9E6; border: 2px solid #FFCC00; border-radius: 12px; padding: 16px; font-size: 15px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<h1>PACE Import</h1>
+<div class="subtitle">Southern Dutchess Toastmasters · 2025–26</div>
+
+<div class="card">
+  <h2 style="margin:0 0 16px;font-size:20px;">Step 1 — Enter your sync code</h2>
+  <input type="text" id="syncCode" placeholder="XXXX-XXXX" maxlength="9" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'')">
+  <button class="btn-primary" onclick="connect()">Connect to Club</button>
+  <div id="connectStatus" style="font-size:14px;color:#8E8E93;text-align:center;"></div>
+</div>
+
+<div id="previewSection" style="display:none;" class="card">
+  <h2 style="margin:0 0 16px;font-size:20px;">Step 2 — Preview import</h2>
+  <div class="stat"><span>Total entries to import</span><span class="stat-val" id="statEntries"></span></div>
+  <div class="stat"><span>Meetings covered</span><span class="stat-val" id="statMeetings"></span></div>
+  <div class="stat"><span>Members</span><span class="stat-val" id="statMembers"></span></div>
+  <div class="stat"><span>Date range</span><span class="stat-val" id="statDates"></span></div>
+  <div class="stat"><span>TM Year</span><span class="stat-val">2025–26</span></div>
+
+  <div class="role-list" id="rolesSummary"></div>
+
+  <div class="warning" style="margin-top:16px;">
+    ⚠ <strong>This will also update your club's PACE role list</strong> to match the point values in this spreadsheet (GE=7, TTM=3, Joke Master=5). This replaces the default values in the app.
+  </div>
+
+<button class="btn-green" id="importBtn" onclick="runImport()">Import All Data</button>
+<button class="btn-secondary" onclick="resetTool()">Cancel</button>
+
+</div>
+
+<div id="progressSection" style="display:none;" class="card">
+  <h2 style="margin:0 0 16px;font-size:20px;">Import progress</h2>
+  <div style="background:#E5E5EA;border-radius:6px;height:12px;margin-bottom:16px;overflow:hidden;">
+    <div id="progressBar" style="height:100%;width:0%;background:#34C759;border-radius:6px;transition:width 0.3s;"></div>
+  </div>
+  <div id="progressLabel" style="text-align:center;font-size:14px;color:#8E8E93;margin-bottom:16px;">Starting...</div>
+  <div class="log" id="logArea"></div>
+</div>
+
+<div id="doneSection" style="display:none;" class="card">
+  <h2 style="margin:0 0 8px;font-size:20px;">✅ Import complete</h2>
+  <p style="color:#8E8E93;margin:0 0 20px;">All entries are now in Firestore. Open the app, pull from cloud, and check the PACE leaderboard.</p>
+  <div id="doneSummary"></div>
+</div>
+
+<script>
+// ─── Firebase config ───────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBRuPUpVJnCbCkVpFLR4JBsoBZUHPkSFhc",
+  authDomain: "toastmaster-timer.firebaseapp.com",
+  projectId: "toastmaster-timer",
+  storageBucket: "toastmaster-timer.appspot.com",
+  messagingSenderId: "633783574501",
+  appId: "1:633783574501:web:60c6e8de8dc63ddfe06ecb"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ─── Import data (parsed from CSV) ────────────────────────────────────────
+const IMPORT_ENTRIES = [
+  {date:"2025-07-07",member:"JANICE D",roles:["TOASTMASTER","JOKE MASTER"],pointsEarned:15},
+  {date:"2025-07-07",member:"JOE M",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-07-07",member:"KAHLIL T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-07-07",member:"KEVIN S",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-07-07",member:"MANNY T",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-07-07",member:"JEREMY G",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-07-07",member:"RUTH R",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-07-21",member:"KEVIN S",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-07-21",member:"RUWAN F",roles:["TOASTMASTER","TABLE TOPICS MASTER"],pointsEarned:13},
+  {date:"2025-07-21",member:"MANNY T",roles:["EVALUATOR","TIMER"],pointsEarned:12},
+  {date:"2025-07-21",member:"MATTHEW T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-07-21",member:"KAHLIL T",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2025-07-21",member:"JANICE D",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-07-21",member:"ROBIN R",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-07-21",member:"MARKLEY W",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-07-21",member:"ULRIC L",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-07-21",member:"DEVAKI K",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-08-04",member:"DEVAKI K",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-08-04",member:"KAHLIL T",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-08-04",member:"MANNY T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-08-04",member:"JANICE D",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-08-04",member:"MARKLEY W",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-08-04",member:"ULRIC L",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-08-18",member:"ULRIC L",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-08-18",member:"JOE M",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-08-18",member:"JEREMY G",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-08-18",member:"MATTHEW T",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2025-08-18",member:"MANNY T",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-08-18",member:"KEVIN S",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-08-18",member:"ROBIN R",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-08-18",member:"JANICE D",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-08-18",member:"WANDA C",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-08-18",member:"KAHLIL T",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-09-08",member:"JOE M",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-09-08",member:"MATTHEW T",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-09-08",member:"ULRIC L",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-09-08",member:"KEVIN S",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-09-08",member:"ROBIN R",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-09-08",member:"RUTH R",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-09-08",member:"JANICE D",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-09-08",member:"WANDA C",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-09-08",member:"KAHLIL T",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-09-15",member:"RUTH R",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-09-15",member:"MANNY T",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-09-15",member:"ROBIN R",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-09-15",member:"ULRIC L",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2025-09-15",member:"JANICE D",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-09-15",member:"KEVIN S",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-09-15",member:"MATTHEW T",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-09-15",member:"DEVAKI K",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-10-06",member:"JANICE D",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-10-06",member:"MATTHEW T",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-10-06",member:"KAHLIL T",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-10-06",member:"ROBIN R",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-10-06",member:"KEVIN S",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-10-06",member:"MARKLEY W",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-10-06",member:"RUTH R",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-10-20",member:"KAHLIL T",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-10-20",member:"JOE M",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2025-10-20",member:"MATTHEW T",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-10-20",member:"JANICE D",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-10-20",member:"ROBIN R",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-10-20",member:"WANDA C",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-10-20",member:"ULRIC L",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-11-03",member:"MANNY T",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-11-03",member:"KEVIN S",roles:["GENERAL EVALUATOR","JOKE MASTER"],pointsEarned:12},
+  {date:"2025-11-03",member:"ULRIC L",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-11-03",member:"JANICE D",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-11-03",member:"WANDA C",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-11-03",member:"MATTHEW T",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-11-03",member:"KAHLIL T",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-11-17",member:"KEVIN S",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-11-17",member:"MATTHEW T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-11-17",member:"WANDA C",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-11-17",member:"JANICE D",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-11-17",member:"JOE M",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-11-17",member:"MARKLEY W",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-11-17",member:"ULRIC L",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2025-11-17",member:"RUTH R",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-12-01",member:"WANDA C",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2025-12-01",member:"MATTHEW T",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-12-01",member:"MANNY T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-12-01",member:"ULRIC L",roles:["GENERAL EVALUATOR","JOKE MASTER"],pointsEarned:12},
+  {date:"2025-12-01",member:"JANICE D",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-12-01",member:"KEVIN S",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-12-01",member:"KAHLIL T",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-12-01",member:"DEVAKI K",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-12-01",member:"JOE M",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2025-12-15",member:"JANICE D",roles:["EVALUATOR","TOASTMASTER"],pointsEarned:20},
+  {date:"2025-12-15",member:"MELISSA W",roles:["TIMER"],pointsEarned:2},
+  {date:"2025-12-15",member:"KAHLIL T",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2025-12-15",member:"KEVIN S",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-12-15",member:"JOE M",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2025-12-15",member:"MATTHEW T",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2025-12-15",member:"RUTH R",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2025-12-15",member:"ULRIC L",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-01-05",member:"KEVIN S",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2026-01-05",member:"DEVAKI K",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2026-01-05",member:"WANDA C",roles:["TIMER"],pointsEarned:2},
+  {date:"2026-01-05",member:"RUTH R",roles:["AH COUNTER"],pointsEarned:2},
+  {date:"2026-01-05",member:"BRUCE M",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2026-01-05",member:"MATTHEW T",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-01-05",member:"KAHLIL T",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+  {date:"2026-01-05",member:"JANICE D",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2026-01-19",member:"ULRIC L",roles:["TOASTMASTER","GENERAL EVALUATOR"],pointsEarned:17},
+  {date:"2026-01-19",member:"MATTHEW T",roles:["TIMER"],pointsEarned:2},
+  {date:"2026-01-19",member:"BRUCE M",roles:["SPEAKER","AH COUNTER"],pointsEarned:17},
+  {date:"2026-01-19",member:"RUTH R",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2026-01-19",member:"KEVIN S",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-01-19",member:"JOE M",roles:["EVALUATOR","JOKE MASTER"],pointsEarned:15},
+  {date:"2026-01-19",member:"MELISSA W",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2026-02-02",member:"DARREN M",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2026-02-02",member:"MELISSA W",roles:["TIMER"],pointsEarned:2},
+  {date:"2026-02-02",member:"JANICE D",roles:["JOKE MASTER","AH COUNTER"],pointsEarned:7},
+  {date:"2026-02-02",member:"KEVIN S",roles:["SPEAKER","TABLE TOPICS MASTER"],pointsEarned:18},
+  {date:"2026-02-02",member:"ULRIC L",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-02-02",member:"WANDA C",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-02-16",member:"JOE M",roles:["TOASTMASTER"],pointsEarned:10},
+  {date:"2026-02-16",member:"KEVIN S",roles:["TIMER"],pointsEarned:2},
+  {date:"2026-02-16",member:"ULRIC L",roles:["EVALUATOR","AH COUNTER"],pointsEarned:12},
+  {date:"2026-02-16",member:"MEKKAT K",roles:["JOKE MASTER"],pointsEarned:5},
+  {date:"2026-02-16",member:"KAHLIL T",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2026-02-16",member:"MATTHEW T",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2026-02-16",member:"MARKLEY W",roles:["SPEAKER"],pointsEarned:15},
+  {date:"2026-02-16",member:"WANDA C",roles:["TABLE TOPICS MASTER"],pointsEarned:3},
+  {date:"2026-02-16",member:"RUTH R",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-02-16",member:"JANICE D",roles:["EVALUATOR"],pointsEarned:10},
+  {date:"2026-02-16",member:"DEVAKI K",roles:["GENERAL EVALUATOR"],pointsEarned:7},
+];
+
+// Updated role list matching your club's actual point values
+const UPDATED_PACE_ROLES = [
+  {name:"SPEAKER",           points:15},
+  {name:"TOASTMASTER",       points:10},
+  {name:"EVALUATOR",         points:10},
+  {name:"GENERAL EVALUATOR", points:7},
+  {name:"JOKE MASTER",       points:5},
+  {name:"TABLE TOPICS MASTER",points:3},
+  {name:"TIMER",             points:2},
+  {name:"AH COUNTER",        points:2},
+];
+
+let syncCode = '';
+let clubRef = null;
+
+function log(msg, type='') {
+  const el = document.getElementById('logArea');
+  const line = document.createElement('div');
+  line.className = type;
+  line.textContent = msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+async function connect() {
+  const code = document.getElementById('syncCode').value.trim().toUpperCase();
+  if (code.length < 9) { alert('Enter your full 8-character sync code (XXXX-XXXX)'); return; }
+  const status = document.getElementById('connectStatus');
+  status.textContent = 'Connecting...';
+  try {
+    const doc = await db.collection('clubs').doc(code).get();
+    if (!doc.exists) { status.textContent = '✗ Club not found — check your sync code'; return; }
+    syncCode = code;
+    clubRef = db.collection('clubs').doc(syncCode);
+    status.textContent = `✓ Connected to: ${doc.data().name}`;
+    showPreview();
+  } catch(e) {
+    status.textContent = `✗ Error: ${e.message}`;
+  }
+}
+
+function showPreview() {
+  const dates = [...new Set(IMPORT_ENTRIES.map(e=>e.date))].sort();
+  const members = [...new Set(IMPORT_ENTRIES.map(e=>e.member))].sort();
+  document.getElementById('statEntries').textContent = IMPORT_ENTRIES.length;
+  document.getElementById('statMeetings').textContent = dates.length;
+  document.getElementById('statMembers').textContent = members.length;
+  document.getElementById('statDates').textContent = `${dates[0]} → ${dates[dates.length-1]}`;
+
+  // Points summary per member
+  const totals = {};
+  IMPORT_ENTRIES.forEach(e => { totals[e.member] = (totals[e.member]||0) + e.pointsEarned; });
+  const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('rolesSummary').innerHTML =
+    '<strong style="font-size:14px;">Projected standings after import:</strong><br>' +
+    sorted.map(([m,p])=>`${m}: ${p} pts`).join(' · ');
+
+  document.getElementById('previewSection').style.display = 'block';
+  document.getElementById('previewSection').scrollIntoView({behavior:'smooth'});
+}
+
+async function runImport() {
+  document.getElementById('importBtn').className = 'btn-disabled';
+  document.getElementById('importBtn').disabled = true;
+  document.getElementById('progressSection').style.display = 'block';
+  document.getElementById('progressSection').scrollIntoView({behavior:'smooth'});
+
+  const total = IMPORT_ENTRIES.length;
+  let done = 0, errors = 0;
+
+  log(`Starting import of ${total} entries...`, 'info');
+  log(`Sync code: ${syncCode}`, 'info');
+  log('');
+
+  // First update the pace roles
+  try {
+    await clubRef.update({ paceRoles: UPDATED_PACE_ROLES });
+    log('✓ Updated club PACE roles to match spreadsheet values', 'info');
+  } catch(e) {
+    log(`⚠ Could not update PACE roles: ${e.message}`, 'warn');
+  }
+
+  const paceRef = clubRef.collection('pace_entries');
+
+  // Process in batches of 10 to avoid rate limits
+  for (let i = 0; i < IMPORT_ENTRIES.length; i++) {
+    const entry = IMPORT_ENTRIES[i];
+    try {
+      await paceRef.add({
+        date: entry.date,
+        member: entry.member,
+        roles: entry.roles,
+        pointsEarned: entry.pointsEarned,
+        tmYear: '2025-26',
+        recordedBy: 'Historical import (Kevin S)',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      done++;
+      const pct = Math.round((done / total) * 100);
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = `${done} of ${total} (${pct}%)`;
+      if (done % 10 === 0 || done === total) {
+        log(`✓ ${done}/${total} — ${entry.member} · ${entry.date}`);
+      }
+    } catch(e) {
+      errors++;
+      log(`✗ FAILED: ${entry.member} ${entry.date} — ${e.message}`, 'err');
+    }
+    // Small delay to avoid hammering Firestore
+    await new Promise(r => setTimeout(r, 50));
+  }
+
+  log('');
+  if (errors === 0) {
+    log(`✓ Import complete! ${done} entries written successfully.`, 'info');
+  } else {
+    log(`Import finished with ${errors} errors. ${done} succeeded.`, 'warn');
+  }
+
+  showDone(done, errors);
+}
+
+function showDone(done, errors) {
+  document.getElementById('doneSection').style.display = 'block';
+  document.getElementById('doneSection').scrollIntoView({behavior:'smooth'});
+  document.getElementById('doneSummary').innerHTML =
+    `<div class="stat"><span>Entries written</span><span class="stat-val">${done}</span></div>
+     <div class="stat"><span>Errors</span><span class="stat-val" style="color:${errors?'#FF3B30':'#34C759'}">${errors}</span></div>
+     <div class="stat"><span>Next step</span><span style="font-size:14px;color:#8E8E93;">Open the app → Settings → Pull from Cloud</span></div>`;
+}
+
+function resetTool() {
+  document.getElementById('previewSection').style.display = 'none';
+  syncCode = '';
+  clubRef = null;
+  document.getElementById('syncCode').value = '';
+  document.getElementById('connectStatus').textContent = '';
+}
+</script>
+
+</body>
+</html>
