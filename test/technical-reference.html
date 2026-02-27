@@ -37,10 +37,9 @@
     <div class="content">
         <a href="manual.html#officers" class="btn-back">← Back to Manual</a>
 
-```
     <div class="card">
         <h1>Technical Reference</h1>
-        <p class="subtitle">Meeting Tools v3.2.2 &nbsp;·&nbsp; Developer contract for <code>index.html</code> &nbsp;·&nbsp; Southern Dutchess Toastmasters</p>
+        <p class="subtitle">Meeting Tools v3.2.4 &nbsp;·&nbsp; Developer contract for <code>index.html</code> &nbsp;·&nbsp; Southern Dutchess Toastmasters</p>
     </div>
 
     <div class="toc">
@@ -65,22 +64,17 @@
         <h3>Multi-Club Data Model (v3.x)</h3>
         <p>As of v3.0.0, all data is scoped to a <strong>club</strong>. Each club has a unique local ID. The active club ID is stored in localStorage. Data keys are prefixed with both the environment prefix and the club ID:</p>
         <pre>prefix + 'club_' + clubId + '_' + dataType
-```
 
 // e.g. prod_club_c1234567890_speakers</pre>
 
-```
         <h3>Environment Detection</h3>
         <pre>const isTest = window.location.pathname.toLowerCase().includes('/test/');
-```
 
 const prefix = isTest ? ‘test_’ : ‘prod_’;</pre>
 <p>This means the same file deployed at <code>/test/index.html</code> and <code>/index.html</code> maintains fully isolated data in the same browser with zero code changes.</p>
 
-```
         <h3>Club Object Schema</h3>
         <pre>{
-```
 
 id: string,          // ‘c’ + Date.now() — unique local ID
 name: string,        // Display name
@@ -89,14 +83,12 @@ practiceOnly: bool   // If true: no cloud sync, no session writes
 }</pre>
 </div>
 
-```
     <!-- FIREBASE -->
     <div class="card" id="firebase">
         <h2>Firebase Integration <span class="new-badge">v3.1</span></h2>
 
         <h3>Configuration</h3>
         <pre>const firebaseConfig = {
-```
 
 apiKey: “AIzaSyC2QfJzXrVg9TmUasmtfLbegSlUGmg5JR4”,
 authDomain: “sdtm-tm-app.firebaseapp.com”,
@@ -107,10 +99,8 @@ appId: “1:429843202069:web:eec66b741bc3fc90934e1c”
 };</pre>
 <p>Uses Firebase compat API v9.23.0 loaded via CDN. No bundler required.</p>
 
-```
         <h3>Firestore Structure</h3>
         <pre>clubs/
-```
 
 [syncKey]/                     ← 8-char code e.g. “ABCD-EF3G”
 name: string
@@ -121,6 +111,7 @@ createdAt: timestamp
 lastUpdated: timestamp
 wod: object           ← {word, definition, example} — written by selectWod()
 wodDate: string       ← toDateString() of date WOD was selected
+paceRoles: object[]   ← [{name, points}] — club’s PACE role list, synced
 sessions/
 [auto-id]/
 speaker: string
@@ -141,7 +132,6 @@ fillerScore: string       ← “EXCELLENT” | “GOOD” | “NEEDS WORK”
 fillersPerMin: string
 durationMins: string</pre>
 
-```
         <h3>Sync Functions</h3>
         <table>
             <tr><th>Function</th><th>Direction</th><th>Trigger</th></tr>
@@ -235,6 +225,20 @@ durationMins: string</pre>
             <tr><td><code>counterStartTime</code></td><td>number</td><td>Timestamp (ms) recorded when initTally() runs — used to compute manual session duration for filler scoring</td></tr>
             <tr><td><code>activeReportTab</code></td><td>string</td><td><code>'local'</code> or <code>'cloud'</code> — tracks which tab is active on the report screen</td></tr>
         </table>
+
+        <h3>PACE State Variables <span class="new-badge">v3.2.4</span></h3>
+        <table>
+            <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+            <tr><td><code>paceRoles</code></td><td>array</td><td>Current club PACE roles — [{name, points}] — loaded from Firestore or PACE_ROLES default</td></tr>
+            <tr><td><code>paceSelectedYear</code></td><td>string</td><td>Currently displayed TM year e.g. "2025-26"</td></tr>
+            <tr><td><code>paceCurrentMember</code></td><td>string</td><td>Member name open in entry or history screen</td></tr>
+            <tr><td><code>paceEntryDateStr</code></td><td>string</td><td>Selected date in entry screen — "YYYY-MM-DD"</td></tr>
+            <tr><td><code>paceEntryCache</code></td><td>object</td><td>Keyed by member name — cached Firestore entries for selected date</td></tr>
+            <tr><td><code>paceMemberSelectedRoles</code></td><td>Set</td><td>Roles toggled on in current member entry screen</td></tr>
+            <tr><td><code>paceHistoryEntries</code></td><td>array</td><td>Entries loaded for member history drill-down</td></tr>
+            <tr><td><code>paceEntryReturnFn</code></td><td>function|null</td><td>Navigation callback — set when entering from history, null from entry screen</td></tr>
+            <tr><td><code>paceSpinnerTimer</code></td><td>timer|null</td><td>Module-level timeout for leaderboard spinner — prevents stale retry loop</td></tr>
+        </table>
     </div>
 
     <!-- SCREENS -->
@@ -258,6 +262,16 @@ durationMins: string</pre>
             <tr><td><code>transcription</code></td><td>Whisper recording, transcript, and filler analysis</td><td><code>initTranscription()</code></td></tr>
             <tr><td><code>transcriptList</code></td><td>List of all saved transcripts this meeting</td><td><code>loadTranscriptList()</code></td></tr>
             <tr><td><code>transcriptView</code></td><td>Single transcript with summary and share</td><td><code>openTranscript(i)</code></td></tr>
+        </table>
+
+        <h3>PACE Screens <span class="new-badge">v3.2.4</span></h3>
+        <table>
+            <tr><th>Screen ID</th><th>Purpose</th></tr>
+            <tr><td><code>pace</code></td><td>PACE leaderboard — ranked list, year selector, Roles and Embed buttons</td></tr>
+            <tr><td><code>paceEntry</code></td><td>Entry roster — date picker, member list with entry status</td></tr>
+            <tr><td><code>paceMemberEntry</code></td><td>Role selection for one member — checkbox grid, live tally, Save/Remove</td></tr>
+            <tr><td><code>paceMemberHistory</code></td><td>Member drill-down — summary card, chronological entry list</td></tr>
+            <tr><td><code>paceRoleManager</code></td><td>Add/edit/delete roles and point values — synced to cloud</td></tr>
         </table>
     </div>
 
@@ -471,7 +485,6 @@ durationMins: string</pre>
 
         <h3>Transcript Object (localStorage)</h3>
         <pre>{
-```
 
 speaker: string,
 role: string,
@@ -487,16 +500,13 @@ fillersPerMin: string,
 durationMins: string
 }</pre>
 
-```
         <h3>Log String Format (localStorage)</h3>
         <pre>"SPEAKER NAME | ROLE LABEL :: RESULT"
-```
 
 // Timer example:   “KEVIN SHAN | SPEECH :: 05:42”
 // Counter example: “KEVIN SHAN | AH COUNTER :: UM: 3, AH: 2”
 // No fillers:      “KEVIN SHAN | GRAMMARIAN :: 0 Fillers”</pre>
 
-```
         <h3>Default Filler List</h3>
         <pre>["AH", "UH", "UM", "ER", "SO", "LIKE", "YOU KNOW", "WORD OF DAY"]</pre>
         <p><code>WORD OF DAY</code> is a placeholder replaced by the active WOD word's uppercase form when a WOD is selected.</p>
@@ -535,9 +545,8 @@ durationMins: string
         </ul>
     </div>
 
-    <div class="footer">Meeting Tools v3.2.3 &nbsp;·&nbsp; Technical Reference &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+    <div class="footer">Meeting Tools v3.2.4 &nbsp;·&nbsp; Technical Reference &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
 </div>
-```
 
 </body>
 </html>

@@ -14,7 +14,7 @@
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; }
 
-```
+
     .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; width: 100%; }
     .btn-back { text-decoration: none; color: var(--accent); font-weight: 700; font-size: 16px; }
@@ -61,7 +61,6 @@
     .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 12px 16px; border-radius: 8px; margin: 0 0 20px; font-size: 14px; color: var(--subtext); }
     .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
 </style>
-```
 
 </head>
 <body>
@@ -91,12 +90,52 @@
 
 <div id="panel-released" class="tab-panel active">
 
-```
+<!-- v3.2.4 -->
+<div class="release">
+    <div class="release-header">
+        <div><div class="version-num">v3.2.4</div><div class="release-date">February 2026 &middot; Production</div></div>
+        <span class="release-tag tag-current">Current</span>
+        <span class="release-tag tag-feature">Feature</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">New &mdash; PACE (Participating and Achieving Competence and Excellence)</div>
+            <ul>
+                <li>Third tab added to main menu: <strong>Club</strong> &mdash; home for club management tools</li>
+                <li>PACE leaderboard: ranked list sorted by points, medal icons for top 3, color-coded progress bars (green &ge;100, gold &ge;50, blue &lt;50), year selector for last 5 TM years</li>
+                <li>Entry screen: date picker, roster list with entry status, green checkmarks on completed members</li>
+                <li>Member entry screen: role checkbox grid, live point tally with breakdown, Save/Remove buttons &mdash; points frozen at entry time</li>
+                <li>Member history drill-down: tap any leaderboard row to see total points, meeting count, progress toward goal, and chronological entry list for the selected year</li>
+                <li>Role Manager: add/edit/delete roles with point values, cloud synced across all club members, past entries unaffected by changes</li>
+                <li>Default roles match published SDTM point values: Speaker 15, Toastmaster 10, Evaluator 10, General Evaluator 7, Joke Master 5, Table Topics Master 3, Timer 2, Ah Counter 2</li>
+                <li>Firestore structure: <code>clubs/{syncCode}/pace_entries</code> with date, member, roles, pointsEarned, tmYear, recordedBy, timestamps</li>
+                <li><code>paceRoles</code> wired into all five sync paths: autoSyncUp, autoSyncDown, syncUp, syncDown, enableSync</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">New &mdash; Embeddable PACE Widget</div>
+            <ul>
+                <li>Standalone <code>pace-widget.js</code> hosted at repo root &mdash; no Firebase SDK required on external sites</li>
+                <li>Two widget types: ranked leaderboard and horizontal bar chart</li>
+                <li>Reads data via Firestore REST API &mdash; one line of HTML to embed, auto-updates each page load</li>
+                <li><strong>Embed &#8599;</strong> button on PACE leaderboard opens modal with ready-to-copy HTML snippets pre-filled with sync code</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Bug Fixes</div>
+            <ul>
+                <li>Remove from PACE history now returns to history screen instead of spinning entry roster</li>
+                <li>PACE leaderboard spinner now has 8-second timeout with Retry button &mdash; module-level timer prevents stale retry loop</li>
+                <li>Back button from entry screen preserves selected TM year on leaderboard</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <!-- v3.2.3 -->
 <div class="release">
     <div class="release-header">
         <div><div class="version-num">v3.2.3</div><div class="release-date">February 2026 &middot; Production</div></div>
-        <span class="release-tag tag-current">Current</span>
         <span class="release-tag tag-feature">Feature</span>
     </div>
     <div class="release-body">
@@ -355,7 +394,6 @@
         </div>
     </div>
 </div>
-```
 
 </div><!-- end panel-released -->
 
@@ -367,7 +405,6 @@
 
 <div id="panel-roadmap" class="tab-panel">
 
-```
 <div class="alert">Items move from this tab to Released when shipped. Last updated: v3.2.3</div>
 
 <div class="milestone-divider">&#8212;&#8212; Medium Priority &#8212;&#8212;</div>
@@ -397,7 +434,6 @@
         <div class="change-group">
             <div class="change-group-label">Firestore Schema</div>
             <pre>clubs/{syncCode}/roles → [
-```
 
 { name: “SPEAKER”,      timerPreset: {g:300,y:360,r:420}, pacePoints: 15, showInTimer: true,  showInCounter: true  },
 { name: “EVALUATOR”,    timerPreset: {g:120,y:150,r:180}, pacePoints: 10, showInTimer: true,  showInCounter: true  },
@@ -419,7 +455,6 @@
 </div>
 </div>
 
-```
 <!-- PACE Race -->
 <div class="release">
     <div class="release-header">
@@ -562,6 +597,49 @@
     </div>
 </div>
 
+<!-- Edit Device Name -->
+<div class="release">
+    <div class="release-header">
+        <div><div class="version-num">Edit Device Name</div><div class="release-date">Discussed Feb 26 session</div></div>
+        <span class="release-tag tag-low">Low</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Problem &amp; Solution</div>
+            <p class="note">Device name is prompted once on first launch and stored in localStorage. There is currently no way to change it after the fact. Add an editable field in Settings so users can correct a name entered incorrectly (e.g. first name only) or update it when a device changes hands. Device name appears in PACE entry audit trail and cloud session &ldquo;recorded by&rdquo; attribution.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Audit Log -->
+<div class="release">
+    <div class="release-header">
+        <div><div class="version-num">Audit Log</div><div class="release-date">Discussed Feb 26 session</div></div>
+        <span class="release-tag tag-low">Low</span>
+    </div>
+    <div class="release-body">
+        <div class="change-group">
+            <div class="change-group-label">Goal</div>
+            <p class="note">A view in Settings showing a chronological log of significant changes made to club data &mdash; who made them, from which device, and when. Gives the administering officer visibility into data changes without requiring formal authentication or role-based access control.</p>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Events to Log</div>
+            <ul>
+                <li>Roster additions and deletions</li>
+                <li>Filler word additions and deletions</li>
+                <li>PACE entry creates, updates, and deletes</li>
+                <li>Role and point value changes</li>
+                <li>Cloud sync pushes (who pushed, what changed)</li>
+                <li>API key updates</li>
+            </ul>
+        </div>
+        <div class="change-group">
+            <div class="change-group-label">Implementation Notes</div>
+            <p class="note">Each log entry stored in a <code>audit_log</code> subcollection on the club Firestore document: <code>clubs/{syncCode}/audit_log</code>. Fields: <code>action</code>, <code>detail</code>, <code>deviceName</code>, <code>timestamp</code>. Display most recent 100 entries. Read-only view &mdash; no editing of the log itself. Accountability without authentication: anyone can see the log but entries are immutable and attributed.</p>
+        </div>
+    </div>
+</div>
+
 <!-- Delete Propagation -->
 <div class="release">
     <div class="release-header">
@@ -603,7 +681,6 @@
         </div>
     </div>
 </div>
-```
 
 </div><!-- end panel-roadmap -->
 

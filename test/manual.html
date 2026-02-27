@@ -14,7 +14,6 @@
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; }
 
-```
     /* HEADER */
     .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; }
@@ -75,18 +74,16 @@
     /* FOOTER */
     .page-footer { text-align: center; padding: 20px; font-size: 13px; opacity: 0.45; border-top: 1px solid var(--border); margin-top: 30px; }
 </style>
-```
 
 </head>
 <body>
 
-```
 <div class="page-header">
     <div class="header-top">
         <a href="index.html" class="btn-back">← App</a>
         <div style="text-align:center;">
             <div class="header-title">Manual</div>
-            <div class="header-version">v3.2.3 · Southern Dutchess Toastmasters</div>
+            <div class="header-version">v3.2.4 · Southern Dutchess Toastmasters</div>
         </div>
         <div style="width:40px;"></div>
     </div>
@@ -111,7 +108,8 @@
             <a href="#transcription">6. Speech Recording &amp; Transcription</a>
             <a href="#transcripts">7. Transcripts</a>
             <a href="#progress">8. Progress Tracking</a>
-            <a href="#settings-member">9. Settings</a>
+            <a href="#pace">9. PACE Participation Tracker</a>
+            <a href="#settings-member">10. Settings</a>
         </div>
 
         <h2 id="firstrun">1. First Time Setup</h2>
@@ -228,6 +226,40 @@
             <li>Only current roster members appear. Deleted members' history is preserved in the cloud but hidden from the list.</li>
             <li>Each session shows who recorded it and when. Tap <strong>✕</strong> to delete a session that was entered in error.</li>
         </ul>
+
+        <h2 id="pace">9. PACE &mdash; Participating and Achieving Competence and Excellence</h2>
+        <p>PACE tracks each member's participation across the Toastmasters year (July 1 – June 30). Every role filled at a meeting earns points toward the 100-point annual goal.</p>
+        <h3>Viewing the Leaderboard</h3>
+        <p>Tap <strong>Club</strong> in the bottom tab bar, then tap <strong>PACE</strong>. The leaderboard shows all members ranked by total points for the current TM year, with color-coded progress bars — green for 100+ points, gold for 50–99, blue for under 50. Tap the <strong>‹</strong> and <strong>›</strong> arrows to view prior years.</p>
+        <h3>Tapping a Member</h3>
+        <p>Tap any member row to see their full history for the selected year — total points, meeting count, progress toward goal, and a chronological list of every entry. Tap any entry to edit or remove it.</p>
+        <h3>Entering Meeting Roles</h3>
+        <ol>
+            <li>Tap <strong>+ New Entry</strong> on the leaderboard.</li>
+            <li>Select the meeting date using the date picker.</li>
+            <li>Tap a member's name to open their role selection screen.</li>
+            <li>Tap the roles they filled — the point tally updates live.</li>
+            <li>Tap <strong>Save</strong>. The entry syncs to the cloud immediately.</li>
+        </ol>
+        <div class="alert-green">
+            <strong>Multiple roles:</strong> Members can hold multiple roles in one meeting. Points from all selected roles are added together and frozen at save time — changing role point values later does not affect past entries.
+        </div>
+        <h3>Default Point Values</h3>
+        <table>
+            <tr><th>Role</th><th>Points</th></tr>
+            <tr><td>Speaker</td><td>15</td></tr>
+            <tr><td>Toastmaster</td><td>10</td></tr>
+            <tr><td>Evaluator</td><td>10</td></tr>
+            <tr><td>General Evaluator</td><td>7</td></tr>
+            <tr><td>Joke Master</td><td>5</td></tr>
+            <tr><td>Table Topics Master</td><td>3</td></tr>
+            <tr><td>Timer</td><td>2</td></tr>
+            <tr><td>Ah Counter</td><td>2</td></tr>
+        </table>
+        <h3>Role Manager</h3>
+        <p>Officers can customize role names and point values via <strong>Roles ⚙</strong> on the leaderboard. Changes sync to all club members. Past entries are not affected by point value changes.</p>
+        <h3>Embedding on Your Club Website</h3>
+        <p>Tap <strong>Embed ↗</strong> on the leaderboard to get ready-to-paste HTML snippets for a ranked leaderboard or bar chart widget. Paste either snippet anywhere on your club website — no setup required, data updates automatically.</p>
 
         <h2 id="settings-member">9. Settings</h2>
         <ul>
@@ -362,7 +394,7 @@
 </div><!-- end content -->
 
 <div class="page-footer">
-    Meeting Tools v3.2.3 &nbsp;·&nbsp; Southern Dutchess Toastmasters
+    Meeting Tools v3.2.4 &nbsp;·&nbsp; Southern Dutchess Toastmasters
 </div>
 
 <script>
@@ -382,7 +414,6 @@
         document.querySelectorAll('.tab')[1].classList.add('active');
     }
 </script>
-```
 
 </body>
 </html>
