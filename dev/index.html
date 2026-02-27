@@ -2113,8 +2113,6 @@ function askDeletePaceRole(index) {
         }
     );
 }
-
-
 /* ---- PACE Embed Modal ---- */
 function showPaceEmbedModal() {
     const club = getActiveClub();
@@ -2124,37 +2122,21 @@ function showPaceEmbedModal() {
     }
     const code = club.syncKey;
     const base = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
-    const s = 'script';
-    const lb = '<' + s + ' src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"></' + s + '>';
-    const ch = '<' + s + ' src="' + base + '?club=' + code + '&type=chart&target=pace-chart"></' + s + '>';
-    const body = document.createElement('div');
-    body.innerHTML = [
-        '<p style="font-size:13px;color:#8E8E93;margin:0 0 16px;">Tap a box to copy the snippet, then paste into your website HTML.</p>',
-        '<div style="margin-bottom:16px;"><div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Ranked List</div>',
-        '<textarea id="pace-emb-lb" readonly style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;"></textarea></div>',
+    // HTML-encode the snippets so <script> displays safely inside a textarea
+    const enc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const lbRaw = '<script src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"><\/script>';
+    const chRaw = '<script src="' + base + '?club=' + code + '&type=chart&target=pace-chart"><\/script>';
+    openModal('Embed PACE Widget',
+        '<div style="margin-bottom:16px;">' +
+        '<div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Ranked List</div>' +
+        '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(lbRaw) + '</textarea></div>' +
 
 ```
-    '<div><div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Bar Chart</div>',
-    '<textarea id="pace-emb-ch" readonly style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;"></textarea></div>'
-].join('');
-// Set values directly to avoid HTML encoding issues
-body.querySelector('#pace-emb-lb').value = lb;
-body.querySelector('#pace-emb-ch').value = ch;
-// Tap to select + copy
-['pace-emb-lb','pace-emb-ch'].forEach(function(id) {
-    body.querySelector('#' + id).addEventListener('focus', function() {
-        this.select();
-        if (navigator.clipboard) navigator.clipboard.writeText(this.value).catch(()=>{});
-    });
-});
-const modal = document.getElementById('customModal');
-document.getElementById('modalTitle').innerText = 'Embed PACE Widget';
-document.getElementById('modalBody').innerHTML = '';
-document.getElementById('modalBody').appendChild(body);
-document.getElementById('modalBtn1').style.display = 'none';
-document.getElementById('modalBtn2').innerText = 'Close';
-document.getElementById('modalBtn2').onclick = () => modal.style.display = 'none';
-modal.style.display = 'flex';
+    '<div><div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Bar Chart</div>' +
+    '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(chRaw) + '</textarea></div>' +
+    '<div style="font-size:12px;color:#8E8E93;margin-top:12px;">Tap a snippet to select it, then copy and paste into your website HTML.</div>',
+    ()=>{}, null, 'Close'
+);
 ```
 
 }
