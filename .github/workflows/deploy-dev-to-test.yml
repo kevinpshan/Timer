@@ -1,0 +1,37 @@
+name: Promote Dev to Test
+
+on:
+workflow_dispatch:
+inputs:
+confirm:
+description: ‘Type DEPLOY to confirm’
+required: true
+
+jobs:
+promote:
+runs-on: ubuntu-latest
+if: github.event.inputs.confirm == ‘DEPLOY’
+
+```
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Copy dev files to test
+    run: |
+      cp dev/index.html test/index.html
+      cp dev/sw.js test/sw.js
+      cp dev/manifest.json test/manifest.json
+      cp dev/manual.html test/manual.html
+      cp dev/changelog.html test/changelog.html
+      cp dev/technical-reference.html test/technical-reference.html
+      cp dev/test-plan.html test/test-plan.html
+
+  - name: Commit and push
+    run: |
+      git config user.name "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      git add test/
+      git diff --staged --quiet || git commit -m "Promote: dev to test [skip ci]"
+      git push
+```
