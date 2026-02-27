@@ -2124,15 +2124,13 @@ function showPaceEmbedModal() {
     }
     const code = club.syncKey;
     const baseUrl = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
-    const leaderboardSnippet =
-`<!-- PACE Leaderboard (Southern Dutchess Toastmasters) -->
-<div id="pace-leaderboard"></div>
-<script src="${baseUrl}?club=${code}&type=leaderboard&target=pace-leaderboard">` + '<' + `/script>`;
+    const leaderboardSnippet = '<!-- PACE Leaderboard (Southern Dutchess Toastmasters) -->\n' +
+        '<div id="pace-leaderboard"></div>\n' +
+        '<script src="' + baseUrl + '?club=' + code + '&type=leaderboard&target=pace-leaderboard"></' + 'script>';
 
-    const chartSnippet =
-`<!-- PACE Bar Chart (Southern Dutchess Toastmasters) -->
-<div id="pace-chart"></div>
-<script src="${baseUrl}?club=${code}&type=chart&target=pace-chart">` + '<' + `/script>`;
+    const chartSnippet = '<!-- PACE Bar Chart (Southern Dutchess Toastmasters) -->\n' +
+        '<div id="pace-chart"></div>\n' +
+        '<script src="' + baseUrl + '?club=' + code + '&type=chart&target=pace-chart"></' + 'script>';
 
     openModal('Embed PACE Widget',
         `<div style="margin-bottom:16px;">
