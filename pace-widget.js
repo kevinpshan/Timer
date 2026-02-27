@@ -51,8 +51,11 @@ function firestoreQuery() {
             }
         }
     };
+    console.log('PACE Widget query URL:', url);
+    console.log('PACE Widget query body:', JSON.stringify(body));
     return fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) })
-        .then(function(r) { return r.json(); });
+        .then(function(r) { return r.json(); })
+        .then(function(data) { console.log('PACE Widget response:', JSON.stringify(data).slice(0,500)); return data; });
 }
 
 // ── Parse Firestore response ────────────────────────────────────────────
