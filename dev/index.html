@@ -2122,22 +2122,22 @@ function showPaceEmbedModal() {
     }
     const code = club.syncKey;
     const base = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
-    // HTML-encode the snippets so <script> displays safely inside a textarea
-    const enc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const lbRaw = '<script src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"><\/script>';
-    const chRaw = '<script src="' + base + '?club=' + code + '&type=chart&target=pace-chart"><\/script>';
+    const enc = function(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+    const lbRaw = '<script src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"><' + '/script>';
+    const chRaw = '<script src="' + base + '?club=' + code + '&type=chart&target=pace-chart"><' + '/script>';
     openModal('Embed PACE Widget',
         '<div style="margin-bottom:16px;">' +
-        '<div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Ranked List</div>' +
-        '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(lbRaw) + '</textarea></div>' +
+        '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">RANKED LIST</div>' +
+        '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(lbRaw) + '</textarea>' +
 
-```
-    '<div><div style="font-size:12px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Bar Chart</div>' +
-    '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(chRaw) + '</textarea></div>' +
+    '</div>' +
+    '<div>' +
+    '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">BAR CHART</div>' +
+    '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(chRaw) + '</textarea>' +
+    '</div>' +
     '<div style="font-size:12px;color:#8E8E93;margin-top:12px;">Tap a snippet to select it, then copy and paste into your website HTML.</div>',
     ()=>{}, null, 'Close'
 );
-```
 
 }
 
