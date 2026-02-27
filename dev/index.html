@@ -396,6 +396,7 @@
         <span class="pace-year-label" id="paceYearLabel">2025-26</span>
         <button class="pace-year-btn" onclick="changePaceYear(-1)">&#8250;</button>
         <button onclick="showScreen('paceRoleManager')" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--accent);cursor:pointer;margin-left:8px;">Roles &#9881;</button>
+        <button onclick="showPaceEmbedModal()" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--accent);cursor:pointer;margin-left:8px;">Embed &#8599;</button>
     </div>
     <div class="container">
         <div id="paceLeaderboardArea" style="background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);flex:1;overflow-y:auto;"></div>
@@ -2114,7 +2115,44 @@ function askDeletePaceRole(index) {
 }
 
 
-</script>
+/* ---- PACE Embed Modal ---- */
+function showPaceEmbedModal() {
+    const club = getActiveClub();
+    if (!club || !club.syncKey) {
+        openModal('Cloud Sync Required', 'Enable cloud sync for this club before generating an embed snippet.', ()=>{});
+        return;
+    }
+    const code = club.syncKey;
+    const baseUrl = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
+    const leaderboardSnippet =
+`<!-- PACE Leaderboard (Southern Dutchess Toastmasters) -->
+<div id="pace-leaderboard"></div>
+<script src="${baseUrl}?club=${code}&type=leaderboard&target=pace-leaderboard"><\/script>`;
 
+    const chartSnippet =
+`<!-- PACE Bar Chart (Southern Dutchess Toastmasters) -->
+<div id="pace-chart"></div>
+<script src="${baseUrl}?club=${code}&type=chart&target=pace-chart"><\/script>`;
+
+    openModal('Embed PACE Widget',
+        `<div style="margin-bottom:16px;">
+            <div style="font-size:13px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Ranked List</div>
+            <textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:90px;font-family:monospace;font-size:11px;padding:10px;border:2px solid var(--border);border-radius:10px;background:#F9F9FB;resize:none;">${leaderboardSnippet}</textarea>
+
+```
+    </div>
+    <div>
+        <div style="font-size:13px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Bar Chart</div>
+        <textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:90px;font-family:monospace;font-size:11px;padding:10px;border:2px solid var(--border);border-radius:10px;background:#F9F9FB;resize:none;">${chartSnippet}</textarea>
+    </div>
+    <div style="font-size:13px;color:#8E8E93;margin-top:14px;line-height:1.5;">Tap a snippet to select it, then copy and paste into your website. Displays the current TM year automatically.</div>`,
+    () => {},
+    null, 'Close'
+);
+```
+
+}
+
+</script>
 </body>
 </html>
