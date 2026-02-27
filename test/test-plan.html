@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Tools — Test Plan</title>
+    <style>
+        :root {
+            --bg: #F2F2F7; --card: #FFFFFF; --accent: #007AFF;
+            --text: #1C1C1E; --subtext: #3A3A3C; --border: #D1D1D6;
+            --gold: #BF941A; --green: #34C759; --red: #FF3B30; --yellow: #FFCC00;
+        }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; padding: 40px 20px; }
+        .content { max-width: 960px; margin: 0 auto; }
+        .header-card { background: var(--card); padding: 30px 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        h1 { font-size: 34px; font-weight: 800; margin: 0 0 4px; }
+        .subtitle { font-size: 15px; color: #8E8E93; }
+        .section { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; }
+        .section-header { padding: 20px 25px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .section-header h2 { margin: 0; font-size: 20px; font-weight: 700; color: var(--accent); }
+        .section-header .count { font-size: 13px; color: #8E8E93; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #F9F9FB; padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--subtext); border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid #F2F2F7; font-size: 14px; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        .test-id { font-family: monospace; font-size: 12px; color: #8E8E93; white-space: nowrap; }
+        .priority { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        .p-critical { background: #FFE0DE; color: #CC0000; }
+        .p-high { background: #FFF3C4; color: #7A5C00; }
+        .p-medium { background: #E8F2FF; color: #004499; }
+        .p-low { background: #F2F2F7; color: #8E8E93; }
+        .pass-box { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; vertical-align: middle; }
+        .steps { margin: 0; padding-left: 18px; }
+        .steps li { margin-bottom: 3px; font-size: 13px; color: var(--subtext); }
+        .expected { font-size: 13px; color: #1a7a1a; font-weight: 600; }
+        .toc { background: var(--card); border-radius: 12px; padding: 18px 22px; border: 1px solid var(--border); margin-bottom: 24px; }
+        .toc a { color: var(--accent); text-decoration: none; font-size: 14px; display: inline-block; margin-right: 14px; margin-bottom: 4px; }
+        .note { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 12px 16px; margin: 12px 16px; border-radius: 8px; font-size: 13px; }
+        .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
+        .btn-back { display: inline-block; text-decoration: none; color: var(--accent); font-weight: 700; margin-bottom: 24px; font-size: 17px; }
+        @media print {
+            body { padding: 10px; background: white; }
+            .content { max-width: 100%; }
+            .pass-box { border: 1px solid #999; }
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <a href="manual.html#officers" class="btn-back">← Back to Manual</a>
+
+```
+<div class="header-card">
+    <h1>Test Plan</h1>
+    <p class="subtitle">Meeting Tools v3.2.2 &nbsp;·&nbsp; Southern Dutchess Toastmasters &nbsp;·&nbsp; Test environment: <code>/test/index.html</code></p>
+</div>
+
+<div class="toc">
+    <strong style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#8E8E93;display:block;margin-bottom:8px;">Test Sections</strong>
+    <a href="#fresh-install">1. Fresh Install</a>
+    <a href="#welcome">2. Welcome Screen</a>
+    <a href="#clubs">3. Club Management</a>
+    <a href="#sync">4. Cloud Sync</a>
+    <a href="#wod">5. Word of the Day</a>
+    <a href="#timer">6. Timer</a>
+    <a href="#counter">7. Ah-Counter</a>
+    <a href="#transcription">8. Transcription</a>
+    <a href="#transcripts">9. Transcripts</a>
+    <a href="#progress">10. Progress</a>
+    <a href="#settings">11. Settings</a>
+    <a href="#data">12. Data Management</a>
+    <a href="#offline">13. Offline / Edge Cases</a>
+    <a href="#pwa">14. PWA</a>
+</div>
+
+<div class="note">
+    <strong>How to use:</strong> Open <code>/test/index.html</code> in a browser. Use an incognito window for fresh-install tests. Check each box as you verify. Priority levels: <span class="priority p-critical">Critical</span> = must pass before any release &nbsp; <span class="priority p-high">High</span> = should pass &nbsp; <span class="priority p-medium">Medium</span> = nice to verify &nbsp; <span class="priority p-low">Low</span> = edge case.
+</div>
+
+<!-- ============ FRESH INSTALL ============ -->
+<div class="section" id="fresh-install">
+    <div class="section-header">
+        <h2>1. Fresh Install</h2>
+        <span class="count">Tests in incognito / cleared storage</span>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">FI-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>
+                Open app in fresh incognito window
+                <ol class="steps"><li>Open new incognito tab</li><li>Navigate to <code>/test/index.html</code></li></ol>
+            </td>
+            <td class="expected">Welcome screen appears with three options: Join Existing Club, Create New Club, Just Exploring</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">FI-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>TEST CLUB seeded in background<br><ol class="steps"><li>From welcome screen tap Just Exploring</li></ol></td>
+            <td class="expected">App opens on main menu showing "TEST CLUB (Practice)" as active club with Timer and Ah-Counter tabs</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">FI-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>TEST CLUB has sample speakers<br><ol class="steps"><li>From menu tap New Timer or Start Tracking</li><li>Check speaker roster</li></ol></td>
+            <td class="expected">Roster shows: JANE DOE, JOHN SMITH, MARY JOHNSON, ROBERT BROWN, SUSAN DAVIS</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">FI-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>No sync option visible for TEST CLUB<br><ol class="steps"><li>Go to Settings → Clubs</li><li>Find TEST CLUB entry</li></ol></td>
+            <td class="expected">TEST CLUB shows "⚗ Practice club — local only, no cloud sync" instead of Enable Cloud Sync button</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">FI-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Second fresh open still shows welcome screen<br><ol class="steps"><li>Close and reopen incognito</li><li>Navigate to app again</li></ol></td>
+            <td class="expected">Welcome screen appears again (incognito cleared storage)</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ WELCOME SCREEN ============ -->
+<div class="section" id="welcome">
+    <div class="section-header">
+        <h2>2. Welcome Screen</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WS-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Create New Club flow<br><ol class="steps"><li>Fresh incognito, tap Create New Club</li><li>Enter "Test Org"</li><li>Leave Practice Only off</li><li>Tap OK</li></ol></td>
+            <td class="expected">App opens on main menu with "Test Org" as active club. No sync enabled yet.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WS-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Create New Club — Practice Only<br><ol class="steps"><li>Fresh incognito, tap Create New Club</li><li>Enter "Practice Org"</li><li>Toggle Practice Only ON</li><li>Tap OK</li></ol></td>
+            <td class="expected">App opens. Settings → Clubs shows "Practice Org" with practice label, no sync button.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WS-03</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Join Existing Club flow<br><ol class="steps"><li>Fresh incognito, tap Join Existing Club</li><li>Enter valid 8-char sync code from your club</li><li>Tap OK</li></ol></td>
+            <td class="expected">App opens with club name, roster populated, filler words populated, API key synced (check Settings)</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WS-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Join with invalid code<br><ol class="steps"><li>Fresh incognito, tap Join Existing Club</li><li>Enter "XXXX-XXXX"</li><li>Tap OK</li></ol></td>
+            <td class="expected">Error modal: "No club found with that code."</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WS-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Create Club with empty name<br><ol class="steps"><li>Tap Create New Club</li><li>Leave name blank</li><li>Tap OK</li></ol></td>
+            <td class="expected">Error modal: "Please enter a club name." Modal stays open.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ CLUB MANAGEMENT ============ -->
+<div class="section" id="clubs">
+    <div class="section-header">
+        <h2>3. Club Management</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Add second club<br><ol class="steps"><li>Settings → Clubs → New Club</li><li>Enter "Second Club"</li><li>Tap OK</li></ol></td>
+            <td class="expected">"Second Club" appears in club list. Can be switched to from club switcher.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Switch active club<br><ol class="steps"><li>Tap club name on main menu</li><li>Select a different club</li></ol></td>
+            <td class="expected">Header updates to new club name. Roster updates to that club's speakers. Auto-sync pulls if sync enabled.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Delete a club<br><ol class="steps"><li>Settings → Clubs</li><li>Tap delete on a non-active club</li><li>Confirm</li></ol></td>
+            <td class="expected">Club removed from list. Its local data cleared.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Rename a club<br><ol class="steps"><li>Settings → Clubs</li><li>Tap rename on a club</li><li>Enter new name</li></ol></td>
+            <td class="expected">Club name updates everywhere — menu header, footer, settings label.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Data isolation between clubs<br><ol class="steps"><li>Switch to Club A, add speaker "ALICE"</li><li>Switch to Club B</li><li>Go to Setup, check roster</li></ol></td>
+            <td class="expected">Club B roster does not contain ALICE. Each club's roster is fully separate.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-06</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Cannot delete active club<br><ol class="steps"><li>Settings → Clubs</li><li>Tap delete (✕) on the currently active club</li></ol></td>
+            <td class="expected">Error modal: "Switch to a different club before deleting this one." Club is not deleted.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CM-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Sync code masked by default<br><ol class="steps"><li>Settings → Clubs</li><li>Check sync code display for a synced club</li><li>Tap 👁 icon</li></ol></td>
+            <td class="expected">Sync code shows as ••••-•••• by default. Tap 👁 reveals full code. Tap again to re-mask.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ CLOUD SYNC ============ -->
+<div class="section" id="sync">
+    <div class="section-header">
+        <h2>4. Cloud Sync</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Enable cloud sync generates code<br><ol class="steps"><li>Settings → Clubs</li><li>Tap Enable Cloud Sync on a non-practice club</li></ol></td>
+            <td class="expected">8-character code appears (format XXXX-XXXX). Sync status shows "Pushed [time]".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Manual Push sends roster and fillers<br><ol class="steps"><li>Club has sync enabled</li><li>Tap Push ↑</li></ol></td>
+            <td class="expected">Status shows "Pushed [time]". Check Firestore console — speakers and fillers arrays updated.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-03</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Manual Push includes API key<br><ol class="steps"><li>Add API key in Settings</li><li>Go to Clubs → Push ↑ on synced club</li><li>Check Firestore console</li></ol></td>
+            <td class="expected">Firestore document has apiKey field populated.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-04</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Manual Pull receives API key<br><ol class="steps"><li>Open incognito, join club by code</li><li>Check Settings → ChatGPT API Key</li></ol></td>
+            <td class="expected">API key field is pre-filled. Placeholder shows "Shared by club ☁".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-05</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Auto-sync on app open<br><ol class="steps"><li>On Device A: add speaker "AUTO SYNC TEST"</li><li>On Device B (or incognito): reload app</li></ol></td>
+            <td class="expected">"AUTO SYNC TEST" appears on Device B's roster without any manual pull.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-06</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Auto-push on speaker add<br><ol class="steps"><li>Add new speaker to synced club</li><li>Immediately check Firestore console</li></ol></td>
+            <td class="expected">Firestore document's speakers array updated within seconds. No manual push needed.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-07</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Practice club never syncs<br><ol class="steps"><li>Add speaker to TEST CLUB</li><li>Check Firestore — no TEST CLUB document should exist or be updated</li></ol></td>
+            <td class="expected">No Firestore activity for practice clubs. App functions normally.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">SY-08</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Auto-sync on club switch<br><ol class="steps"><li>Have two clubs, one synced</li><li>Switch to the synced club</li></ol></td>
+            <td class="expected">Roster and fillers update from cloud automatically on switch. No manual pull needed.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ WORD OF THE DAY ============ -->
+<div class="section" id="wod">
+    <div class="section-header">
+        <h2>5. Word of the Day</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Random WOD with API key<br><ol class="steps"><li>Add valid OpenAI key in Settings</li><li>Ah-Counter tab → Word of the Day</li><li>Tap Random</li></ol></td>
+            <td class="expected">Word displays with AI-generated definition and usage example. "● CHATGPT READY" indicator visible.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Search custom word<br><ol class="steps"><li>Type "Perspicacity" in search field</li><li>Tap 🔍</li></ol></td>
+            <td class="expected">Definition and example shown for "Perspicacity" specifically.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-03</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Select WOD activates in tally<br><ol class="steps"><li>Random or search a word</li><li>Tap Select</li><li>Go to Start Tracking → pick speaker and role</li><li>Tap START</li></ol></td>
+            <td class="expected">Tally grid shows word at top with gold "WORD OF DAY" badge.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>WOD without API key<br><ol class="steps"><li>Clear API key in Settings</li><li>Go to WOD screen, tap Random</li></ol></td>
+            <td class="expected">Word displays but no definition. Prompt to add API key in Settings.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">WD-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Select WOD writes to Firestore<br><ol class="steps"><li>Open Firebase Console → club doc</li><li>In app, select a WOD</li><li>Confirm modal</li><li>Refresh console</li></ol></td>
+            <td class="expected">Club document has <code>wod</code> field with word/definition/example and <code>wodDate</code> matching today's date string. Cloud report will use this data.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ TIMER ============ -->
+<div class="section" id="timer">
+    <div class="section-header">
+        <h2>6. Timer</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Full timer flow — Table Topics<br><ol class="steps"><li>Timer tab → New Timer</li><li>Enter "TEST SPEAKER", select TABLE TOPICS</li><li>Tap START</li><li>Wait through 1:00, 1:30, 2:00</li><li>Tap Commit &amp; Exit</li></ol></td>
+            <td class="expected">Background: green at 1:00, yellow at 1:30, red at 2:00. Time committed to report.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Pause and resume<br><ol class="steps"><li>Start any timer</li><li>At ~15 seconds tap PAUSE</li><li>Wait 5 seconds</li><li>Tap RESUME</li></ol></td>
+            <td class="expected">Timer freezes exactly at pause point. Button label changes to RESUME. Tap again — resumes from exact same elapsed time. Button returns to PAUSE. Background holds color state.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Custom timer thresholds<br><ol class="steps"><li>Setup → select CUSTOM</li><li>Enter Green: 1, Yellow: 2, Red: 3</li><li>Tap OK and START</li></ol></td>
+            <td class="expected">Background changes at exactly 1:00, 2:00, 3:00.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-04</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Result saves to report<br><ol class="steps"><li>Complete a timer with Commit &amp; Exit</li><li>Return to menu → Meeting Report</li></ol></td>
+            <td class="expected">Report shows the speaker name, role, and elapsed time formatted correctly.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-05</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Background resets on exit<br><ol class="steps"><li>Run timer past red threshold</li><li>Tap Commit &amp; Exit</li></ol></td>
+            <td class="expected">Background returns to default grey immediately on exit. Red does not persist to menu.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-06</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Timer session writes to Firestore<br><ol class="steps"><li>With synced club, complete a timer</li><li>Check Firestore sessions subcollection</li></ol></td>
+            <td class="expected">New session document with speaker, role, result, elapsedSeconds, type: "timer".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>No Firestore write for practice club<br><ol class="steps"><li>Switch to TEST CLUB</li><li>Complete a timer</li><li>Check Firestore</li></ol></td>
+            <td class="expected">No new session document in Firestore.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-08</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Validation — no name or role<br><ol class="steps"><li>Setup screen with empty name</li><li>Tap START</li></ol></td>
+            <td class="expected">Error modal: "Enter Name &amp; Role."</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TM-09</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Reset button<br><ol class="steps"><li>Start a timer, let it run to ~30 seconds</li><li>Tap RESET</li></ol></td>
+            <td class="expected">Clock resets to 00:00. Background returns to default. Timer immediately restarts from zero for the same speaker.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ AH-COUNTER ============ -->
+<div class="section" id="counter">
+    <div class="section-header">
+        <h2>7. Ah-Counter</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Full counter flow<br><ol class="steps"><li>Counter tab → Start Tracking</li><li>Select speaker and AH COUNTER role</li><li>Tap START</li><li>Tap AH 3 times, UM 2 times</li><li>Tap SAVE RESULTS</li></ol></td>
+            <td class="expected">Counts register correctly. Save confirmation modal. Session in Counter Report shows "AH: 3, UM: 2".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Decrement does not go below zero<br><ol class="steps"><li>Start a counter session</li><li>Tap − on a filler that is at 0</li></ol></td>
+            <td class="expected">Count stays at 0. No negative values.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Session merge for same speaker<br><ol class="steps"><li>Save a session for "KEVIN SHAN" with UM: 3</li><li>Start a new counter session for "KEVIN SHAN"</li><li>Tap UM 2 times</li><li>Save Results</li></ol></td>
+            <td class="expected">Report shows KEVIN SHAN with UM: 5 (merged, not duplicated).</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>WOD card in tally grid<br><ol class="steps"><li>Select a WOD first</li><li>Start a counter session</li></ol></td>
+            <td class="expected">WOD card appears at top of grid with gold border and "WORD OF DAY" badge.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Delete filler from session<br><ol class="steps"><li>Start counter session</li><li>Tap red ✕ on ER card</li><li>Confirm deletion</li></ol></td>
+            <td class="expected">ER card removed from grid for this session only. Other fillers unaffected.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Full name warning<br><ol class="steps"><li>Setup screen, type "Kevin" (single name)</li><li>Tap Add</li></ol></td>
+            <td class="expected">Warning modal asking to confirm single name or go back to add last name.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-07</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Add filler word on the fly<br><ol class="steps"><li>Start a live counter session</li><li>Tap the + ADD WORD card at the end of the grid</li><li>Enter "BASICALLY", leave "Save to club list" toggled on</li><li>Tap OK</li></ol></td>
+            <td class="expected">BASICALLY card appears in grid with count of 1. Word added to club filler list permanently and auto-pushed to cloud.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-08</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Add filler on the fly — don't save permanently<br><ol class="steps"><li>Start a live counter session</li><li>Tap + ADD WORD</li><li>Enter word, toggle "Save to club list" OFF</li><li>Tap OK</li></ol></td>
+            <td class="expected">Word appears in current session grid at count 1. Not added to club filler list — will not appear in next session.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">AC-09</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Name input clear button<br><ol class="steps"><li>Setup screen</li><li>Type any text in the name field</li><li>Tap the ✕ button inside the field</li></ol></td>
+            <td class="expected">Field clears. Clear button disappears. Full roster list resets.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ TRANSCRIPTION ============ -->
+<div class="section" id="transcription">
+    <div class="section-header">
+        <h2>8. Speech Transcription</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Full transcription flow<br><ol class="steps"><li>Counter tab → Start Tracking</li><li>Toggle Record Speech ON</li><li>Select speaker and role, tap START</li><li>Tap Start Recording, say "Um I think like you know this is a test"</li><li>Tap End Speech</li></ol></td>
+            <td class="expected">Transcript appears with filler words highlighted in red. Score and stats displayed.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Merge to Counter<br><ol class="steps"><li>Complete transcription</li><li>Tap Merge to Counter</li></ol></td>
+            <td class="expected">Navigates to counter display with tally pre-populated from auto-detected fillers.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>WOD highlighted in gold<br><ol class="steps"><li>Select a WOD (e.g. "Tenacious")</li><li>Transcribe a speech that uses the word</li></ol></td>
+            <td class="expected">The WOD appears in gold highlight in the transcript. Other fillers appear in red.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Filler score calculation<br><ol class="steps"><li>Complete a transcription</li><li>Note total words and total fillers</li></ol></td>
+            <td class="expected">Score = fillers/words × 100. Under 5% = Excellent (green), 5–10% = Good (yellow), over 10% = Needs Work (red).</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>No API key — transcription blocked<br><ol class="steps"><li>Clear API key</li><li>Enable Record Speech and try to start</li></ol></td>
+            <td class="expected">Error shown prompting user to add OpenAI key in Settings.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TR-06</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Transcription session writes to Firestore<br><ol class="steps"><li>Merge a transcription to counter and save with a synced club</li><li>Check Firestore</li></ol></td>
+            <td class="expected">Session document contains fillerPct, fillerScore, totalWords, fillersPerMin, durationMins.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ TRANSCRIPTS ============ -->
+<div class="section" id="transcripts">
+    <div class="section-header">
+        <h2>9. Transcripts</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TS-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Transcript saved after merge<br><ol class="steps"><li>Complete a transcription and merge to counter</li><li>Save counter session</li><li>Counter tab → Transcripts</li></ol></td>
+            <td class="expected">Transcript list shows the speaker with date and role.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TS-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Open and view a transcript<br><ol class="steps"><li>Transcripts screen</li><li>Tap a speaker name</li></ol></td>
+            <td class="expected">Full highlighted transcript shows with filler summary, score, and Share button.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TS-03</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Share transcript — plain text<br><ol class="steps"><li>Markdown Export OFF in Settings</li><li>Open a transcript, tap Share</li></ol></td>
+            <td class="expected">Plain text shared with **double asterisks** around filler words.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TS-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Share transcript — markdown<br><ol class="steps"><li>Markdown Export ON in Settings</li><li>Open a transcript, tap Share</li></ol></td>
+            <td class="expected">Markdown formatted text with headers, blockquotes, bold fillers.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">TS-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Transcripts cleared with meeting data<br><ol class="steps"><li>Have at least one saved transcript</li><li>Settings → Clear Meeting Data → confirm</li><li>Counter tab → Transcripts</li></ol></td>
+            <td class="expected">Transcript list is empty.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ PROGRESS ============ -->
+<div class="section" id="progress">
+    <div class="section-header">
+        <h2>10. Progress Tracking</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Progress list loads<br><ol class="steps"><li>Synced club with multiple sessions in Firestore</li><li>Counter tab → Progress</li></ol></td>
+            <td class="expected">List of speakers each showing latest filler rate, trend indicator, and session count.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Speaker detail view<br><ol class="steps"><li>Progress screen</li><li>Tap a speaker with multiple sessions</li></ol></td>
+            <td class="expected">Shows Latest, Average, Best percentages. Session-by-session log with date, role, and stats.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Progress prompts for sync<br><ol class="steps"><li>Practice club active</li><li>Go to Counter tab → Progress</li></ol></td>
+            <td class="expected">Screen shows prompt to enable cloud sync with explanation.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Trend indicator accuracy<br><ol class="steps"><li>Speaker with improving sessions (lower filler % over time)</li><li>Check trend indicator</li></ol></td>
+            <td class="expected">↑ Improving shown in green. ↓ Worsening in red. → Steady in grey.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Progress filters to current roster<br><ol class="steps"><li>Ensure a session exists for a speaker</li><li>Delete that speaker from the roster</li><li>Open Progress screen</li></ol></td>
+            <td class="expected">Deleted speaker no longer appears in Progress list. Their Firestore history is preserved but hidden.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PR-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Manual counter sessions in progress detail<br><ol class="steps"><li>Save a counter session manually (no transcription)</li><li>Open that speaker's detail in Progress</li></ol></td>
+            <td class="expected">Session appears in detail list showing "X fillers (manual)" with per-word breakdown. Not counted in filler % average.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="section" id="settings">
+    <div class="section-header">
+        <h2>11. Settings</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">ST-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>API key persists across reload<br><ol class="steps"><li>Enter API key in Settings</li><li>Reload page</li><li>Return to Settings</li></ol></td>
+            <td class="expected">API key field is still populated.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">ST-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Markdown toggle persists<br><ol class="steps"><li>Toggle Markdown Export ON</li><li>Reload page</li><li>Return to Settings</li></ol></td>
+            <td class="expected">Toggle is still ON after reload.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">ST-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Filler manager — add word<br><ol class="steps"><li>Settings → Filler Words</li><li>Tap Add, enter "BASICALLY"</li><li>Confirm</li></ol></td>
+            <td class="expected">"BASICALLY" appears in filler manager list and in counter tally grid next session.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">ST-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Filler manager — delete word<br><ol class="steps"><li>Settings → Filler Words</li><li>Delete "ER"</li><li>Confirm</li></ol></td>
+            <td class="expected">"ER" gone from list. Auto-push to cloud if sync enabled. Does not appear in next tally session.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">ST-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Filler changes auto-push<br><ol class="steps"><li>Synced club</li><li>Add a new filler word</li><li>Immediately check Firestore</li></ol></td>
+            <td class="expected">Firestore fillers array updated within seconds.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ DATA MANAGEMENT ============ -->
+<div class="section" id="data">
+    <div class="section-header">
+        <h2>12. Data Management</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Export backup<br><ol class="steps"><li>Settings → Backup Data</li></ol></td>
+            <td class="expected">JSON file downloads. Contains speakers, fillers, and apiKey for active club.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Import backup restores data<br><ol class="steps"><li>Export backup</li><li>Clear all data manually in DevTools</li><li>Reload and set up fresh</li><li>Settings → Restore Data, select the file</li></ol></td>
+            <td class="expected">Roster, filler words, and API key all restored. Page reloads automatically.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-03</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Clear Meeting Data<br><ol class="steps"><li>Have logs, transcripts, and WOD set</li><li>Settings → Clear Meeting Data → confirm</li></ol></td>
+            <td class="expected">Logs cleared. WOD cleared. Transcripts cleared. Roster and filler words unchanged.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Stale data banner appears<br><ol class="steps"><li>Commit a session</li><li>Manually set <code>last_session_ts</code> in DevTools to 4 hours ago</li><li>Navigate to menu</li></ol></td>
+            <td class="expected">Yellow banner appears below tabs: "Meeting data from 4h ago still saved. Clear before your next meeting?" with inline Clear button.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Stale banner not shown for recent data<br><ol class="steps"><li>Commit a session</li><li>Return to menu immediately</li></ol></td>
+            <td class="expected">No banner shown — data is less than 3 hours old.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Stale banner Clear button works<br><ol class="steps"><li>Trigger stale banner (see DM-04)</li><li>Tap Clear in the banner</li><li>Confirm</li></ol></td>
+            <td class="expected">Meeting data cleared. Banner disappears. Roster and fillers unchanged.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-07</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Report copy<br><ol class="steps"><li>Have at least one logged session</li><li>Report screen → Copy</li><li>Paste into a text editor</li></ol></td>
+            <td class="expected">Full report text pasted correctly, formatted per markdown toggle state.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">DM-08</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Markdown report format<br><ol class="steps"><li>Enable Markdown Export</li><li>Copy report</li></ol></td>
+            <td class="expected">Report has markdown table with | Name | Role | Result | header row.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ CLOUD REPORT ============ -->
+<div class="section" id="cloud-report">
+    <div class="section-header">
+        <h2>13. Cloud Meeting Report</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Report screen shows two tabs<br><ol class="steps"><li>Timer tab → Meeting Report</li></ol></td>
+            <td class="expected">Report screen shows "This Device" and "☁ Cloud" tabs. "This Device" is active by default. Local report content is visible.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Cloud tab loads today's sessions from all devices<br><ol class="steps"><li>Record at least two sessions on two different devices (or two different browsers) for the same club</li><li>On either device, open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">"Loading from cloud…" briefly appears, then all today's sessions from both devices display in Name | Role | Result | By columns. Status line shows session count and load timestamp.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>WOD appears in cloud report when selected today<br><ol class="steps"><li>Ah-Counter → Word of the Day → select any word</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud report header includes WOD word and definition above the session table.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>WOD does not appear if selected on a different day<br><ol class="steps"><li>In Firebase Console, set <code>wodDate</code> on the club doc to yesterday's date string</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud report loads without a WOD section — only today's date matches.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Refresh button re-queries Firestore<br><ol class="steps"><li>Open Report → ☁ Cloud tab</li><li>On a second device, commit a new session</li><li>Tap ↺ Refresh on first device</li></ol></td>
+            <td class="expected">Cloud report reloads. New session from second device now appears. Status line timestamp updates.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-06</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Copy on Cloud tab copies cloud content<br><ol class="steps"><li>Open Report → ☁ Cloud tab (with data loaded)</li><li>Tap Copy</li><li>Paste into a text editor</li></ol></td>
+            <td class="expected">Pasted text is the cloud report content (not the local report). Includes all sessions from all devices.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Practice-only club shows clear message<br><ol class="steps"><li>Switch to a Practice Only club</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Cloud panel shows "Cloud sync is not enabled for this club. Enable it in Settings > Clubs to use Cloud Report." No Firestore query is attempted.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">CR-08</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Report tab resets to This Device on re-open<br><ol class="steps"><li>Open Report → tap ☁ Cloud tab</li><li>Tap Done → navigate back to Report</li></ol></td>
+            <td class="expected">"This Device" tab is active on re-entry. Local report is shown. Cloud tab does not auto-load.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ MANUAL FILLER SCORING ============ -->
+<div class="section" id="manual-scoring">
+    <div class="section-header">
+        <h2>14. Manual Filler Scoring</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>Score card shown after session ≥15 seconds<br><ol class="steps"><li>Start a counter session for any speaker</li><li>Wait 15+ seconds, tap 2–3 fillers</li><li>Tap SAVE RESULTS</li></ol></td>
+            <td class="expected">Modal shows a color-coded score card with filler %, EXCELLENT / GOOD / NEEDS WORK label, duration, and rate. Labeled "Filler Score (estimated)" with "Word count estimated at 130 wpm" footnote. Button reads "Done".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-02</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>No score card for sessions under 15 seconds<br><ol class="steps"><li>Start a counter session</li><li>Immediately tap SAVE RESULTS (under 15s)</li></ol></td>
+            <td class="expected">Modal shows plain "Counts saved." text — no score card, no percentage. Raw counts are saved normally.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Score color reflects filler rate<br><ol class="steps"><li>Run a 20-second session with 0 fillers (EXCELLENT expected)</li><li>Run a 30-second session with 3 fillers (rate ~6/min = ~GOOD)</li><li>Run a 20-second session with 10 fillers (NEEDS WORK expected)</li></ol></td>
+            <td class="expected">Card border and text color are green for EXCELLENT (&lt;5%), yellow/amber for GOOD (5–10%), red for NEEDS WORK (&gt;10%).</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-04</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Scored session appears in Progress tracker<br><ol class="steps"><li>Complete a scored manual session (MF-01)</li><li>Open Ah-Counter → Progress → tap the speaker</li></ol></td>
+            <td class="expected">Session appears in history with color-coded filler percentage — same display as a transcription session. Not labeled "counted, no score".</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-05</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Scored session appears in Cloud Report counter section<br><ol class="steps"><li>Complete a scored manual session</li><li>Open Report → ☁ Cloud tab</li></ol></td>
+            <td class="expected">Counter Report section shows the session. Filler breakdown visible.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Unscored sessions labeled "counted, no score" in Progress<br><ol class="steps"><li>View a speaker who has older sessions from before v3.2.3 (no fillerPct field)</li><li>Open their progress history</li></ol></td>
+            <td class="expected">Old sessions display as "X fillers (counted, no score)" — distinct from new sessions which show a percentage. No crashes or blank entries.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">MF-07</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Transcription path not affected<br><ol class="steps"><li>Run a full transcription session (Record Speech on)</li><li>Merge to Counter → Save Results</li></ol></td>
+            <td class="expected">Transcription score card shows exact word count and exact percentage (not estimated). No "estimated" label. sessionFromTranscript prevents duplicate writeSession call.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ OFFLINE ============ -->
+<div class="section" id="offline">
+    <div class="section-header">
+        <h2>15. Offline &amp; Edge Cases</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-01</td>
+            <td><span class="priority p-critical">Critical</span></td>
+            <td>App works fully offline<br><ol class="steps"><li>Enable airplane mode or use DevTools offline</li><li>Complete a full timer session</li><li>Complete a full counter session</li></ol></td>
+            <td class="expected">Both sessions complete normally. No errors shown to user. Results save to local logs.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Sync fails silently offline<br><ol class="steps"><li>Enable airplane mode</li><li>Add a speaker to a synced club</li></ol></td>
+            <td class="expected">Speaker added locally. No error modal. Sync failure is silent (console log only).</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Very long speaker name<br><ol class="steps"><li>Add speaker with 50+ character name</li></ol></td>
+            <td class="expected">Name added. UI handles long name gracefully — no overflow breaking layout.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Duplicate speaker name<br><ol class="steps"><li>Add "KEVIN SHAN" to roster</li><li>Try to add "KEVIN SHAN" again</li></ol></td>
+            <td class="expected">Second add is silently ignored. No duplicate in roster.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Test/prod data isolation<br><ol class="steps"><li>Add speaker "TEST ONLY" in /test/ version</li><li>Open root / version in same browser</li></ol></td>
+            <td class="expected">"TEST ONLY" does not appear in prod roster. Keys are fully isolated by prefix.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-06</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Empty report<br><ol class="steps"><li>Clear Meeting Data</li><li>Open Meeting Report</li></ol></td>
+            <td class="expected">Report shows "No data recorded." — no errors or blank screen.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">OE-07</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Back navigation from all screens<br><ol class="steps"><li>Navigate to each screen</li><li>Use Back or Cancel buttons</li></ol></td>
+            <td class="expected">Every screen has a valid back path. No dead ends. Timer screen stops interval on exit.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============ PWA ============ -->
+<div class="section" id="pwa">
+    <div class="section-header">
+        <h2>16. PWA</h2>
+    </div>
+    <table>
+        <tr><th width="30">✓</th><th width="80">ID</th><th width="100">Priority</th><th>Test Description</th><th>Expected Result</th></tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PW-01</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Install to home screen (iOS)<br><ol class="steps"><li>Open in Safari</li><li>Share → Add to Home Screen</li><li>Launch from home screen icon</li></ol></td>
+            <td class="expected">App opens fullscreen, no Safari chrome. Timer icon appears on home screen.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PW-02</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>No horizontal scroll<br><ol class="steps"><li>Open on phone</li><li>Check all screens</li></ol></td>
+            <td class="expected">No horizontal scrolling on any screen. All content fits within viewport.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PW-03</td>
+            <td><span class="priority p-high">High</span></td>
+            <td>Safe area insets respected<br><ol class="steps"><li>Open on iPhone with notch or Dynamic Island</li><li>Check header and bottom buttons</li></ol></td>
+            <td class="expected">Content not obscured by notch or home indicator. Bottom buttons have safe area padding.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PW-04</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>Version label displays correctly<br><ol class="steps"><li>Check bottom of main menu</li></ol></td>
+            <td class="expected">Shows "Version 3.2.2 (TEST)" at /test/ or "Version 3.2.2" at root.</td>
+        </tr>
+        <tr>
+            <td><span class="pass-box"></span></td>
+            <td class="test-id">PW-05</td>
+            <td><span class="priority p-medium">Medium</span></td>
+            <td>New deploy loads fresh<br><ol class="steps"><li>Deploy a new version</li><li>Hard refresh in existing tab</li></ol></td>
+            <td class="expected">New version loads. Service worker network-first strategy serves fresh file.</td>
+        </tr>
+    </table>
+</div>
+
+<div class="footer">Meeting Tools v3.2.3 &nbsp;·&nbsp; Test Plan &nbsp;·&nbsp; Southern Dutchess Toastmasters</div>
+```
+
+</div>
+</body>
+</html>
