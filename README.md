@@ -2,7 +2,7 @@
 
 ### A PWA for Toastmasters Clubs · Southern Dutchess Toastmasters
 
-Meeting Tools is a Progressive Web App built to run the working roles at a Toastmasters meeting — Timer, Ah-Counter, and Grammarian — from a phone or tablet without installing anything from an app store. It started as a single-file HTML tool and has grown into a full multi-club, cloud-synced platform with AI-powered speech analysis.
+Meeting Tools is a Progressive Web App built to run the working roles at a Toastmasters meeting — Timer, Ah-Counter, and Club Tools — from a phone or tablet without installing anything from an app store. It started as a single-file HTML tool and has grown into a full multi-club, cloud-synced platform with AI-powered speech analysis and participation tracking.
 
 **Live app:** [kevinpshan.github.io/TMTools](https://kevinpshan.github.io/TMTools)
 
@@ -34,13 +34,19 @@ Two-tab report screen. **This Device** shows sessions recorded locally in the st
 
 Per-speaker filler rate history stored in Firestore across meetings. Each speaker shows their latest rate, trend indicator (↑ improving / ↓ worsening / → steady), and session count. Tap any speaker for the full session log with dates, scores, and who recorded each session. Individual sessions can be deleted if entered in error.
 
+### PACE Participation Tracker
+
+Club participation tracking system aligned to the Toastmasters year (July 1 – June 30). Members earn points for each role they fill at a meeting. The leaderboard shows ranked standings with progress bars toward the 100-point annual goal, color-coded by achievement level. Officers enter meeting roles after each meeting; the data syncs to all club devices via Firestore.
+
+Key features: role-based point accumulation with configurable values, member history drill-down, 5-year archive, Role Manager for customizing point values, and embeddable widgets for your club website (ranked list and bar chart, one line of HTML to embed).
+
 -----
 
 ## Multi-Club Cloud Sync
 
-Clubs are identified by an 8-character sync code (format: `XXXX-XXXX`). The officer generates the code once — it creates a Firestore document that stores the club’s roster, filler words, and shared AI key. Members join by entering the code on first launch; roster and settings download automatically. From that point forward the app auto-syncs on every open.
+Clubs are identified by an 8-character sync code (format: `XXXX-XXXX`). The officer generates the code once — it creates a Firestore document that stores the club’s roster, filler words, AI key, and PACE roles. Members join by entering the code on first launch; roster and settings download automatically. From that point forward the app auto-syncs on every open.
 
-Multiple clubs can be managed on a single device. All data is scoped per club — logs, speakers, fillers, API key, custom timer thresholds. A built-in **TEST CLUB** is always available for demos; it never writes to Firestore.
+Multiple clubs can be managed on a single device. All data is scoped per club — logs, speakers, fillers, API key, custom timer thresholds, PACE roles. A built-in **TEST CLUB** is always available for demos; it never writes to Firestore.
 
 -----
 
@@ -67,16 +73,16 @@ On iOS: open the app in Safari, tap **Share → Add to Home Screen**. On Android
 
 ## Repository Structure
 
-```
 index.html              Main app (entire codebase)
 sw.js                   Service worker — cache versioning and offline support
 manifest.json           PWA manifest — icons, theme, display mode
+pace-widget.js          Embeddable PACE leaderboard/chart widget for external websites
 manual.html             User manual (Members + Officers & Devs tabs)
 changelog.html          Release history and roadmap (Released | Roadmap tabs)
 technical-reference.html  Architecture, Firestore schema, function reference
-test-plan.html          98 test cases across 15 sections
-test/                   Parallel test environment (isolated localStorage prefix)
-```
+test-plan.html          Test cases across 15+ sections
+dev/                    Active development environment (dev_ localStorage prefix)
+test/                   Beta validation environment (test_ localStorage prefix)
 
 -----
 
@@ -91,6 +97,7 @@ Meeting Tools was originally built in collaboration with **Google Gemini**, reac
 |Claude|v3.0        |Multi-club architecture, Filler Word Manager                                  |
 |Claude|v3.1        |Firebase cloud sync, Progress screen, welcome flow, documentation suite       |
 |Claude|v3.2        |Cloud Meeting Report, manual filler scoring, stale data warning, sync UX fixes|
+|Claude|v3.2.4      |PACE participation tracker, Club tab, Role Manager, embeddable widgets        |
 
 -----
 
@@ -98,7 +105,7 @@ Meeting Tools was originally built in collaboration with **Google Gemini**, reac
 
 The app requires an **OpenAI API key** for Word of the Day definitions and Whisper transcription. Officers enter the key once in Settings — it is shared automatically to all club members via Firestore on their next sync.
 
-For clubs using cloud sync, a **Firebase project** with Firestore enabled is required. The Firebase config is embedded directly in `index.html`. The Progress screen’s date-range query requires a composite index on the `sessions` subcollection — Firebase provides a direct console link the first time the query runs.
+For clubs using cloud sync, a **Firebase project** with Firestore enabled is required. The Firebase config is embedded directly in `index.html`. The PACE tracker requires a composite index on the `pace_entries` subcollection — Firebase provides a direct console link the first time the query runs.
 
 -----
 
@@ -108,9 +115,9 @@ Full documentation is included in the repo and linked from the app footer.
 
 - **[Manual](manual.html)** — member onboarding, feature walkthroughs, officer setup guide, API key instructions
 - **[Technical Reference](technical-reference.html)** — Firestore schema, global state variables, full function reference, deployment notes
-- **[Test Plan](test-plan.html)** — 98 test cases covering Timer, Ah-Counter, transcription, WOD, cloud sync, Progress, reports, PWA behavior, and more
+- **[Test Plan](test-plan.html)** — test cases covering Timer, Ah-Counter, transcription, WOD, cloud sync, Progress, PACE, reports, PWA behavior, and more
 - **[Changelog & Roadmap](changelog.html)** — full release history back to v1.0, plus the prioritized feature backlog
 
 -----
 
-*Version 3.2.3 · Southern Dutchess Toastmasters*
+*Version 3.2.4 · Southern Dutchess Toastmasters*
