@@ -2123,8 +2123,8 @@ function showPaceEmbedModal() {
     const code = club.syncKey;
     const base = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
     const enc = function(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
-    const lbRaw = '<script src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"><' + '/script>';
-    const chRaw = '<script src="' + base + '?club=' + code + '&type=chart&target=pace-chart"><' + '/script>';
+    const lbRaw = '<div id="pace-lb"></div>\n<script src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"><' + '/script>';
+    const chRaw = '<div id="pace-chart"></div>\n<script src="' + base + '?club=' + code + '&type=chart&target=pace-chart"><' + '/script>';
     openModal('Embed PACE Widget',
         '<div style="margin-bottom:16px;">' +
         '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">RANKED LIST</div>' +
