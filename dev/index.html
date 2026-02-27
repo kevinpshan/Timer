@@ -1829,6 +1829,14 @@ function openPaceMemberEntry(name) {
     const existing = paceEntryCache[name];
     if (existing) existing.roles.forEach(r => paceMemberSelectedRoles.add(r));
     document.getElementById('paceMemberName').innerText = name;
+    paceEntryReturnFn = null; // coming from entry screen, not history — reset buttons to defaults
+    // Restore default button handlers in case they were patched from history context
+    const cancelBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn.secondary-btn');
+    if (cancelBtn) { cancelBtn.onclick = () => showScreen('paceEntry'); }
+    const removeBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn:nth-child(2)');
+    if (removeBtn) { removeBtn.onclick = deletePaceEntry; }
+    const saveBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn:last-child');
+    if (saveBtn) { saveBtn.onclick = savePaceMemberEntry; }
     renderPaceRoleGrid();
     showScreen('paceMemberEntry');
 }
@@ -1910,14 +1918,20 @@ async function savePaceMemberEntry() {
 
 async function deletePaceEntry() {
     const existing = paceEntryCache[paceCurrentMember];
-    if (!existing) { showScreen('paceEntry'); return; }
+    const returnFn = paceEntryReturnFn;
+    if (!existing) {
+        if (returnFn) await returnFn();
+        else { showScreen('paceEntry'); await loadPaceEntryRoster(); }
+        return;
+    }
     const club = getActiveClub();
-    openModal('Remove Entry?',`Remove all roles for ${paceCurrentMember} on ${paceEntryDateStr}?`, async ()=>{
+    const dateLabel = new Date(paceEntryDateStr+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+    openModal('Remove Entry?',`Remove all roles for ${paceCurrentMember} on ${dateLabel}?`, async ()=>{
         try {
             await db.collection('clubs').doc(club.syncKey).collection('pace_entries').doc(existing.entryId).delete();
             delete paceEntryCache[paceCurrentMember];
-            showScreen('paceEntry');
-            await loadPaceEntryRoster();
+            if (returnFn) await returnFn();
+            else { showScreen('paceEntry'); await loadPaceEntryRoster(); }
         } catch(e) { openModal('Error',e.message,()=>{}); }
     });
 }
@@ -1925,6 +1939,7 @@ async function deletePaceEntry() {
 
 /* ---- PACE Member History (drill-down from leaderboard) ---- */
 let paceHistoryEntries = []; // [{docId, date, roles, pointsEarned, recordedBy}]
+let paceEntryReturnFn = null; // set when entering from history, null when from entry screen
 
 async function openPaceMemberHistory(name) {
     paceCurrentMember = name;
@@ -1986,15 +2001,18 @@ function openPaceMemberEntryFromHistory(index) {
     // Pre-populate cache so savePaceMemberEntry knows to update not insert
     paceEntryCache[paceCurrentMember] = {entryId: entry.docId, roles: entry.roles, points: entry.pointsEarned};
     document.getElementById('paceMemberName').innerText = paceCurrentMember;
-    // Override back button for this context to return to history
+    // Set return context so Cancel, Save, and Remove all come back to history
+    const returnToHistory = () => openPaceMemberHistory(paceCurrentMember);
+    paceEntryReturnFn = returnToHistory;
     renderPaceRoleGrid();
-    // Show screen then patch back button to go to history
+    // Show screen
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById('paceMemberEntry').classList.add('active');
-    // Patch cancel button to return to history
+    // Patch all three action buttons to return to history
     const cancelBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn.secondary-btn');
-    if (cancelBtn) { cancelBtn.onclick = () => openPaceMemberHistory(paceCurrentMember); }
-    // Patch save to return to history
+    if (cancelBtn) { cancelBtn.onclick = returnToHistory; }
+    const removeBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn:nth-child(2)');
+    if (removeBtn) { removeBtn.onclick = deletePaceEntry; }
     const saveBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn:last-child');
     if (saveBtn) {
         saveBtn.onclick = async () => {
