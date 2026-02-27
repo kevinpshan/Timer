@@ -177,6 +177,7 @@
     <div class="tab-container">
         <div id="tabTimer" class="tab active" onclick="switchMode('timer')">Timer</div>
         <div id="tabCounter" class="tab" onclick="switchMode('counter')">Ah-Counter</div>
+        <div id="tabClub" class="tab" onclick="switchMode('club')">Club</div>
     </div>
     <div id="staleDataBanner" style="display:none;margin:0 20px 10px;background:#FFF9E6;border:2px solid var(--gold);border-radius:14px;padding:14px 16px;display:none;flex-direction:row;justify-content:space-between;align-items:center;gap:12px;">
         <div style="font-size:14px;font-weight:700;color:var(--gold);flex:1;" id="staleDataMsg">⚠ Old meeting data detected.</div>
@@ -191,8 +192,10 @@
         <div class="main-menu-card" onclick="showScreen('setup')"><div class="card-content"><h3>Start Tracking</h3><p>Count filler words</p></div><div class="icon">✍</div></div>
         <div class="main-menu-card" onclick="showScreen('transcriptList')"><div class="card-content"><h3>Transcripts</h3><p>Share with speakers</p></div><div class="icon">📋</div></div>
         <div class="main-menu-card" onclick="showScreen('progress')"><div class="card-content"><h3>Progress</h3><p>Speaker improvement over time</p></div><div class="icon">📈</div></div>
-        <div class="main-menu-card" onclick="showScreen('pace')"><div class="card-content"><h3 style="color:var(--green);">PACE</h3><p>Club participation tracker</p></div><div class="icon" style="color:var(--green);">🏆</div></div>
         <div class="main-menu-card" onclick="showScreen('report')"><div class="card-content"><h3>Counter Report</h3><p>View totals</p></div><div class="icon">📊</div></div>
+    </div>
+    <div id="clubMode" class="container" style="display:none;flex:1;min-height:0;overflow-y:auto;">
+        <div class="main-menu-card" onclick="showScreen('pace')"><div class="card-content"><h3 style="color:var(--green);">PACE</h3><p>Club participation tracker</p></div><div class="icon" style="color:var(--green);">🏆</div></div>
     </div>
     <div class="credit-footer">
         <div class="resource-row"><a href="https://bit.ly/m/SDTM" target="_blank" class="res-btn">Website ↗</a><a href="manual.html" class="res-btn">Manual ↗</a></div>
@@ -430,6 +433,17 @@
         <button class="footer-btn" style="background:#FFE5E3;color:var(--red);flex:0.6;" onclick="deletePaceEntry()">Remove</button>
         <button class="footer-btn" style="background:var(--green);" onclick="savePaceMemberEntry()">Save</button>
     </div>
+</div>
+
+<!-- PACE MEMBER HISTORY -->
+
+<div id="paceMemberHistory" class="screen">
+    <div class="header"><h1 id="paceHistoryName">Member</h1><div class="subtitle" id="paceHistoryMeta">Year history</div></div>
+    <div class="container">
+        <div id="paceHistorySummary" style="background:var(--card);border-radius:16px;border:1px solid var(--border);padding:18px;flex-shrink:0;text-align:center;"></div>
+        <div id="paceHistoryList" style="background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);flex:1;overflow-y:auto;"></div>
+    </div>
+    <div class="button-row"><button class="footer-btn secondary-btn" onclick="showScreen('pace')">Back</button></div>
 </div>
 
 <!-- WELCOME SCREEN -->
@@ -1345,7 +1359,7 @@ function openModal(t,b,c,cancelLabel,confirmLabel){
     document.getElementById('modalConfirm').onclick=()=>{c();document.getElementById('customModal').style.display='none';};
     document.getElementById('modalCancel').onclick=()=>{document.getElementById('customModal').style.display='none';};
 }function askCustomTime(el){const saved=JSON.parse(localStorage.getItem(clubKey('custom_limits'))||'{"g":5,"cy":6,"r":7}');const title=currentMode==='timer'?"Thresholds":"Enter Custom Role";const body=currentMode==='timer'?`<label>Green (Min):</label><input type="number" id="cg" value="${saved.g}"><label>Yellow (Target):</label><input type="number" id="cy" value="${saved.cy}"><label>Red (Max):</label><input type="number" id="cr" value="${saved.r}">`:`<label>Role Name:</label><input type="text" id="customRole" placeholder="e.g. JOKE MASTER" style="text-transform:uppercase">`;openModal(title,body,()=>{if(currentMode==='timer'){const g=document.getElementById('cg').value,y=document.getElementById('cy').value,r=document.getElementById('cr').value;lims={g:g*60,y:y*60,r:r*60};localStorage.setItem(clubKey('custom_limits'),JSON.stringify({g,cy:y,r}));document.getElementById('customLabel').innerText=`${g}-${r}m`;selectedTypeLabel='CUSTOM';}else{selectedTypeLabel=document.getElementById('customRole').value.toUpperCase();document.getElementById('customLabel').innerText=selectedTypeLabel;}document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');});}
-function switchMode(m){currentMode=m;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(m==='timer'?'tabTimer':'tabCounter').classList.add('active');document.getElementById('modeTitle').innerText=m==='timer'?'Meeting Timer':'Ah-Counter';document.getElementById('timerMode').style.display=m==='timer'?'flex':'none';document.getElementById('counterMode').style.display=m==='counter'?'flex':'none';}
+function switchMode(m){currentMode=m;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));const tabId=m==='timer'?'tabTimer':m==='counter'?'tabCounter':'tabClub';document.getElementById(tabId).classList.add('active');const titles={'timer':'Meeting Timer','counter':'Ah-Counter','club':'Club Tools'};document.getElementById('modeTitle').innerText=titles[m]||'Meeting Timer';document.getElementById('timerMode').style.display=m==='timer'?'flex':'none';document.getElementById('counterMode').style.display=m==='counter'?'flex':'none';document.getElementById('clubMode').style.display=m==='club'?'flex':'none';}
 
 /* ============ START HANDLER ============ */
 function handleStart(){
@@ -1705,7 +1719,7 @@ async function loadPaceLeaderboard() {
             const over = data.points > goal;
             const color = data.points >= goal ? 'var(--green)' : data.points >= 50 ? 'var(--gold)' : 'var(--accent)';
             const medal = i===0 ? '🥇' : i===1 ? '🥈' : i===2 ? '🥉' : `<span style="font-size:14px;color:#8E8E93;font-weight:700;min-width:20px;display:inline-block;">${i+1}</span>`;
-            return `<div class="pace-leader-row">
+            return `<div class="pace-leader-row" onclick="openPaceMemberHistory('${name}')">
                 <div class="pace-rank">${medal}</div>
                 <div style="flex:1;min-width:0;">
                     <div class="pace-leader-name">${name}</div>
@@ -1885,6 +1899,88 @@ async function deletePaceEntry() {
             await loadPaceEntryRoster();
         } catch(e) { openModal('Error',e.message,()=>{}); }
     });
+}
+
+
+/* ---- PACE Member History (drill-down from leaderboard) ---- */
+let paceHistoryEntries = []; // [{docId, date, roles, pointsEarned, recordedBy}]
+
+async function openPaceMemberHistory(name) {
+    paceCurrentMember = name;
+    document.getElementById('paceHistoryName').innerText = name;
+    document.getElementById('paceHistoryMeta').innerText = paceSelectedYear;
+    document.getElementById('paceHistorySummary').innerHTML = '<div class="spinner"></div>';
+    document.getElementById('paceHistoryList').innerHTML = '';
+    showScreen('paceMemberHistory');
+    const club = getActiveClub();
+    if (!club || !club.syncKey) return;
+    try {
+        const {startStr, endStr} = getTMYearBounds(paceSelectedYear);
+        const snap = await db.collection('clubs').doc(club.syncKey)
+            .collection('pace_entries')
+            .where('member', '==', name)
+            .where('date', '>=', startStr)
+            .where('date', '<=', endStr)
+            .orderBy('date', 'desc')
+            .get();
+        paceHistoryEntries = snap.docs.map(d => ({docId:d.id, ...d.data()}));
+        const totalPts = paceHistoryEntries.reduce((s,e)=>s+(e.pointsEarned||0), 0);
+        const goal = 100;
+        const pct = Math.min(100, Math.round((totalPts/goal)*100));
+        const color = totalPts >= goal ? 'var(--green)' : totalPts >= 50 ? 'var(--gold)' : 'var(--accent)';
+        document.getElementById('paceHistorySummary').innerHTML =
+            `<div style="font-size:44px;font-weight:900;color:${color};">${totalPts}</div>
+             <div style="font-size:14px;color:#8E8E93;margin-bottom:10px;">points in ${paceSelectedYear} &middot; ${paceHistoryEntries.length} meeting${paceHistoryEntries.length!==1?'s':''}</div>
+             <div style="background:#E5E5EA;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;"></div>
+             </div>
+             <div style="font-size:12px;color:#8E8E93;margin-top:6px;">${pct}% of 100-point goal</div>`;
+        if (!paceHistoryEntries.length) {
+            document.getElementById('paceHistoryList').innerHTML = '<div style="padding:20px;text-align:center;opacity:0.5;">No entries yet for this year.</div>';
+            return;
+        }
+        document.getElementById('paceHistoryList').innerHTML = paceHistoryEntries.map((entry, i) => {
+            const dateLabel = new Date(entry.date+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+            return `<div class="session-row" onclick="openPaceMemberEntryFromHistory(${i})" style="cursor:pointer;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <div class="session-date">${dateLabel}</div>
+                        <div class="session-role">${(entry.roles||[]).join(' &middot; ')}</div>
+                        <div class="session-stats">Recorded by ${entry.recordedBy||'unknown'}</div>
+                    </div>
+                    <div style="font-size:24px;font-weight:800;color:var(--accent);flex-shrink:0;margin-left:12px;">${entry.pointsEarned||0} pts</div>
+                </div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        document.getElementById('paceHistorySummary').innerHTML = `<div style="color:var(--red);">${e.message}</div>`;
+    }
+}
+
+function openPaceMemberEntryFromHistory(index) {
+    const entry = paceHistoryEntries[index];
+    if (!entry) return;
+    paceEntryDateStr = entry.date;
+    paceMemberSelectedRoles = new Set(entry.roles||[]);
+    // Pre-populate cache so savePaceMemberEntry knows to update not insert
+    paceEntryCache[paceCurrentMember] = {entryId: entry.docId, roles: entry.roles, points: entry.pointsEarned};
+    document.getElementById('paceMemberName').innerText = paceCurrentMember;
+    // Override back button for this context to return to history
+    renderPaceRoleGrid();
+    // Show screen then patch back button to go to history
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('paceMemberEntry').classList.add('active');
+    // Patch cancel button to return to history
+    const cancelBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn.secondary-btn');
+    if (cancelBtn) { cancelBtn.onclick = () => openPaceMemberHistory(paceCurrentMember); }
+    // Patch save to return to history
+    const saveBtn = document.querySelector('#paceMemberEntry .button-row .footer-btn:last-child');
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            await savePaceMemberEntry();
+            await openPaceMemberHistory(paceCurrentMember);
+        };
+    }
 }
 
 
