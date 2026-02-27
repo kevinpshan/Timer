@@ -1,6 +1,6 @@
 (function() {
 // Parse script tag params
-var scripts = document.getElementsByTagName(‘script’);
+var scripts = document.getElementsByTagName('script');
 var thisScript = scripts[scripts.length - 1];
 var src = thisScript.src;
 var params = {};
