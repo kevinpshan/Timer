@@ -2119,33 +2119,29 @@ function askDeletePaceRole(index) {
 function showPaceEmbedModal() {
     const club = getActiveClub();
     if (!club || !club.syncKey) {
-        openModal('Cloud Sync Required', 'Enable cloud sync for this club before generating an embed snippet.', ()=>{});
+        openModal('Cloud Sync Required', 'Enable cloud sync before generating an embed snippet.', ()=>{});
         return;
     }
     const code = club.syncKey;
-    const baseUrl = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
-    const leaderboardSnippet = '<!-- PACE Leaderboard (Southern Dutchess Toastmasters) -->\n' +
-        '<div id="pace-leaderboard"></div>\n' +
-        '<script src="' + baseUrl + '?club=' + code + '&type=leaderboard&target=pace-leaderboard"></' + 'script>';
-
-    const chartSnippet = '<!-- PACE Bar Chart (Southern Dutchess Toastmasters) -->\n' +
-        '<div id="pace-chart"></div>\n' +
-        '<script src="' + baseUrl + '?club=' + code + '&type=chart&target=pace-chart"></' + 'script>';
-
+    const base = 'https://kevinpshan.github.io/TMTools/pace-widget.js';
+    const s = 'script';
+    const lb = '<' + s + ' src="' + base + '?club=' + code + '&type=leaderboard&target=pace-lb"></' + s + '>';
+    const ch = '<' + s + ' src="' + base + '?club=' + code + '&type=chart&target=pace-chart"></' + s + '>';
     openModal('Embed PACE Widget',
-        `<div style="margin-bottom:16px;">
-            <div style="font-size:13px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Ranked List</div>
-            <textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:90px;font-family:monospace;font-size:11px;padding:10px;border:2px solid var(--border);border-radius:10px;background:#F9F9FB;resize:none;">${leaderboardSnippet}</textarea>
+        '<div style="margin-bottom:16px;">' +
+        '<div style="font-size:13px;font-weight:700;color:#8E8E93;margin-bottom:8px;">RANKED LIST</div>' +
+        '<div id="emb-lb" onclick="document.getElementById('emb-lb').style.background='#E8F5E9';navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('emb-lb-txt').value)" style="cursor:pointer;">' +
+        '<textarea id="emb-lb-txt" readonly style="width:100%;box-sizing:border-box;height:72px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;cursor:pointer;">' + lb + '</textarea>' +
 
 ```
-    </div>
-    <div>
-        <div style="font-size:13px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Bar Chart</div>
-        <textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:90px;font-family:monospace;font-size:11px;padding:10px;border:2px solid var(--border);border-radius:10px;background:#F9F9FB;resize:none;">${chartSnippet}</textarea>
-    </div>
-    <div style="font-size:13px;color:#8E8E93;margin-top:14px;line-height:1.5;">Tap a snippet to select it, then copy and paste into your website. Displays the current TM year automatically.</div>`,
-    () => {},
-    null, 'Close'
+    '</div></div>' +
+    '<div style="margin-bottom:16px;">' +
+    '<div style="font-size:13px;font-weight:700;color:#8E8E93;margin-bottom:8px;">BAR CHART</div>' +
+    '<div id="emb-ch" onclick="document.getElementById('emb-ch').style.background='#E8F5E9';navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('emb-ch-txt').value)" style="cursor:pointer;">' +
+    '<textarea id="emb-ch-txt" readonly style="width:100%;box-sizing:border-box;height:72px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;cursor:pointer;">' + ch + '</textarea>' +
+    '</div></div>' +
+    '<div style="font-size:13px;color:#8E8E93;line-height:1.5;">Tap a snippet to copy it, then paste into your website HTML.</div>',
+    ()=>{}, null, 'Close'
 );
 ```
 
