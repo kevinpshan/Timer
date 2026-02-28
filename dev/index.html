@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -134,7 +133,6 @@
 <body onload="initApp()">
 
 <!-- MODAL -->
-
 <div id="customModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(8px);">
     <div style="background:var(--card);width:85%;max-width:500px;padding:25px;border-radius:24px;text-align:center;border:1px solid var(--border);">
         <h2 id="modalTitle" style="margin:0;"></h2>
@@ -147,7 +145,6 @@
 </div>
 
 <!-- CLUB SWITCHER -->
-
 <div id="clubSwitcherOverlay" onclick="closeClubSwitcher(event)">
     <div id="clubSwitcherPanel">
         <div class="club-switcher-title">Switch Club</div>
@@ -162,7 +159,6 @@
 </div>
 
 <!-- MENU -->
-
 <div id="menu" class="screen active">
     <div class="header">
         <div onclick="showClubSwitcher()" style="cursor:pointer;">
@@ -205,7 +201,6 @@
 </div>
 
 <!-- WOD -->
-
 <div id="wod" class="screen">
     <div class="header"><h1>W.O.D.</h1><div class="subtitle">Search or Generate</div></div>
     <div class="container">
@@ -226,7 +221,6 @@
 </div>
 
 <!-- SETUP -->
-
 <div id="setup" class="screen">
     <div class="header"><h1 id="setupHeader">Setup</h1></div>
     <div class="container">
@@ -248,7 +242,6 @@
 </div>
 
 <!-- COUNTER DISPLAY -->
-
 <div id="counterDisplay" class="screen">
     <div class="header"><h1 id="counterSpeakerName">Name</h1><div id="counterSpeakerRole" class="subtitle">ROLE</div></div>
     <div class="container"><div id="tallyArea" class="tally-grid"></div></div>
@@ -256,7 +249,6 @@
 </div>
 
 <!-- TIMER DISPLAY -->
-
 <div id="timerDisplay" class="screen">
     <div id="spkName" style="font-size:30px;color:#666;margin-top:20px;text-align:center;text-transform:uppercase;font-weight:700;"></div>
     <div id="timer" style="font-size:clamp(100px,30vw,400px);font-weight:200;text-align:center;margin:auto 0;font-variant-numeric:tabular-nums;color:#000;">00:00</div>
@@ -264,7 +256,6 @@
 </div>
 
 <!-- REPORT -->
-
 <div id="report" class="screen">
     <div class="header"><h1 id="reportPageTitle">Report</h1></div>
     <div class="tab-container" style="margin:0 20px 10px;">
@@ -289,7 +280,6 @@
 </div>
 
 <!-- SETTINGS -->
-
 <div id="settings" class="screen">
     <div class="header"><h1>Settings</h1></div>
     <div class="container">
@@ -307,7 +297,6 @@
 </div>
 
 <!-- CLUB MANAGER -->
-
 <div id="clubManager" class="screen">
     <div class="header"><h1>Clubs</h1><div class="subtitle">Cloud sync &amp; switching</div></div>
     <div class="container">
@@ -320,7 +309,6 @@
 </div>
 
 <!-- FILLER MANAGER -->
-
 <div id="fillerManager" class="screen">
     <div class="header"><h1>Filler Words</h1><div id="fillerManagerSubtitle" class="subtitle">Current club</div></div>
     <div class="container">
@@ -331,7 +319,6 @@
 </div>
 
 <!-- PROGRESS -->
-
 <div id="progress" class="screen">
     <div class="header"><h1>Progress</h1><div id="progressSubtitle" class="subtitle">Speaker improvement</div></div>
     <div class="container">
@@ -341,7 +328,6 @@
 </div>
 
 <!-- SPEAKER PROGRESS -->
-
 <div id="speakerProgress" class="screen">
     <div class="header"><h1 id="speakerProgressName">Speaker</h1><div id="speakerProgressMeta" class="subtitle">Session history</div></div>
     <div class="container">
@@ -352,7 +338,6 @@
 </div>
 
 <!-- TRANSCRIPTION -->
-
 <div id="transcription" class="screen">
     <div class="header"><h1 id="transcriptionSpeakerName">Name</h1><div id="transcriptionSpeakerRole" class="subtitle">ROLE</div></div>
     <div class="container">
@@ -367,7 +352,6 @@
 </div>
 
 <!-- TRANSCRIPT LIST -->
-
 <div id="transcriptList" class="screen">
     <div class="header"><h1>Transcripts</h1><div class="subtitle">Saved this meeting</div></div>
     <div class="container"><div id="transcriptListArea" style="background:var(--card);border-radius:16px;padding:2px;flex:1;overflow-y:auto;border:1px solid var(--border);min-height:120px;"></div></div>
@@ -375,7 +359,6 @@
 </div>
 
 <!-- TRANSCRIPT VIEW -->
-
 <div id="transcriptView" class="screen">
     <div class="header"><h1 id="transcriptViewName">Name</h1><div id="transcriptViewRole" class="subtitle">ROLE</div></div>
     <div class="container">
@@ -389,7 +372,6 @@
 </div>
 
 <!-- PACE LEADERBOARD -->
-
 <div id="pace" class="screen">
     <div class="header"><h1>PACE</h1><div class="subtitle" id="paceSubtitle">Participating and Achieving Competence and Excellence</div></div>
     <div class="pace-year-bar">
@@ -409,7 +391,6 @@
 </div>
 
 <!-- PACE ENTRY — date + roster -->
-
 <div id="paceEntry" class="screen">
     <div class="header"><h1>PACE Entry</h1><div class="subtitle">Tap a member to enter roles</div></div>
     <div style="padding:0 20px 12px;flex-shrink:0;">
@@ -424,7 +405,6 @@
 </div>
 
 <!-- PACE MEMBER ENTRY — role checkboxes -->
-
 <div id="paceMemberEntry" class="screen">
     <div class="header"><h1 id="paceMemberName">Member</h1><div class="subtitle">Select roles for this meeting</div></div>
     <div class="container">
@@ -439,7 +419,6 @@
 </div>
 
 <!-- PACE MEMBER HISTORY -->
-
 <div id="paceMemberHistory" class="screen">
     <div class="header"><h1 id="paceHistoryName">Member</h1><div class="subtitle" id="paceHistoryMeta">Year history</div></div>
     <div class="container">
@@ -450,7 +429,6 @@
 </div>
 
 <!-- PACE ROLE MANAGER -->
-
 <div id="paceRoleManager" class="screen">
     <div class="header"><h1>PACE Roles</h1><div class="subtitle">Points per role &middot; synced to cloud</div></div>
     <div class="container">
@@ -461,7 +439,6 @@
 </div>
 
 <!-- WELCOME SCREEN -->
-
 <div id="welcome" class="screen">
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 25px;text-align:center;">
         <div style="font-size:64px;margin-bottom:10px;">⏱</div>
@@ -2149,16 +2126,14 @@ function showPaceEmbedModal() {
         '<div style="margin-bottom:16px;">' +
         '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">RANKED LIST</div>' +
         '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(lbRaw) + '</textarea>' +
-
-    '</div>' +
-    '<div>' +
-    '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">BAR CHART</div>' +
-    '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(chRaw) + '</textarea>' +
-    '</div>' +
-    '<div style="font-size:12px;color:#8E8E93;margin-top:12px;">Tap a snippet to select it, then copy and paste into your website HTML.</div>',
-    ()=>{}, null, 'Close'
-);
-
+        '</div>' +
+        '<div>' +
+        '<div style="font-size:12px;font-weight:700;color:#8E8E93;margin-bottom:6px;">BAR CHART</div>' +
+        '<textarea readonly onclick="this.select()" style="width:100%;box-sizing:border-box;height:68px;font-family:monospace;font-size:11px;padding:10px;border:2px solid #D1D1D6;border-radius:10px;background:#F9F9FB;resize:none;">' + enc(chRaw) + '</textarea>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#8E8E93;margin-top:12px;">Tap a snippet to select it, then copy and paste into your website HTML.</div>',
+        ()=>{}, null, 'Close'
+    );
 }
 
 </script>
