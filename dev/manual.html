@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,406 +13,405 @@
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; }
 
-    /* HEADER */
-    .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; }
-    .btn-back { text-decoration: none; color: var(--accent); font-weight: 700; font-size: 16px; }
-    .header-title { font-size: 22px; font-weight: 800; }
-    .header-version { font-size: 13px; color: #8E8E93; }
+        /* HEADER */
+        .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .btn-back { text-decoration: none; color: var(--accent); font-weight: 700; font-size: 16px; }
+        .header-title { font-size: 22px; font-weight: 800; }
+        .header-version { font-size: 13px; color: #8E8E93; }
 
-    /* TABS */
-    .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; max-width: 800px; margin: 0 auto 0; }
-    .tab { flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 15px; border-radius: 8px; cursor: pointer; color: var(--subtext); transition: all 0.2s; user-select: none; }
-    .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        /* TABS */
+        .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; max-width: 800px; margin: 0 auto 0; }
+        .tab { flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 15px; border-radius: 8px; cursor: pointer; color: var(--subtext); transition: all 0.2s; user-select: none; }
+        .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-    /* CONTENT */
-    .content { max-width: 800px; margin: 0 auto; padding: 24px 20px 50px; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+        /* CONTENT */
+        .content { max-width: 800px; margin: 0 auto; padding: 24px 20px 50px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
-    /* TOC */
-    .toc { background: #F9F9FB; border-radius: 12px; padding: 16px 20px; border: 1px solid var(--border); margin-bottom: 24px; }
-    .toc-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #8E8E93; margin-bottom: 8px; }
-    .toc a { color: var(--accent); text-decoration: none; font-size: 15px; display: block; padding: 4px 0; border-bottom: 1px solid var(--border); }
-    .toc a:last-child { border-bottom: none; }
+        /* TOC */
+        .toc { background: #F9F9FB; border-radius: 12px; padding: 16px 20px; border: 1px solid var(--border); margin-bottom: 24px; }
+        .toc-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #8E8E93; margin-bottom: 8px; }
+        .toc a { color: var(--accent); text-decoration: none; font-size: 15px; display: block; padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .toc a:last-child { border-bottom: none; }
 
-    /* TYPOGRAPHY */
-    h2 { font-size: 22px; font-weight: 700; margin-top: 32px; margin-bottom: 4px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
-    h3 { font-size: 17px; color: var(--gold); margin-top: 20px; margin-bottom: 6px; font-weight: 700; }
-    p { margin: 10px 0; font-size: 16px; }
-    ul, ol { padding-left: 22px; margin: 8px 0; }
-    li { margin-bottom: 8px; font-size: 16px; }
-    code { background: #F2F2F7; padding: 2px 7px; border-radius: 5px; font-family: monospace; font-weight: 600; font-size: 14px; }
+        /* TYPOGRAPHY */
+        h2 { font-size: 22px; font-weight: 700; margin-top: 32px; margin-bottom: 4px; border-bottom: 2px solid var(--bg); padding-bottom: 8px; color: var(--accent); }
+        h3 { font-size: 17px; color: var(--gold); margin-top: 20px; margin-bottom: 6px; font-weight: 700; }
+        p { margin: 10px 0; font-size: 16px; }
+        ul, ol { padding-left: 22px; margin: 8px 0; }
+        li { margin-bottom: 8px; font-size: 16px; }
+        code { background: #F2F2F7; padding: 2px 7px; border-radius: 5px; font-family: monospace; font-weight: 600; font-size: 14px; }
 
-    /* CALLOUTS */
-    .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
-    .alert-green { background: #F0FFF4; border-left: 4px solid var(--green); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
-    .alert-blue { background: #F0F8FF; border-left: 4px solid var(--accent); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
+        /* CALLOUTS */
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
+        .alert-green { background: #F0FFF4; border-left: 4px solid var(--green); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
+        .alert-blue { background: #F0F8FF; border-left: 4px solid var(--accent); padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 15px; }
 
-    /* API STEPS */
-    .api-step { background: #F9F9FB; padding: 13px 15px; border-radius: 11px; border: 1px solid var(--border); margin: 9px 0; font-size: 15px; }
+        /* API STEPS */
+        .api-step { background: #F9F9FB; padding: 13px 15px; border-radius: 11px; border: 1px solid var(--border); margin: 9px 0; font-size: 15px; }
 
-    /* TABLE */
-    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
-    th { background: #F2F2F7; padding: 9px 12px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
-    td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+        th { background: #F2F2F7; padding: 9px 12px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
+        td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
 
-    /* TRANSCRIPT HIGHLIGHTS */
-    .highlight-filler { background: #FFD0CE; border-bottom: 2px solid #FF3B30; color: #CC0000; font-weight: 700; border-radius: 3px; padding: 0 3px; }
-    .highlight-wod { background: #FFF3C4; border-bottom: 2px solid #BF941A; color: #7A5C00; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+        /* TRANSCRIPT HIGHLIGHTS */
+        .highlight-filler { background: #FFD0CE; border-bottom: 2px solid #FF3B30; color: #CC0000; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+        .highlight-wod { background: #FFF3C4; border-bottom: 2px solid #BF941A; color: #7A5C00; font-weight: 700; border-radius: 3px; padding: 0 3px; }
 
-    /* DEV RESOURCE CARDS */
-    .resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
-    @media (max-width: 500px) { .resource-grid { grid-template-columns: 1fr; } }
-    .resource-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 4px; transition: box-shadow 0.2s; }
-    .resource-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .resource-card .rc-icon { font-size: 28px; margin-bottom: 4px; }
-    .resource-card .rc-title { font-size: 17px; font-weight: 800; color: var(--accent); }
-    .resource-card .rc-desc { font-size: 13px; color: var(--subtext); }
+        /* DEV RESOURCE CARDS */
+        .resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+        @media (max-width: 500px) { .resource-grid { grid-template-columns: 1fr; } }
+        .resource-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 4px; transition: box-shadow 0.2s; }
+        .resource-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .resource-card .rc-icon { font-size: 28px; margin-bottom: 4px; }
+        .resource-card .rc-title { font-size: 17px; font-weight: 800; color: var(--accent); }
+        .resource-card .rc-desc { font-size: 13px; color: var(--subtext); }
 
-    /* FOOTER */
-    .page-footer { text-align: center; padding: 20px; font-size: 13px; opacity: 0.45; border-top: 1px solid var(--border); margin-top: 30px; }
-</style>
-
+        /* FOOTER */
+        .page-footer { text-align: center; padding: 20px; font-size: 13px; opacity: 0.45; border-top: 1px solid var(--border); margin-top: 30px; }
+    </style>
 </head>
 <body>
 
-<div class="page-header">
-    <div class="header-top">
-        <a href="index.html" class="btn-back">← App</a>
-        <div style="text-align:center;">
-            <div class="header-title">Manual</div>
-            <div class="header-version">v3.2.4 · Southern Dutchess Toastmasters</div>
+    <div class="page-header">
+        <div class="header-top">
+            <a href="index.html" class="btn-back">← App</a>
+            <div style="text-align:center;">
+                <div class="header-title">Manual</div>
+                <div class="header-version">v3.2.4 · Southern Dutchess Toastmasters</div>
+            </div>
+            <div style="width:40px;"></div>
         </div>
-        <div style="width:40px;"></div>
+        <div class="tab-container">
+            <div class="tab active" onclick="switchTab('members')">For Members</div>
+            <div class="tab" onclick="switchTab('officers')">For Officers &amp; Devs</div>
+        </div>
     </div>
-    <div class="tab-container">
-        <div class="tab active" onclick="switchTab('members')">For Members</div>
-        <div class="tab" onclick="switchTab('officers')">For Officers &amp; Devs</div>
+
+    <div class="content">
+
+        <!-- ===================== MEMBERS TAB ===================== -->
+        <div id="panel-members" class="tab-panel active">
+
+            <div class="toc">
+                <div class="toc-title">Contents</div>
+                <a href="#firstrun">1. First Time Setup</a>
+                <a href="#wod">2. Word of the Day</a>
+                <a href="#timer">3. Timer</a>
+                <a href="#counter">4. Ah-Counter &amp; Filler Words</a>
+                <a href="#report">5. Meeting Report</a>
+                <a href="#transcription">6. Speech Recording &amp; Transcription</a>
+                <a href="#transcripts">7. Transcripts</a>
+                <a href="#progress">8. Progress Tracking</a>
+                <a href="#pace">9. PACE Participation Tracker</a>
+                <a href="#settings-member">10. Settings</a>
+            </div>
+
+            <h2 id="firstrun">1. First Time Setup</h2>
+            <p>When you open Meeting Tools for the first time you will see the <strong>Welcome screen</strong> with three options:</p>
+            <ul>
+                <li><strong>Join Existing Club</strong> — your club is already using Meeting Tools. Ask your officer for the 8-character sync code and enter it here. Your roster, filler words, and AI key download automatically.</li>
+                <li><strong>Create New Club</strong> — setting up Meeting Tools fresh for your club. You can enable cloud sync later.</li>
+                <li><strong>Just Exploring</strong> — opens the app using the built-in <strong>TEST CLUB</strong> with sample speakers. Nothing you do here affects real club data.</li>
+            </ul>
+            <div class="alert-green">
+                <strong>Already a member?</strong> Choose <em>Join Existing Club</em> and enter your club's sync code. Roster, filler words, and the shared AI key will be ready in seconds.
+            </div>
+
+            <h2 id="wod">2. Word of the Day</h2>
+            <p>The W.O.D. feature uses <strong>ChatGPT (GPT-4o-mini)</strong> to provide intelligent, public-speaking flavored definitions.</p>
+            <ul>
+                <li><strong>Random:</strong> Tap <em>Random</em> to pick from a library of over 1,000 sophisticated words.</li>
+                <li><strong>Search:</strong> Type any word and tap 🔍 to fetch a custom AI definition and usage sentence.</li>
+                <li><strong>Select:</strong> Tap <em>Select</em> to activate the word. It pins to the top of the Ah-Counter tally grid with a gold <strong>WORD OF DAY</strong> badge and is highlighted in gold during transcription. The word is also written to Firestore so it appears automatically at the top of the Cloud Meeting Report for any device that opens it today.</li>
+            </ul>
+            <div class="alert">
+                <strong>AI Key Required.</strong> If your club officer has set up cloud sync, the key is shared automatically — you don't need to do anything.
+            </div>
+
+            <h2 id="timer">3. Timer</h2>
+            <p>Full-screen color cues for standard Toastmasters roles.</p>
+            <h3>Presets</h3>
+            <table>
+                <tr><th>Role</th><th>Green</th><th>Yellow</th><th>Red</th></tr>
+                <tr><td>Table Topics</td><td>1:00</td><td>1:30</td><td>2:00</td></tr>
+                <tr><td>Evaluation</td><td>2:00</td><td>2:30</td><td>3:00</td></tr>
+                <tr><td>Ice Breaker</td><td>4:00</td><td>5:00</td><td>6:00</td></tr>
+                <tr><td>Speech</td><td>5:00</td><td>6:00</td><td>7:00</td></tr>
+                <tr><td>Custom</td><td colspan="3">Set your own Green / Yellow / Red in minutes</td></tr>
+            </table>
+            <ul>
+                <li><strong>Reset</strong> — stops and restarts the clock from zero for the same speaker.</li>
+                <li><strong>Pause / Resume</strong> — freezes and resumes without losing elapsed time. Button label toggles between PAUSE and RESUME.</li>
+                <li><strong>Commit &amp; Exit</strong> — saves to the meeting report and returns to menu.</li>
+            </ul>
+
+            <h2 id="counter">4. Ah-Counter &amp; Filler Words</h2>
+            <p>Track filler words for any speaker in any role.</p>
+            <h3>Default Filler Words</h3>
+            <p>Every club starts with: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>, plus a Word of the Day placeholder.</p>
+            <h3>Tracking</h3>
+            <ul>
+                <li>Tap any card to <strong>increment</strong> the count.</li>
+                <li>Tap <strong>−</strong> (bottom right) to decrement.</li>
+                <li>Tap red <strong>✕</strong> (bottom left) to remove a filler from this session.</li>
+                <li>If you save the same speaker twice in one meeting, counts are <strong>merged</strong> automatically.</li>
+            </ul>
+            <h3>Adding a Word On The Fly</h3>
+            <p>During a live tracking session, tap the <strong>+ ADD WORD</strong> card at the end of the tally grid to add a filler word you just heard. The word is immediately counted as 1. A toggle lets you save it permanently to the club list (on by default).</p>
+            <h3>Full Name Tip</h3>
+            <p>Use full names (First Last) when adding speakers — this ensures accurate tracking when multiple members share a first name.</p>
+            <h3>Filler Scoring (Manual Sessions)</h3>
+            <p>When you tap <strong>SAVE RESULTS</strong>, the app automatically estimates a filler score based on how long the session ran:</p>
+            <ul>
+                <li><strong>15 seconds or longer</strong> — a score card appears showing filler percentage, rate per minute, and an EXCELLENT / GOOD / NEEDS WORK rating. Word count is estimated at 130 words per minute and the result is labeled <em>estimated</em>.</li>
+                <li><strong>Under 15 seconds</strong> — raw counts are saved with no score. This protects against accidental early saves where an estimate would be meaningless.</li>
+            </ul>
+            <p>Scored manual sessions appear in the Progress tracker with the same color-coded percentage as transcribed sessions. The score also writes to Firestore and appears in the Cloud Meeting Report.</p>
+
+            <h2 id="report">5. Meeting Report</h2>
+            <p>Access via Timer → Meeting Report or Ah-Counter → Counter Report.</p>
+            <h3>This Device Tab</h3>
+            <p>Shows all sessions recorded on this device during the current meeting — same Name | Role | Result format as before.</p>
+            <h3>☁ Cloud Tab</h3>
+            <p>Queries Firestore for every session recorded across <em>all</em> club devices today. Results are split into two sections:</p>
+            <ul>
+                <li><strong>⏱ Timing Report</strong> — Name | Role | Time | By</li>
+                <li><strong>✍ Counter Report</strong> — Name | Role | Total Fillers | Breakdown | By</li>
+            </ul>
+            <p>The Word of the Day appears at the top if it was selected today. A <strong>↺ Refresh</strong> button re-queries Firestore while the meeting is still in progress. Copy and Share work on whichever tab is active — useful for the VP-PR assembling the newsletter after the meeting.</p>
+            <div class="alert-blue">
+                <strong>Cloud sync required.</strong> Practice-only clubs will see a message instead of data. If the cloud query fails on first use, Firebase may need a one-time composite index — it will provide a direct link in the browser console.
+            </div>
+
+            <h2 id="transcription">6. Speech Recording &amp; Transcription</h2>
+            <p>Record a speaker, transcribe with <strong>OpenAI Whisper</strong>, and automatically detect filler words.</p>
+            <ol>
+                <li>On the Setup screen in Ah-Counter mode, toggle <strong>Record Speech</strong> on.</li>
+                <li>Enter the speaker name, select their role, tap <strong>START</strong>.</li>
+                <li>Tap <strong>Start Recording</strong> when the speaker begins.</li>
+                <li>Tap <strong>End Speech</strong> when they finish — the audio transcribes automatically.</li>
+                <li>Tap <strong>Merge to Counter</strong> to send detected counts to the tally.</li>
+            </ol>
+            <h3>Filler Score</h3>
+            <ul>
+                <li><strong style="color:#34C759;">Under 5%</strong> — Excellent</li>
+                <li><strong style="color:#CC8800;">5–10%</strong> — Good</li>
+                <li><strong style="color:#FF3B30;">Over 10%</strong> — Needs Work</li>
+            </ul>
+            <p>Filler words appear in <span class="highlight-filler">red</span>. The Word of the Day appears in <span class="highlight-wod">gold</span>.</p>
+
+            <h2 id="transcripts">7. Transcripts</h2>
+            <p>Every transcribed speech is saved for the current meeting so you can share it with the speaker.</p>
+            <ul>
+                <li><strong>Access:</strong> Ah-Counter menu → Transcripts.</li>
+                <li><strong>View:</strong> Tap any speaker to open their highlighted transcript with filler summary and score.</li>
+                <li><strong>Share:</strong> Tap Share to send via email, Messages, Slack, or any app.</li>
+                <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap Clear Meeting Data in Settings.</li>
+            </ul>
+
+            <h2 id="progress">8. Progress Tracking</h2>
+            <p>The Progress screen shows how speakers are improving their filler usage over time across multiple meetings.</p>
+            <div class="alert-blue">
+                <strong>Cloud sync required.</strong> Progress reads from Firestore session history. The screen will prompt you to enable sync if it isn't active.
+            </div>
+            <ul>
+                <li>Each speaker shows their latest filler rate, trend (↑ ↓ →), and session count.</li>
+                <li>Tap any speaker for full history — Latest, Average, Best, and session-by-session log.</li>
+                <li>Only current roster members appear. Deleted members' history is preserved in the cloud but hidden from the list.</li>
+                <li>Each session shows who recorded it and when. Tap <strong>✕</strong> to delete a session that was entered in error.</li>
+            </ul>
+
+            <h2 id="pace">9. PACE &mdash; Participating and Achieving Competence and Excellence</h2>
+            <p>PACE tracks each member's participation across the Toastmasters year (July 1 – June 30). Every role filled at a meeting earns points toward the 100-point annual goal.</p>
+            <h3>Viewing the Leaderboard</h3>
+            <p>Tap <strong>Club</strong> in the bottom tab bar, then tap <strong>PACE</strong>. The leaderboard shows all members ranked by total points for the current TM year, with color-coded progress bars — green for 100+ points, gold for 50–99, blue for under 50. Tap the <strong>‹</strong> and <strong>›</strong> arrows to view prior years.</p>
+            <h3>Tapping a Member</h3>
+            <p>Tap any member row to see their full history for the selected year — total points, meeting count, progress toward goal, and a chronological list of every entry. Tap any entry to edit or remove it.</p>
+            <h3>Entering Meeting Roles</h3>
+            <ol>
+                <li>Tap <strong>+ New Entry</strong> on the leaderboard.</li>
+                <li>Select the meeting date using the date picker.</li>
+                <li>Tap a member's name to open their role selection screen.</li>
+                <li>Tap the roles they filled — the point tally updates live.</li>
+                <li>Tap <strong>Save</strong>. The entry syncs to the cloud immediately.</li>
+            </ol>
+            <div class="alert-green">
+                <strong>Multiple roles:</strong> Members can hold multiple roles in one meeting. Points from all selected roles are added together and frozen at save time — changing role point values later does not affect past entries.
+            </div>
+            <h3>Default Point Values</h3>
+            <table>
+                <tr><th>Role</th><th>Points</th></tr>
+                <tr><td>Speaker</td><td>15</td></tr>
+                <tr><td>Toastmaster</td><td>10</td></tr>
+                <tr><td>Evaluator</td><td>10</td></tr>
+                <tr><td>General Evaluator</td><td>7</td></tr>
+                <tr><td>Joke Master</td><td>5</td></tr>
+                <tr><td>Table Topics Master</td><td>3</td></tr>
+                <tr><td>Timer</td><td>2</td></tr>
+                <tr><td>Ah Counter</td><td>2</td></tr>
+            </table>
+            <h3>Role Manager</h3>
+            <p>Officers can customize role names and point values via <strong>Roles ⚙</strong> on the leaderboard. Changes sync to all club members. Past entries are not affected by point value changes.</p>
+            <h3>Embedding on Your Club Website</h3>
+            <p>Tap <strong>Embed ↗</strong> on the leaderboard to get ready-to-paste HTML snippets for a ranked leaderboard or bar chart widget. Paste either snippet anywhere on your club website — no setup required, data updates automatically.</p>
+
+            <h2 id="settings-member">9. Settings</h2>
+            <ul>
+                <li><strong>Markdown Export</strong> — reports and transcripts use markdown formatting for Slack and email.</li>
+                <li><strong>ChatGPT API Key</strong> — pre-filled automatically if your officer set one up via cloud sync.</li>
+                <li><strong>Backup Data</strong> — downloads a JSON file as an emergency restore.</li>
+                <li><strong>Restore Data</strong> — imports a previously exported backup.</li>
+                <li><strong>Clear Meeting Data</strong> — resets logs, transcripts, and WOD. Does not delete roster or filler words.</li>
+                <li><strong>Stale Data Warning</strong> — if you open the app and meeting data from 3 or more hours ago is still present, a yellow banner appears on the menu screen reminding you to clear before starting a new meeting.</li>
+            </ul>
+
+        </div><!-- end members panel -->
+
+        <!-- ===================== OFFICERS TAB ===================== -->
+        <div id="panel-officers" class="tab-panel">
+
+            <div class="toc">
+                <div class="toc-title">Contents</div>
+                <a href="#setup-club">1. Setting Up Your Club</a>
+                <a href="#sync-setup">2. Enabling Cloud Sync</a>
+                <a href="#apikey-setup">3. Setting Up the AI Key</a>
+                <a href="#onboarding">4. Onboarding New Members</a>
+                <a href="#filler-mgmt">5. Managing Filler Words</a>
+                <a href="#data-mgmt">6. Data Management</a>
+                <a href="#dev-resources">7. Developer Resources</a>
+            </div>
+
+            <h2 id="setup-club">1. Setting Up Your Club</h2>
+            <p>When you first open the app, tap <strong>Create New Club</strong> on the welcome screen and enter your club name. Leave <em>Practice Only</em> off — you'll want cloud sync for a real club.</p>
+            <p>If you just want to explore before committing, tap <strong>Just Exploring</strong> to use the built-in TEST CLUB with sample data. You can create your real club later via Settings → Clubs.</p>
+
+            <h2 id="sync-setup">2. Enabling Cloud Sync</h2>
+            <p>Cloud sync keeps your roster and filler words current across all members' devices automatically — no manual sharing needed.</p>
+            <ol>
+                <li>Go to <strong>Settings → Clubs</strong>.</li>
+                <li>Tap <strong>Enable Cloud Sync</strong> on your club.</li>
+                <li>An 8-character sync code is generated (e.g. <code>ABCD-EF3G</code>).</li>
+                <li>Share this code with your members — they use it on the welcome screen or via Settings → Clubs → Join by Code.</li>
+            </ol>
+            <div class="alert">
+                <strong>Keep the code safe.</strong> Anyone with the code can join your club and read your roster. Share it only with your club members. The sync code is masked by default in Club Manager — tap the 👁 icon to reveal it when needed.
+            </div>
+            <h3>What Syncs Automatically</h3>
+            <ul>
+                <li>Speaker roster — any add or delete pushes instantly</li>
+                <li>Filler word list — any change pushes instantly</li>
+                <li>ChatGPT API key — shared once, available to all members</li>
+                <li>Session history — every committed session writes to Firestore for Progress tracking</li>
+            </ul>
+            <h3>Manual Push / Pull</h3>
+            <p>The Push ↑ and Pull ↓ buttons in Club Manager force a full sync if needed. Under normal use you should never need them — auto-sync handles everything.</p>
+            <h3>Practice Clubs</h3>
+            <p>Clubs marked <strong>Practice Only</strong> never write to Firestore. The built-in TEST CLUB is always practice-only. You can create additional practice clubs for demos or training via Settings → Clubs → New Club with the Practice Only toggle on.</p>
+
+            <h2 id="apikey-setup">3. Setting Up the AI Key</h2>
+            <p>One officer sets up the key once. It syncs to all members automatically via cloud sync.</p>
+            <div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
+            <div class="api-step"><strong>Step 2:</strong> Navigate to <strong>API Keys</strong> in the left sidebar.</div>
+            <div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>, name it "Toastmasters App", copy the key — it starts with <code>sk-...</code>.</div>
+            <div class="api-step"><strong>Step 4:</strong> In Meeting Tools go to <strong>Settings → ChatGPT API Key</strong>, paste the key, and tap away from the field. It saves and syncs to the club immediately.</div>
+            <h3>Cost</h3>
+            <p>GPT-4o-mini (W.O.D.) and Whisper (transcription) are extremely inexpensive. A full meeting's worth of usage will typically cost less than $0.05. OpenAI provides free credit to new accounts.</p>
+            <h3>Revoking the Key</h3>
+            <p>If needed you can delete the key at <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> at any time and generate a new one. Update the new key in Settings and it will sync to all members.</p>
+
+            <h2 id="onboarding">4. Onboarding New Members</h2>
+            <p>The process is simple — members need only two things:</p>
+            <ol>
+                <li>The URL: <strong>kevinpshan.github.io/TMTools</strong></li>
+                <li>The sync code from you</li>
+            </ol>
+            <p>They open the app, tap <strong>Join Existing Club</strong>, enter the code, and everything downloads automatically — roster, fillers, and AI key. They are ready to use the app immediately.</p>
+            <div class="alert-green">
+                <strong>Tip:</strong> On iOS, members can add the app to their home screen via Safari → Share → Add to Home Screen. This installs it as a PWA with a full-screen experience and no browser chrome.
+            </div>
+
+            <h2 id="filler-mgmt">5. Managing Filler Words</h2>
+            <p>The filler word list is shared across all club members via cloud sync. Changes you make propagate automatically.</p>
+            <ul>
+                <li>Go to <strong>Settings → Filler Words</strong> to add, rename, or delete words.</li>
+                <li>Any change pushes to Firestore immediately.</li>
+                <li>All members' apps update the next time they open the app or switch clubs.</li>
+            </ul>
+            <p>The default list is: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>. Customize it to match what your Toastmaster chapter tracks.</p>
+
+            <h2 id="data-mgmt">6. Data Management</h2>
+            <h3>What Lives Where</h3>
+            <table>
+                <tr><th>Data</th><th>Local</th><th>Cloud</th></tr>
+                <tr><td>Speaker roster</td><td>✓</td><td>✓ (synced)</td></tr>
+                <tr><td>Filler word list</td><td>✓</td><td>✓ (synced)</td></tr>
+                <tr><td>API key</td><td>✓</td><td>✓ (synced)</td></tr>
+                <tr><td>Session history</td><td>—</td><td>✓ (Progress screen)</td></tr>
+                <tr><td>Word of Day (today)</td><td>✓</td><td>✓ (Cloud Report)</td></tr>
+                <tr><td>Meeting logs</td><td>✓</td><td>—</td></tr>
+                <tr><td>Transcripts</td><td>✓ (meeting only)</td><td>—</td></tr>
+                <tr><td>Practice club data</td><td>✓</td><td>Never</td></tr>
+            </table>
+            <h3>Backup &amp; Restore</h3>
+            <p>Settings → Backup Data exports a JSON file with the active club's roster, fillers, and API key. Use this as an emergency restore — not as a primary sync mechanism (cloud sync handles that).</p>
+            <h3>Clear Meeting Data</h3>
+            <p>Resets all logs, transcripts, and the selected W.O.D. for the next meeting. Does <em>not</em> delete the roster, filler words, or cloud session history.</p>
+
+            <h2 id="dev-resources">7. Developer Resources</h2>
+            <p>Full technical documentation, test cases, and release history are available below. These are intended for the developer maintaining the codebase.</p>
+
+            <div class="resource-grid">
+                <a href="technical-reference.html" class="resource-card">
+                    <div class="rc-icon">⚙</div>
+                    <div class="rc-title">Technical Reference</div>
+                    <div class="rc-desc">Architecture, Firebase schema, localStorage keys, all functions, CSS contract, and rules for safe feature additions.</div>
+                </a>
+                <a href="test-plan.html" class="resource-card">
+                    <div class="rc-icon">✅</div>
+                    <div class="rc-title">Test Plan</div>
+                    <div class="rc-desc">98 test cases across 15 sections. Use before every release to production.</div>
+                </a>
+                <a href="changelog.html" class="resource-card">
+                    <div class="rc-icon">📋</div>
+                    <div class="rc-title">Changelog</div>
+                    <div class="rc-desc">Full release history from v2.8 through current. Updated with every production deployment.</div>
+                </a>
+                <a href="https://bit.ly/m/SDTM" target="_blank" class="resource-card">
+                    <div class="rc-icon">🌐</div>
+                    <div class="rc-title">Club Website</div>
+                    <div class="rc-desc">Southern Dutchess Toastmasters public website.</div>
+                </a>
+            </div>
+
+        </div><!-- end officers panel -->
+
+    </div><!-- end content -->
+
+    <div class="page-footer">
+        Meeting Tools v3.2.4 &nbsp;·&nbsp; Southern Dutchess Toastmasters
     </div>
-</div>
 
-<div class="content">
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('active');
+            event.target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
 
-    <!-- ===================== MEMBERS TAB ===================== -->
-    <div id="panel-members" class="tab-panel active">
-
-        <div class="toc">
-            <div class="toc-title">Contents</div>
-            <a href="#firstrun">1. First Time Setup</a>
-            <a href="#wod">2. Word of the Day</a>
-            <a href="#timer">3. Timer</a>
-            <a href="#counter">4. Ah-Counter &amp; Filler Words</a>
-            <a href="#report">5. Meeting Report</a>
-            <a href="#transcription">6. Speech Recording &amp; Transcription</a>
-            <a href="#transcripts">7. Transcripts</a>
-            <a href="#progress">8. Progress Tracking</a>
-            <a href="#pace">9. PACE Participation Tracker</a>
-            <a href="#settings-member">10. Settings</a>
-        </div>
-
-        <h2 id="firstrun">1. First Time Setup</h2>
-        <p>When you open Meeting Tools for the first time you will see the <strong>Welcome screen</strong> with three options:</p>
-        <ul>
-            <li><strong>Join Existing Club</strong> — your club is already using Meeting Tools. Ask your officer for the 8-character sync code and enter it here. Your roster, filler words, and AI key download automatically.</li>
-            <li><strong>Create New Club</strong> — setting up Meeting Tools fresh for your club. You can enable cloud sync later.</li>
-            <li><strong>Just Exploring</strong> — opens the app using the built-in <strong>TEST CLUB</strong> with sample speakers. Nothing you do here affects real club data.</li>
-        </ul>
-        <div class="alert-green">
-            <strong>Already a member?</strong> Choose <em>Join Existing Club</em> and enter your club's sync code. Roster, filler words, and the shared AI key will be ready in seconds.
-        </div>
-
-        <h2 id="wod">2. Word of the Day</h2>
-        <p>The W.O.D. feature uses <strong>ChatGPT (GPT-4o-mini)</strong> to provide intelligent, public-speaking flavored definitions.</p>
-        <ul>
-            <li><strong>Random:</strong> Tap <em>Random</em> to pick from a library of over 1,000 sophisticated words.</li>
-            <li><strong>Search:</strong> Type any word and tap 🔍 to fetch a custom AI definition and usage sentence.</li>
-            <li><strong>Select:</strong> Tap <em>Select</em> to activate the word. It pins to the top of the Ah-Counter tally grid with a gold <strong>WORD OF DAY</strong> badge and is highlighted in gold during transcription. The word is also written to Firestore so it appears automatically at the top of the Cloud Meeting Report for any device that opens it today.</li>
-        </ul>
-        <div class="alert">
-            <strong>AI Key Required.</strong> If your club officer has set up cloud sync, the key is shared automatically — you don't need to do anything.
-        </div>
-
-        <h2 id="timer">3. Timer</h2>
-        <p>Full-screen color cues for standard Toastmasters roles.</p>
-        <h3>Presets</h3>
-        <table>
-            <tr><th>Role</th><th>Green</th><th>Yellow</th><th>Red</th></tr>
-            <tr><td>Table Topics</td><td>1:00</td><td>1:30</td><td>2:00</td></tr>
-            <tr><td>Evaluation</td><td>2:00</td><td>2:30</td><td>3:00</td></tr>
-            <tr><td>Ice Breaker</td><td>4:00</td><td>5:00</td><td>6:00</td></tr>
-            <tr><td>Speech</td><td>5:00</td><td>6:00</td><td>7:00</td></tr>
-            <tr><td>Custom</td><td colspan="3">Set your own Green / Yellow / Red in minutes</td></tr>
-        </table>
-        <ul>
-            <li><strong>Reset</strong> — stops and restarts the clock from zero for the same speaker.</li>
-            <li><strong>Pause / Resume</strong> — freezes and resumes without losing elapsed time. Button label toggles between PAUSE and RESUME.</li>
-            <li><strong>Commit &amp; Exit</strong> — saves to the meeting report and returns to menu.</li>
-        </ul>
-
-        <h2 id="counter">4. Ah-Counter &amp; Filler Words</h2>
-        <p>Track filler words for any speaker in any role.</p>
-        <h3>Default Filler Words</h3>
-        <p>Every club starts with: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>, plus a Word of the Day placeholder.</p>
-        <h3>Tracking</h3>
-        <ul>
-            <li>Tap any card to <strong>increment</strong> the count.</li>
-            <li>Tap <strong>−</strong> (bottom right) to decrement.</li>
-            <li>Tap red <strong>✕</strong> (bottom left) to remove a filler from this session.</li>
-            <li>If you save the same speaker twice in one meeting, counts are <strong>merged</strong> automatically.</li>
-        </ul>
-        <h3>Adding a Word On The Fly</h3>
-        <p>During a live tracking session, tap the <strong>+ ADD WORD</strong> card at the end of the tally grid to add a filler word you just heard. The word is immediately counted as 1. A toggle lets you save it permanently to the club list (on by default).</p>
-        <h3>Full Name Tip</h3>
-        <p>Use full names (First Last) when adding speakers — this ensures accurate tracking when multiple members share a first name.</p>
-        <h3>Filler Scoring (Manual Sessions)</h3>
-        <p>When you tap <strong>SAVE RESULTS</strong>, the app automatically estimates a filler score based on how long the session ran:</p>
-        <ul>
-            <li><strong>15 seconds or longer</strong> — a score card appears showing filler percentage, rate per minute, and an EXCELLENT / GOOD / NEEDS WORK rating. Word count is estimated at 130 words per minute and the result is labeled <em>estimated</em>.</li>
-            <li><strong>Under 15 seconds</strong> — raw counts are saved with no score. This protects against accidental early saves where an estimate would be meaningless.</li>
-        </ul>
-        <p>Scored manual sessions appear in the Progress tracker with the same color-coded percentage as transcribed sessions. The score also writes to Firestore and appears in the Cloud Meeting Report.</p>
-
-        <h2 id="report">5. Meeting Report</h2>
-        <p>Access via Timer → Meeting Report or Ah-Counter → Counter Report.</p>
-        <h3>This Device Tab</h3>
-        <p>Shows all sessions recorded on this device during the current meeting — same Name | Role | Result format as before.</p>
-        <h3>☁ Cloud Tab</h3>
-        <p>Queries Firestore for every session recorded across <em>all</em> club devices today. Results are split into two sections:</p>
-        <ul>
-            <li><strong>⏱ Timing Report</strong> — Name | Role | Time | By</li>
-            <li><strong>✍ Counter Report</strong> — Name | Role | Total Fillers | Breakdown | By</li>
-        </ul>
-        <p>The Word of the Day appears at the top if it was selected today. A <strong>↺ Refresh</strong> button re-queries Firestore while the meeting is still in progress. Copy and Share work on whichever tab is active — useful for the VP-PR assembling the newsletter after the meeting.</p>
-        <div class="alert-blue">
-            <strong>Cloud sync required.</strong> Practice-only clubs will see a message instead of data. If the cloud query fails on first use, Firebase may need a one-time composite index — it will provide a direct link in the browser console.
-        </div>
-
-        <h2 id="transcription">6. Speech Recording &amp; Transcription</h2>
-        <p>Record a speaker, transcribe with <strong>OpenAI Whisper</strong>, and automatically detect filler words.</p>
-        <ol>
-            <li>On the Setup screen in Ah-Counter mode, toggle <strong>Record Speech</strong> on.</li>
-            <li>Enter the speaker name, select their role, tap <strong>START</strong>.</li>
-            <li>Tap <strong>Start Recording</strong> when the speaker begins.</li>
-            <li>Tap <strong>End Speech</strong> when they finish — the audio transcribes automatically.</li>
-            <li>Tap <strong>Merge to Counter</strong> to send detected counts to the tally.</li>
-        </ol>
-        <h3>Filler Score</h3>
-        <ul>
-            <li><strong style="color:#34C759;">Under 5%</strong> — Excellent</li>
-            <li><strong style="color:#CC8800;">5–10%</strong> — Good</li>
-            <li><strong style="color:#FF3B30;">Over 10%</strong> — Needs Work</li>
-        </ul>
-        <p>Filler words appear in <span class="highlight-filler">red</span>. The Word of the Day appears in <span class="highlight-wod">gold</span>.</p>
-
-        <h2 id="transcripts">7. Transcripts</h2>
-        <p>Every transcribed speech is saved for the current meeting so you can share it with the speaker.</p>
-        <ul>
-            <li><strong>Access:</strong> Ah-Counter menu → Transcripts.</li>
-            <li><strong>View:</strong> Tap any speaker to open their highlighted transcript with filler summary and score.</li>
-            <li><strong>Share:</strong> Tap Share to send via email, Messages, Slack, or any app.</li>
-            <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap Clear Meeting Data in Settings.</li>
-        </ul>
-
-        <h2 id="progress">8. Progress Tracking</h2>
-        <p>The Progress screen shows how speakers are improving their filler usage over time across multiple meetings.</p>
-        <div class="alert-blue">
-            <strong>Cloud sync required.</strong> Progress reads from Firestore session history. The screen will prompt you to enable sync if it isn't active.
-        </div>
-        <ul>
-            <li>Each speaker shows their latest filler rate, trend (↑ ↓ →), and session count.</li>
-            <li>Tap any speaker for full history — Latest, Average, Best, and session-by-session log.</li>
-            <li>Only current roster members appear. Deleted members' history is preserved in the cloud but hidden from the list.</li>
-            <li>Each session shows who recorded it and when. Tap <strong>✕</strong> to delete a session that was entered in error.</li>
-        </ul>
-
-        <h2 id="pace">9. PACE &mdash; Participating and Achieving Competence and Excellence</h2>
-        <p>PACE tracks each member's participation across the Toastmasters year (July 1 – June 30). Every role filled at a meeting earns points toward the 100-point annual goal.</p>
-        <h3>Viewing the Leaderboard</h3>
-        <p>Tap <strong>Club</strong> in the bottom tab bar, then tap <strong>PACE</strong>. The leaderboard shows all members ranked by total points for the current TM year, with color-coded progress bars — green for 100+ points, gold for 50–99, blue for under 50. Tap the <strong>‹</strong> and <strong>›</strong> arrows to view prior years.</p>
-        <h3>Tapping a Member</h3>
-        <p>Tap any member row to see their full history for the selected year — total points, meeting count, progress toward goal, and a chronological list of every entry. Tap any entry to edit or remove it.</p>
-        <h3>Entering Meeting Roles</h3>
-        <ol>
-            <li>Tap <strong>+ New Entry</strong> on the leaderboard.</li>
-            <li>Select the meeting date using the date picker.</li>
-            <li>Tap a member's name to open their role selection screen.</li>
-            <li>Tap the roles they filled — the point tally updates live.</li>
-            <li>Tap <strong>Save</strong>. The entry syncs to the cloud immediately.</li>
-        </ol>
-        <div class="alert-green">
-            <strong>Multiple roles:</strong> Members can hold multiple roles in one meeting. Points from all selected roles are added together and frozen at save time — changing role point values later does not affect past entries.
-        </div>
-        <h3>Default Point Values</h3>
-        <table>
-            <tr><th>Role</th><th>Points</th></tr>
-            <tr><td>Speaker</td><td>15</td></tr>
-            <tr><td>Toastmaster</td><td>10</td></tr>
-            <tr><td>Evaluator</td><td>10</td></tr>
-            <tr><td>General Evaluator</td><td>7</td></tr>
-            <tr><td>Joke Master</td><td>5</td></tr>
-            <tr><td>Table Topics Master</td><td>3</td></tr>
-            <tr><td>Timer</td><td>2</td></tr>
-            <tr><td>Ah Counter</td><td>2</td></tr>
-        </table>
-        <h3>Role Manager</h3>
-        <p>Officers can customize role names and point values via <strong>Roles ⚙</strong> on the leaderboard. Changes sync to all club members. Past entries are not affected by point value changes.</p>
-        <h3>Embedding on Your Club Website</h3>
-        <p>Tap <strong>Embed ↗</strong> on the leaderboard to get ready-to-paste HTML snippets for a ranked leaderboard or bar chart widget. Paste either snippet anywhere on your club website — no setup required, data updates automatically.</p>
-
-        <h2 id="settings-member">9. Settings</h2>
-        <ul>
-            <li><strong>Markdown Export</strong> — reports and transcripts use markdown formatting for Slack and email.</li>
-            <li><strong>ChatGPT API Key</strong> — pre-filled automatically if your officer set one up via cloud sync.</li>
-            <li><strong>Backup Data</strong> — downloads a JSON file as an emergency restore.</li>
-            <li><strong>Restore Data</strong> — imports a previously exported backup.</li>
-            <li><strong>Clear Meeting Data</strong> — resets logs, transcripts, and WOD. Does not delete roster or filler words.</li>
-            <li><strong>Stale Data Warning</strong> — if you open the app and meeting data from 3 or more hours ago is still present, a yellow banner appears on the menu screen reminding you to clear before starting a new meeting.</li>
-        </ul>
-
-    </div><!-- end members panel -->
-
-    <!-- ===================== OFFICERS TAB ===================== -->
-    <div id="panel-officers" class="tab-panel">
-
-        <div class="toc">
-            <div class="toc-title">Contents</div>
-            <a href="#setup-club">1. Setting Up Your Club</a>
-            <a href="#sync-setup">2. Enabling Cloud Sync</a>
-            <a href="#apikey-setup">3. Setting Up the AI Key</a>
-            <a href="#onboarding">4. Onboarding New Members</a>
-            <a href="#filler-mgmt">5. Managing Filler Words</a>
-            <a href="#data-mgmt">6. Data Management</a>
-            <a href="#dev-resources">7. Developer Resources</a>
-        </div>
-
-        <h2 id="setup-club">1. Setting Up Your Club</h2>
-        <p>When you first open the app, tap <strong>Create New Club</strong> on the welcome screen and enter your club name. Leave <em>Practice Only</em> off — you'll want cloud sync for a real club.</p>
-        <p>If you just want to explore before committing, tap <strong>Just Exploring</strong> to use the built-in TEST CLUB with sample data. You can create your real club later via Settings → Clubs.</p>
-
-        <h2 id="sync-setup">2. Enabling Cloud Sync</h2>
-        <p>Cloud sync keeps your roster and filler words current across all members' devices automatically — no manual sharing needed.</p>
-        <ol>
-            <li>Go to <strong>Settings → Clubs</strong>.</li>
-            <li>Tap <strong>Enable Cloud Sync</strong> on your club.</li>
-            <li>An 8-character sync code is generated (e.g. <code>ABCD-EF3G</code>).</li>
-            <li>Share this code with your members — they use it on the welcome screen or via Settings → Clubs → Join by Code.</li>
-        </ol>
-        <div class="alert">
-            <strong>Keep the code safe.</strong> Anyone with the code can join your club and read your roster. Share it only with your club members. The sync code is masked by default in Club Manager — tap the 👁 icon to reveal it when needed.
-        </div>
-        <h3>What Syncs Automatically</h3>
-        <ul>
-            <li>Speaker roster — any add or delete pushes instantly</li>
-            <li>Filler word list — any change pushes instantly</li>
-            <li>ChatGPT API key — shared once, available to all members</li>
-            <li>Session history — every committed session writes to Firestore for Progress tracking</li>
-        </ul>
-        <h3>Manual Push / Pull</h3>
-        <p>The Push ↑ and Pull ↓ buttons in Club Manager force a full sync if needed. Under normal use you should never need them — auto-sync handles everything.</p>
-        <h3>Practice Clubs</h3>
-        <p>Clubs marked <strong>Practice Only</strong> never write to Firestore. The built-in TEST CLUB is always practice-only. You can create additional practice clubs for demos or training via Settings → Clubs → New Club with the Practice Only toggle on.</p>
-
-        <h2 id="apikey-setup">3. Setting Up the AI Key</h2>
-        <p>One officer sets up the key once. It syncs to all members automatically via cloud sync.</p>
-        <div class="api-step"><strong>Step 1:</strong> Go to <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> and sign up or log in.</div>
-        <div class="api-step"><strong>Step 2:</strong> Navigate to <strong>API Keys</strong> in the left sidebar.</div>
-        <div class="api-step"><strong>Step 3:</strong> Click <strong>+ Create new secret key</strong>, name it "Toastmasters App", copy the key — it starts with <code>sk-...</code>.</div>
-        <div class="api-step"><strong>Step 4:</strong> In Meeting Tools go to <strong>Settings → ChatGPT API Key</strong>, paste the key, and tap away from the field. It saves and syncs to the club immediately.</div>
-        <h3>Cost</h3>
-        <p>GPT-4o-mini (W.O.D.) and Whisper (transcription) are extremely inexpensive. A full meeting's worth of usage will typically cost less than $0.05. OpenAI provides free credit to new accounts.</p>
-        <h3>Revoking the Key</h3>
-        <p>If needed you can delete the key at <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> at any time and generate a new one. Update the new key in Settings and it will sync to all members.</p>
-
-        <h2 id="onboarding">4. Onboarding New Members</h2>
-        <p>The process is simple — members need only two things:</p>
-        <ol>
-            <li>The URL: <strong>kevinpshan.github.io/TMTools/test/</strong> (or prod URL when live)</li>
-            <li>The sync code from you</li>
-        </ol>
-        <p>They open the app, tap <strong>Join Existing Club</strong>, enter the code, and everything downloads automatically — roster, fillers, and AI key. They are ready to use the app immediately.</p>
-        <div class="alert-green">
-            <strong>Tip:</strong> On iOS, members can add the app to their home screen via Safari → Share → Add to Home Screen. This installs it as a PWA with a full-screen experience and no browser chrome.
-        </div>
-
-        <h2 id="filler-mgmt">5. Managing Filler Words</h2>
-        <p>The filler word list is shared across all club members via cloud sync. Changes you make propagate automatically.</p>
-        <ul>
-            <li>Go to <strong>Settings → Filler Words</strong> to add, rename, or delete words.</li>
-            <li>Any change pushes to Firestore immediately.</li>
-            <li>All members' apps update the next time they open the app or switch clubs.</li>
-        </ul>
-        <p>The default list is: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>. Customize it to match what your Toastmaster chapter tracks.</p>
-
-        <h2 id="data-mgmt">6. Data Management</h2>
-        <h3>What Lives Where</h3>
-        <table>
-            <tr><th>Data</th><th>Local</th><th>Cloud</th></tr>
-            <tr><td>Speaker roster</td><td>✓</td><td>✓ (synced)</td></tr>
-            <tr><td>Filler word list</td><td>✓</td><td>✓ (synced)</td></tr>
-            <tr><td>API key</td><td>✓</td><td>✓ (synced)</td></tr>
-            <tr><td>Session history</td><td>—</td><td>✓ (Progress screen)</td></tr>
-            <tr><td>Word of Day (today)</td><td>✓</td><td>✓ (Cloud Report)</td></tr>
-            <tr><td>Meeting logs</td><td>✓</td><td>—</td></tr>
-            <tr><td>Transcripts</td><td>✓ (meeting only)</td><td>—</td></tr>
-            <tr><td>Practice club data</td><td>✓</td><td>Never</td></tr>
-        </table>
-        <h3>Backup &amp; Restore</h3>
-        <p>Settings → Backup Data exports a JSON file with the active club's roster, fillers, and API key. Use this as an emergency restore — not as a primary sync mechanism (cloud sync handles that).</p>
-        <h3>Clear Meeting Data</h3>
-        <p>Resets all logs, transcripts, and the selected W.O.D. for the next meeting. Does <em>not</em> delete the roster, filler words, or cloud session history.</p>
-
-        <h2 id="dev-resources">7. Developer Resources</h2>
-        <p>Full technical documentation, test cases, and release history are available below. These are intended for the developer maintaining the codebase.</p>
-
-        <div class="resource-grid">
-            <a href="technical-reference.html" class="resource-card">
-                <div class="rc-icon">⚙</div>
-                <div class="rc-title">Technical Reference</div>
-                <div class="rc-desc">Architecture, Firebase schema, localStorage keys, all functions, CSS contract, and rules for safe feature additions.</div>
-            </a>
-            <a href="test-plan.html" class="resource-card">
-                <div class="rc-icon">✅</div>
-                <div class="rc-title">Test Plan</div>
-                <div class="rc-desc">98 test cases across 15 sections. Use before every release to production.</div>
-            </a>
-            <a href="changelog.html" class="resource-card">
-                <div class="rc-icon">📋</div>
-                <div class="rc-title">Changelog</div>
-                <div class="rc-desc">Full release history from v2.8 through current. Updated with every production deployment.</div>
-            </a>
-            <a href="https://bit.ly/m/SDTM" target="_blank" class="resource-card">
-                <div class="rc-icon">🌐</div>
-                <div class="rc-title">Club Website</div>
-                <div class="rc-desc">Southern Dutchess Toastmasters public website.</div>
-            </a>
-        </div>
-
-    </div><!-- end officers panel -->
-
-</div><!-- end content -->
-
-<div class="page-footer">
-    Meeting Tools v3.2.4 &nbsp;·&nbsp; Southern Dutchess Toastmasters
-</div>
-
-<script>
-    function switchTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('panel-' + tab).classList.add('active');
-        event.target.classList.add('active');
-        window.scrollTo(0, 0);
-    }
-
-    // Deep link support — manual.html#officers opens Officers tab directly
-    if (window.location.hash === '#officers') {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('panel-officers').classList.add('active');
-        document.querySelectorAll('.tab')[1].classList.add('active');
-    }
-</script>
+        // Deep link support — manual.html#officers opens Officers tab directly
+        if (window.location.hash === '#officers') {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-officers').classList.add('active');
+            document.querySelectorAll('.tab')[1].classList.add('active');
+        }
+    </script>
 
 </body>
 </html>

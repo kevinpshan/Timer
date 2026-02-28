@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,54 +13,52 @@
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; }
 
+        .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; width: 100%; }
+        .btn-back { text-decoration: none; color: var(--accent); font-weight: 700; font-size: 16px; }
+        .header-title { font-size: 22px; font-weight: 800; }
+        .header-sub { font-size: 13px; color: #8E8E93; }
 
-    .page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; max-width: 800px; margin-left: auto; margin-right: auto; width: 100%; }
-    .btn-back { text-decoration: none; color: var(--accent); font-weight: 700; font-size: 16px; }
-    .header-title { font-size: 22px; font-weight: 800; }
-    .header-sub { font-size: 13px; color: #8E8E93; }
+        .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; max-width: 800px; margin: 0 auto; }
+        .tab { flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 15px; border-radius: 8px; cursor: pointer; color: var(--subtext); transition: all 0.2s; user-select: none; }
+        .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-    .tab-container { display: flex; background: #E3E3E8; border-radius: 10px; padding: 2px; max-width: 800px; margin: 0 auto; }
-    .tab { flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 15px; border-radius: 8px; cursor: pointer; color: var(--subtext); transition: all 0.2s; user-select: none; }
-    .tab.active { background: white; color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .content { max-width: 800px; margin: 0 auto; padding: 24px 20px 50px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
-    .content { max-width: 800px; margin: 0 auto; padding: 24px 20px 50px; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+        .release { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
+        .release-header { padding: 18px 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .release-header > div:first-child { flex: 1; min-width: 0; }
+        .version-num { font-size: 20px; font-weight: 800; color: var(--text); }
+        .release-date { font-size: 13px; color: #8E8E93; font-weight: 500; margin-top: 2px; }
+        .release-tag { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        .tag-major   { background: #E8F2FF; color: #004499; }
+        .tag-feature { background: #F0FFF4; color: #1a7a1a; }
+        .tag-fix     { background: #FFF9E6; color: #7A5C00; }
+        .tag-current { background: var(--accent); color: white; }
+        .tag-high    { background: #FFE8E8; color: #990000; }
+        .tag-medium  { background: #FFF9E6; color: #7A5C00; }
+        .tag-low     { background: #F0FFF4; color: #1a7a1a; }
+        .tag-prereq  { background: #F0F0FF; color: #330099; }
+        .tag-hrs     { background: #E8F2FF; color: #004499; }
 
-    .release { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
-    .release-header { padding: 18px 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-    .release-header > div:first-child { flex: 1; min-width: 0; }
-    .version-num { font-size: 20px; font-weight: 800; color: var(--text); }
-    .release-date { font-size: 13px; color: #8E8E93; font-weight: 500; margin-top: 2px; }
-    .release-tag { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-    .tag-major   { background: #E8F2FF; color: #004499; }
-    .tag-feature { background: #F0FFF4; color: #1a7a1a; }
-    .tag-fix     { background: #FFF9E6; color: #7A5C00; }
-    .tag-current { background: var(--accent); color: white; }
-    .tag-high    { background: #FFE8E8; color: #990000; }
-    .tag-medium  { background: #FFF9E6; color: #7A5C00; }
-    .tag-low     { background: #F0FFF4; color: #1a7a1a; }
-    .tag-prereq  { background: #F0F0FF; color: #330099; }
-    .tag-hrs     { background: #E8F2FF; color: #004499; }
-
-    .release-body { padding: 18px 25px; }
-    .change-group { margin-bottom: 16px; }
-    .change-group:last-child { margin-bottom: 0; }
-    .change-group-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #8E8E93; margin-bottom: 6px; }
-    ul { margin: 0; padding-left: 20px; }
-    li { font-size: 15px; margin-bottom: 5px; }
-    p.note { font-size: 15px; margin: 6px 0; color: var(--subtext); line-height: 1.6; }
-    code { background: #F2F2F7; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-size: 13px; font-weight: 600; }
-    pre { background: #F2F2F7; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 13px; overflow-x: auto; margin: 10px 0; line-height: 1.5; }
-    table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
-    th { background: #F2F2F7; padding: 8px 12px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
-    td { padding: 8px 12px; border: 1px solid var(--border); }
-    .milestone-divider { text-align: center; padding: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #8E8E93; margin: 8px 0; }
-    .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 12px 16px; border-radius: 8px; margin: 0 0 20px; font-size: 14px; color: var(--subtext); }
-    .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
-</style>
-
+        .release-body { padding: 18px 25px; }
+        .change-group { margin-bottom: 16px; }
+        .change-group:last-child { margin-bottom: 0; }
+        .change-group-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #8E8E93; margin-bottom: 6px; }
+        ul { margin: 0; padding-left: 20px; }
+        li { font-size: 15px; margin-bottom: 5px; }
+        p.note { font-size: 15px; margin: 6px 0; color: var(--subtext); line-height: 1.6; }
+        code { background: #F2F2F7; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-size: 13px; font-weight: 600; }
+        pre { background: #F2F2F7; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 13px; overflow-x: auto; margin: 10px 0; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+        th { background: #F2F2F7; padding: 8px 12px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
+        td { padding: 8px 12px; border: 1px solid var(--border); }
+        .milestone-divider { text-align: center; padding: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #8E8E93; margin: 8px 0; }
+        .alert { background: #FFF9E6; border-left: 4px solid var(--gold); padding: 12px 16px; border-radius: 8px; margin: 0 0 20px; font-size: 14px; color: var(--subtext); }
+        .footer { text-align: center; opacity: 0.4; font-size: 13px; padding: 20px; }
+    </style>
 </head>
 <body>
 
@@ -83,604 +80,665 @@
 <div class="content">
 
 <!-- ============================================================ -->
-
 <!--  RELEASED TAB                                                -->
-
 <!-- ============================================================ -->
-
 <div id="panel-released" class="tab-panel active">
 
-<!-- v3.2.4 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.2.4</div><div class="release-date">February 2026 &middot; Production</div></div>
-        <span class="release-tag tag-current">Current</span>
-        <span class="release-tag tag-feature">Feature</span>
+    <!-- v3.2.4 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.2.4</div><div class="release-date">February 2026 &middot; Production</div></div>
+            <span class="release-tag tag-current">Current</span>
+            <span class="release-tag tag-feature">Feature</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; PACE (Participating and Achieving Competence and Excellence)</div>
+                <ul>
+                    <li>Third tab added to main menu: <strong>Club</strong> &mdash; home for club management tools</li>
+                    <li>PACE leaderboard: ranked list sorted by points, medal icons for top 3, color-coded progress bars (green &ge;100, gold &ge;50, blue &lt;50), year selector for last 5 TM years</li>
+                    <li>Entry screen: date picker, roster list with entry status, green checkmarks on completed members</li>
+                    <li>Member entry screen: role checkbox grid, live point tally with breakdown, Save/Remove buttons &mdash; points frozen at entry time</li>
+                    <li>Member history drill-down: tap any leaderboard row to see total points, meeting count, progress toward goal, and chronological entry list for the selected year</li>
+                    <li>Role Manager: add/edit/delete roles with point values, cloud synced across all club members, past entries unaffected by changes</li>
+                    <li>Default roles match published SDTM point values: Speaker 15, Toastmaster 10, Evaluator 10, General Evaluator 7, Joke Master 5, Table Topics Master 3, Timer 2, Ah Counter 2</li>
+                    <li>Firestore structure: <code>clubs/{syncCode}/pace_entries</code> with date, member, roles, pointsEarned, tmYear, recordedBy, timestamps</li>
+                    <li><code>paceRoles</code> wired into all five sync paths: autoSyncUp, autoSyncDown, syncUp, syncDown, enableSync</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Embeddable PACE Widget</div>
+                <ul>
+                    <li>Standalone <code>pace-widget.js</code> hosted at repo root &mdash; no Firebase SDK required on external sites</li>
+                    <li>Two widget types: ranked leaderboard and horizontal bar chart</li>
+                    <li>Reads data via Firestore REST API &mdash; one line of HTML to embed, auto-updates each page load</li>
+                    <li><strong>Embed &#8599;</strong> button on PACE leaderboard opens modal with ready-to-copy HTML snippets pre-filled with sync code</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Bug Fixes</div>
+                <ul>
+                    <li>Remove from PACE history now returns to history screen instead of spinning entry roster</li>
+                    <li>PACE leaderboard spinner now has 8-second timeout with Retry button &mdash; module-level timer prevents stale retry loop</li>
+                    <li>Back button from entry screen preserves selected TM year on leaderboard</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; PACE (Participating and Achieving Competence and Excellence)</div>
-            <ul>
-                <li>Third tab added to main menu: <strong>Club</strong> &mdash; home for club management tools</li>
-                <li>PACE leaderboard: ranked list sorted by points, medal icons for top 3, color-coded progress bars (green &ge;100, gold &ge;50, blue &lt;50), year selector for last 5 TM years</li>
-                <li>Entry screen: date picker, roster list with entry status, green checkmarks on completed members</li>
-                <li>Member entry screen: role checkbox grid, live point tally with breakdown, Save/Remove buttons &mdash; points frozen at entry time</li>
-                <li>Member history drill-down: tap any leaderboard row to see total points, meeting count, progress toward goal, and chronological entry list for the selected year</li>
-                <li>Role Manager: add/edit/delete roles with point values, cloud synced across all club members, past entries unaffected by changes</li>
-                <li>Default roles match published SDTM point values: Speaker 15, Toastmaster 10, Evaluator 10, General Evaluator 7, Joke Master 5, Table Topics Master 3, Timer 2, Ah Counter 2</li>
-                <li>Firestore structure: <code>clubs/{syncCode}/pace_entries</code> with date, member, roles, pointsEarned, tmYear, recordedBy, timestamps</li>
-                <li><code>paceRoles</code> wired into all five sync paths: autoSyncUp, autoSyncDown, syncUp, syncDown, enableSync</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Embeddable PACE Widget</div>
-            <ul>
-                <li>Standalone <code>pace-widget.js</code> hosted at repo root &mdash; no Firebase SDK required on external sites</li>
-                <li>Two widget types: ranked leaderboard and horizontal bar chart</li>
-                <li>Reads data via Firestore REST API &mdash; one line of HTML to embed, auto-updates each page load</li>
-                <li><strong>Embed &#8599;</strong> button on PACE leaderboard opens modal with ready-to-copy HTML snippets pre-filled with sync code</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Bug Fixes</div>
-            <ul>
-                <li>Remove from PACE history now returns to history screen instead of spinning entry roster</li>
-                <li>PACE leaderboard spinner now has 8-second timeout with Retry button &mdash; module-level timer prevents stale retry loop</li>
-                <li>Back button from entry screen preserves selected TM year on leaderboard</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
-<!-- v3.2.3 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.2.3</div><div class="release-date">February 2026 &middot; Production</div></div>
-        <span class="release-tag tag-feature">Feature</span>
+    <!-- v3.2.3 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.2.3</div><div class="release-date">February 2026 &middot; Production</div></div>
+            <span class="release-tag tag-feature">Feature</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Cloud Meeting Report</div>
+                <ul>
+                    <li>Report screen now has two tabs: <strong>This Device</strong> (existing local report) and <strong>&#9729; Cloud</strong></li>
+                    <li>Cloud tab queries today&rsquo;s Firestore sessions across all devices &mdash; timer and Ah-Counter combined in one view</li>
+                    <li>Columns: Name | Role | Result | By (device name of recorder)</li>
+                    <li>WOD appears at top of cloud report if selected today &mdash; written to Firestore on Select</li>
+                    <li>Respects Markdown Export toggle &mdash; cloud report copies/shares as markdown table if enabled</li>
+                    <li>Inline <strong>&#8635; Refresh</strong> button re-queries Firestore if sessions are still coming in</li>
+                    <li>Status line shows session count and last-loaded timestamp</li>
+                    <li>Copy and Share buttons work on whichever tab is active</li>
+                    <li>Practice-only clubs see a clear message instead of a cloud query</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Manual Filler Scoring</div>
+                <ul>
+                    <li>Manual counter sessions (tap-to-count) now produce an estimated filler score on save</li>
+                    <li>App records session duration invisibly from the moment the tally screen opens</li>
+                    <li>On SAVE RESULTS, estimates word count at 130 wpm and computes filler %, rate per minute, and EXCELLENT / GOOD / NEEDS WORK rating</li>
+                    <li>Score card displays in the save modal with green / yellow / red color coding, labeled <em>estimated</em> and footnoted &ldquo;Word count estimated at 130 wpm&rdquo;</li>
+                    <li>Sessions under 15 seconds skip scoring &mdash; protects against accidental early saves</li>
+                    <li>Scored sessions write the same Firestore fields as transcription sessions (<code>fillerPct</code>, <code>fillerScore</code>, <code>totalWords</code>, <code>fillersPerMin</code>, <code>durationMins</code>) &mdash; Progress tracker trend line and Cloud Report work automatically</li>
+                    <li>Older sessions already in the system display as &ldquo;counted, no score&rdquo; in the Progress tracker to distinguish them from newly scored sessions</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Bug Fix &mdash; Progress Trend Consistency</div>
+                <ul>
+                    <li>Speaker detail screen showed incorrect trend (&darr; Worsening) even when the most recent session was the speaker&rsquo;s best result</li>
+                    <li>Root cause: detail screen used a half-split average algorithm while the progress list used a simpler oldest-vs-newest comparison &mdash; they disagreed on the same data</li>
+                    <li>Fix: aligned both screens to oldest vs newest session comparison with a 0.5% threshold, so trend is consistent everywhere</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Cloud Meeting Report</div>
-            <ul>
-                <li>Report screen now has two tabs: <strong>This Device</strong> (existing local report) and <strong>&#9729; Cloud</strong></li>
-                <li>Cloud tab queries today&rsquo;s Firestore sessions across all devices &mdash; timer and Ah-Counter combined in one view</li>
-                <li>Columns: Name | Role | Result | By (device name of recorder)</li>
-                <li>WOD appears at top of cloud report if selected today &mdash; written to Firestore on Select</li>
-                <li>Respects Markdown Export toggle &mdash; cloud report copies/shares as markdown table if enabled</li>
-                <li>Inline <strong>&#8635; Refresh</strong> button re-queries Firestore if sessions are still coming in</li>
-                <li>Status line shows session count and last-loaded timestamp</li>
-                <li>Copy and Share buttons work on whichever tab is active</li>
-                <li>Practice-only clubs see a clear message instead of a cloud query</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Manual Filler Scoring</div>
-            <ul>
-                <li>Manual counter sessions (tap-to-count) now produce an estimated filler score on save</li>
-                <li>App records session duration invisibly from the moment the tally screen opens</li>
-                <li>On SAVE RESULTS, estimates word count at 130 wpm and computes filler %, rate per minute, and EXCELLENT / GOOD / NEEDS WORK rating</li>
-                <li>Score card displays in the save modal with green / yellow / red color coding, labeled <em>estimated</em> and footnoted &ldquo;Word count estimated at 130 wpm&rdquo;</li>
-                <li>Sessions under 15 seconds skip scoring &mdash; protects against accidental early saves</li>
-                <li>Scored sessions write the same Firestore fields as transcription sessions (<code>fillerPct</code>, <code>fillerScore</code>, <code>totalWords</code>, <code>fillersPerMin</code>, <code>durationMins</code>) &mdash; Progress tracker trend line and Cloud Report work automatically</li>
-                <li>Older sessions already in the system display as &ldquo;counted, no score&rdquo; in the Progress tracker to distinguish them from newly scored sessions</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Bug Fix &mdash; Progress Trend Consistency</div>
-            <ul>
-                <li>Speaker detail screen showed incorrect trend (&darr; Worsening) even when the most recent session was the speaker&rsquo;s best result</li>
-                <li>Root cause: detail screen used a half-split average algorithm while the progress list used a simpler oldest-vs-newest comparison &mdash; they disagreed on the same data</li>
-                <li>Fix: aligned both screens to oldest vs newest session comparison with a 0.5% threshold, so trend is consistent everywhere</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
-<!-- v3.2.2 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.2.2</div><div class="release-date">February 2026 &middot; Production</div></div>
-        <span class="release-tag tag-feature">Feature</span>
-        <span class="release-tag tag-fix">Fix</span>
+    <!-- v3.2.2 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.2.2</div><div class="release-date">February 2026 &middot; Production</div></div>
+            <span class="release-tag tag-feature">Feature</span>
+            <span class="release-tag tag-fix">Fix</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Timer</div>
+                <ul>
+                    <li>Added <strong>Reset</strong> button &mdash; resets clock to 00:00 and immediately restarts (3-button layout: Reset | Pause | Commit &amp; Exit)</li>
+                    <li>Fixed Pause/Resume &mdash; second tap resumes from exact elapsed time. Button label toggles PAUSE &harr; RESUME</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Ah-Counter</div>
+                <ul>
+                    <li>Add filler word on the fly &mdash; tap <strong>+ ADD WORD</strong> card during live session. Starts at count 1. Toggle to save permanently to club list (on by default, auto-syncs)</li>
+                    <li>Name input inline <strong>&times; clear button</strong> &mdash; appears when field has content, clears field and resets roster list</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Club Management</div>
+                <ul>
+                    <li>Sync code masked as &bull;&bull;&bull;&bull;-&bull;&bull;&bull;&bull; by default in Club Manager &mdash; tap &#128065; to reveal</li>
+                    <li>Attempting to delete the active club now shows a clear error modal</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Stale Data Warning</div>
+                <ul>
+                    <li>Yellow banner on menu screen if meeting data from 3+ hours ago is still present &mdash; includes inline Clear button. Designed for back-to-back meeting days.</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Progress Screen</div>
+                <ul>
+                    <li>List filters to current roster members only &mdash; deleted members&rsquo; history preserved but hidden</li>
+                    <li>Manual counter sessions now show filler count and per-word breakdown in speaker detail</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Fixed</div>
+                <ul>
+                    <li>Create Club: blank name validation re-opens modal instead of silently closing</li>
+                    <li>Join Club: API key field updates immediately in Settings after joining</li>
+                    <li>WOD search field no longer pre-populates with club name on first visit</li>
+                    <li>Timer display no longer flashes stale time from previous session on new start</li>
+                    <li>Full name validation placeholder changed from developer name to &ldquo;JOHN SMITH&rdquo;</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Timer</div>
-            <ul>
-                <li>Added <strong>Reset</strong> button &mdash; resets clock to 00:00 and immediately restarts (3-button layout: Reset | Pause | Commit &amp; Exit)</li>
-                <li>Fixed Pause/Resume &mdash; second tap resumes from exact elapsed time. Button label toggles PAUSE &harr; RESUME</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Ah-Counter</div>
-            <ul>
-                <li>Add filler word on the fly &mdash; tap <strong>+ ADD WORD</strong> card during live session. Starts at count 1. Toggle to save permanently to club list (on by default, auto-syncs)</li>
-                <li>Name input inline <strong>&times; clear button</strong> &mdash; appears when field has content, clears field and resets roster list</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Club Management</div>
-            <ul>
-                <li>Sync code masked as &bull;&bull;&bull;&bull;-&bull;&bull;&bull;&bull; by default in Club Manager &mdash; tap &#128065; to reveal</li>
-                <li>Attempting to delete the active club now shows a clear error modal</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Stale Data Warning</div>
-            <ul>
-                <li>Yellow banner on menu screen if meeting data from 3+ hours ago is still present &mdash; includes inline Clear button. Designed for back-to-back meeting days.</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Progress Screen</div>
-            <ul>
-                <li>List filters to current roster members only &mdash; deleted members&rsquo; history preserved but hidden</li>
-                <li>Manual counter sessions now show filler count and per-word breakdown in speaker detail</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Fixed</div>
-            <ul>
-                <li>Create Club: blank name validation re-opens modal instead of silently closing</li>
-                <li>Join Club: API key field updates immediately in Settings after joining</li>
-                <li>WOD search field no longer pre-populates with club name on first visit</li>
-                <li>Timer display no longer flashes stale time from previous session on new start</li>
-                <li>Full name validation placeholder changed from developer name to &ldquo;JOHN SMITH&rdquo;</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
-<!-- v3.1.6 - v3.1.9 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.1.6 &ndash; v3.1.9</div><div class="release-date">February 2026</div></div>
-        <span class="release-tag tag-feature">Feature</span>
-        <span class="release-tag tag-fix">Fix</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New (v3.1.6)</div>
-            <ul>
-                <li>Device name prompt on first launch &mdash; written to every Firestore session as <code>recordedBy</code> for audit trail</li>
-                <li>Delete individual session from Progress speaker detail view</li>
-            </ul>
+    <!-- v3.1.6 - v3.1.9 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.1.6 &ndash; v3.1.9</div><div class="release-date">February 2026</div></div>
+            <span class="release-tag tag-feature">Feature</span>
+            <span class="release-tag tag-fix">Fix</span>
         </div>
-        <div class="change-group">
-            <div class="change-group-label">Fixes (v3.1.7 &ndash; v3.1.9)</div>
-            <ul>
-                <li>Transcript share includes filler markup in both plain text and markdown modes</li>
-                <li>Transcription path no longer writes a duplicate session to Firestore when Merge + Save both fire</li>
-                <li>Filler scoring threshold corrected &mdash; Excellent &lt;5%, Good 5&ndash;10%, Needs Work &gt;10%</li>
-                <li>API key field updates live after joining a club via sync code</li>
-                <li>Cannot delete active club &mdash; error modal instead of silent deletion</li>
-                <li>WOD search field clears when navigating to WOD screen</li>
-                <li>Timer display resets to 00:00 before showing timer screen (no stale flash)</li>
-            </ul>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New (v3.1.6)</div>
+                <ul>
+                    <li>Device name prompt on first launch &mdash; written to every Firestore session as <code>recordedBy</code> for audit trail</li>
+                    <li>Delete individual session from Progress speaker detail view</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Fixes (v3.1.7 &ndash; v3.1.9)</div>
+                <ul>
+                    <li>Transcript share includes filler markup in both plain text and markdown modes</li>
+                    <li>Transcription path no longer writes a duplicate session to Firestore when Merge + Save both fire</li>
+                    <li>Filler scoring threshold corrected &mdash; Excellent &lt;5%, Good 5&ndash;10%, Needs Work &gt;10%</li>
+                    <li>API key field updates live after joining a club via sync code</li>
+                    <li>Cannot delete active club &mdash; error modal instead of silent deletion</li>
+                    <li>WOD search field clears when navigating to WOD screen</li>
+                    <li>Timer display resets to 00:00 before showing timer screen (no stale flash)</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- v3.1.5 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.1.5</div><div class="release-date">February 2026</div></div>
-        <span class="release-tag tag-feature">Feature</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Welcome Screen</div>
-            <ul>
-                <li>First-launch welcome screen: Join Existing Club, Create New Club, Just Exploring</li>
-                <li>Join by sync code downloads roster, fillers, and AI key automatically</li>
-                <li>Practice Only club flag &mdash; never writes to Firestore</li>
-            </ul>
+    <!-- v3.1.5 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.1.5</div><div class="release-date">February 2026</div></div>
+            <span class="release-tag tag-feature">Feature</span>
         </div>
-        <div class="change-group">
-            <div class="change-group-label">Documentation Suite Published</div>
-            <ul>
-                <li>Manual (Members + Officers &amp; Devs tabs), Technical Reference, Test Plan, Changelog</li>
-            </ul>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Welcome Screen</div>
+                <ul>
+                    <li>First-launch welcome screen: Join Existing Club, Create New Club, Just Exploring</li>
+                    <li>Join by sync code downloads roster, fillers, and AI key automatically</li>
+                    <li>Practice Only club flag &mdash; never writes to Firestore</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Documentation Suite Published</div>
+                <ul>
+                    <li>Manual (Members + Officers &amp; Devs tabs), Technical Reference, Test Plan, Changelog</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- v3.1.0 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.1.0</div><div class="release-date">February 2026</div></div>
-        <span class="release-tag tag-major">Major</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Firebase Cloud Sync</div>
-            <ul>
-                <li>Firestore integration &mdash; roster, fillers, and API key sync across all club members&rsquo; devices</li>
-                <li>8-character sync code generation (XXXX-XXXX format)</li>
-                <li>Join existing club by code &mdash; full data download on first join</li>
-                <li>Auto-sync on every roster and filler change &mdash; manual Push/Pull available as override</li>
-                <li>Session history written to Firestore on every Commit &amp; Exit and Save Results</li>
-                <li>Progress screen &mdash; per-speaker filler rate history, trend indicators, full session log</li>
-                <li>AI key shared club-wide &mdash; members get it automatically on join</li>
-            </ul>
+    <!-- v3.1.0 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.1.0</div><div class="release-date">February 2026</div></div>
+            <span class="release-tag tag-major">Major</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Firebase Cloud Sync</div>
+                <ul>
+                    <li>Firestore integration &mdash; roster, fillers, and API key sync across all club members&rsquo; devices</li>
+                    <li>8-character sync code generation (XXXX-XXXX format)</li>
+                    <li>Join existing club by code &mdash; full data download on first join</li>
+                    <li>Auto-sync on every roster and filler change &mdash; manual Push/Pull available as override</li>
+                    <li>Session history written to Firestore on every Commit &amp; Exit and Save Results</li>
+                    <li>Progress screen &mdash; per-speaker filler rate history, trend indicators, full session log</li>
+                    <li>AI key shared club-wide &mdash; members get it automatically on join</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- v3.0.0 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v3.0.0</div><div class="release-date">February 2026</div></div>
-        <span class="release-tag tag-major">Major</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">New &mdash; Multi-Club Architecture</div>
-            <ul>
-                <li>Full multi-club support &mdash; create, switch, and manage multiple clubs on one device</li>
-                <li>All data scoped per club: roster, fillers, logs, API key, custom limits</li>
-                <li>Filler Word Manager &mdash; full CRUD for club filler list</li>
-                <li>Built-in TEST CLUB for demos &mdash; always practice-only, never writes to Firestore</li>
-                <li>Migration from v2.x &mdash; existing data automatically moved to a default club on first load</li>
-            </ul>
+    <!-- v3.0.0 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v3.0.0</div><div class="release-date">February 2026</div></div>
+            <span class="release-tag tag-major">Major</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">New &mdash; Multi-Club Architecture</div>
+                <ul>
+                    <li>Full multi-club support &mdash; create, switch, and manage multiple clubs on one device</li>
+                    <li>All data scoped per club: roster, fillers, logs, API key, custom limits</li>
+                    <li>Filler Word Manager &mdash; full CRUD for club filler list</li>
+                    <li>Built-in TEST CLUB for demos &mdash; always practice-only, never writes to Firestore</li>
+                    <li>Migration from v2.x &mdash; existing data automatically moved to a default club on first load</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- v2.8 - v2.11 -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v2.8.x &ndash; v2.11.x</div><div class="release-date">Mid 2025 &ndash; Early 2026</div></div>
-        <span class="release-tag tag-feature">Feature</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Foundation Features (first Claude versions)</div>
-            <ul>
-                <li>Core Timer with green/yellow/red threshold presets and custom thresholds</li>
-                <li>Ah-Counter tally grid with increment, decrement, delete per filler, and session merge</li>
-                <li>Meeting Report with plain text and markdown export modes</li>
-                <li>Word of the Day with ChatGPT (GPT-4o-mini) definitions, 1,000+ word library</li>
-                <li>Speaker roster with localStorage persistence, live filter, alphabetical sort</li>
-                <li>Backup / Restore via JSON export and import</li>
-                <li>PWA manifest and service worker &mdash; installable on iOS home screen</li>
-                <li>Whisper speech transcription with filler word detection and highlighting</li>
-                <li>Filler word scoring &mdash; Excellent (&lt;5%), Good (5&ndash;10%), Needs Work (&gt;10%)</li>
-                <li>Transcript archive with per-speaker view and Web Share API</li>
-                <li>Test/prod isolation via URL path prefix detection</li>
-            </ul>
+    <!-- v2.8 - v2.11 -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v2.8.x &ndash; v2.11.x</div><div class="release-date">Mid 2025 &ndash; Early 2026</div></div>
+            <span class="release-tag tag-feature">Feature</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Foundation Features (first Claude versions)</div>
+                <ul>
+                    <li>Core Timer with green/yellow/red threshold presets and custom thresholds</li>
+                    <li>Ah-Counter tally grid with increment, decrement, delete per filler, and session merge</li>
+                    <li>Meeting Report with plain text and markdown export modes</li>
+                    <li>Word of the Day with ChatGPT (GPT-4o-mini) definitions, 1,000+ word library</li>
+                    <li>Speaker roster with localStorage persistence, live filter, alphabetical sort</li>
+                    <li>Backup / Restore via JSON export and import</li>
+                    <li>PWA manifest and service worker &mdash; installable on iOS home screen</li>
+                    <li>Whisper speech transcription with filler word detection and highlighting</li>
+                    <li>Filler word scoring &mdash; Excellent (&lt;5%), Good (5&ndash;10%), Needs Work (&gt;10%)</li>
+                    <li>Transcript archive with per-speaker view and Web Share API</li>
+                    <li>Test/prod isolation via URL path prefix detection</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="milestone-divider">&#8212;&#8212; Project Origins &#8212;&#8212;</div>
+    <div class="milestone-divider">&#8212;&#8212; Project Origins &#8212;&#8212;</div>
 
-<!-- Gemini Era -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">v1.0 &ndash; v2.7</div><div class="release-date">Early 2025 &middot; Built with Google Gemini</div></div>
-        <span class="release-tag" style="background:#E8F5E9;color:#1a5e20;">Origin</span>
+    <!-- Gemini Era -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">v1.0 &ndash; v2.7</div><div class="release-date">Early 2025 &middot; Built with Google Gemini</div></div>
+            <span class="release-tag" style="background:#E8F5E9;color:#1a5e20;">Origin</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Development History</div>
+                <p class="note">Meeting Tools was originally conceived and built in collaboration with <strong>Google Gemini</strong>. Development proceeded through v2.7, establishing the core architecture and feature set. As the codebase grew in complexity, Gemini encountered limitations handling the scope of changes required, and development transitioned to <strong>Claude (Anthropic)</strong> starting at v2.8. Claude has handled all development from that point forward.</p>
+                <p class="note">The following is Gemini&rsquo;s own functional specification of the app at the point of handoff:</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Identity &amp; Navigation</div>
+                <ul>
+                    <li>Dynamic header branding (55px bold) updating contextually to Timing Tools or Counter Tools</li>
+                    <li>Club Identity &mdash; tapping header allows persistent club name configuration</li>
+                    <li>iOS-style full-width segmented tab container</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Roster, Timer &amp; Ah-Counter</div>
+                <ul>
+                    <li>Live predictive filtering, auto-fill on name tap, localStorage persistence with alphabetical sort</li>
+                    <li>Timer presets (Table Topics, Evaluation, Speech, Ice Breaker, Custom) with full-screen color transitions</li>
+                    <li>Tally cards for AH, UM, ER, SO, LIKE, YOU KNOW with tap-to-increment and minus button</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Reporting &amp; Technical Standards</div>
+                <ul>
+                    <li>Consolidated meeting log with one-touch clipboard copy</li>
+                    <li>Safety-checked Clear All, OpenAI key field in Settings</li>
+                    <li>Centered 900px responsive container for iPad/tablet use</li>
+                    <li>Single-file architecture &mdash; all CSS, JS, and HTML in one file to eliminate external dependency failures</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Development History</div>
-            <p class="note">Meeting Tools was originally conceived and built in collaboration with <strong>Google Gemini</strong>. Development proceeded through v2.7, establishing the core architecture and feature set. As the codebase grew in complexity, Gemini encountered limitations handling the scope of changes required, and development transitioned to <strong>Claude (Anthropic)</strong> starting at v2.8. Claude has handled all development from that point forward.</p>
-            <p class="note">The following is Gemini&rsquo;s own functional specification of the app at the point of handoff:</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Identity &amp; Navigation</div>
-            <ul>
-                <li>Dynamic header branding (55px bold) updating contextually to Timing Tools or Counter Tools</li>
-                <li>Club Identity &mdash; tapping header allows persistent club name configuration</li>
-                <li>iOS-style full-width segmented tab container</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Roster, Timer &amp; Ah-Counter</div>
-            <ul>
-                <li>Live predictive filtering, auto-fill on name tap, localStorage persistence with alphabetical sort</li>
-                <li>Timer presets (Table Topics, Evaluation, Speech, Ice Breaker, Custom) with full-screen color transitions</li>
-                <li>Tally cards for AH, UM, ER, SO, LIKE, YOU KNOW with tap-to-increment and minus button</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Reporting &amp; Technical Standards</div>
-            <ul>
-                <li>Consolidated meeting log with one-touch clipboard copy</li>
-                <li>Safety-checked Clear All, OpenAI key field in Settings</li>
-                <li>Centered 900px responsive container for iPad/tablet use</li>
-                <li>Single-file architecture &mdash; all CSS, JS, and HTML in one file to eliminate external dependency failures</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 </div><!-- end panel-released -->
 
 <!-- ============================================================ -->
-
 <!--  ROADMAP TAB                                                 -->
-
 <!-- ============================================================ -->
-
 <div id="panel-roadmap" class="tab-panel">
 
-<div class="alert">Items move from this tab to Released when shipped. Last updated: v3.2.3</div>
+    <div class="alert">Items move from this tab to Released when shipped. Last updated: v3.2.3</div>
 
-<div class="milestone-divider">&#8212;&#8212; Medium Priority &#8212;&#8212;</div>
+    <div class="milestone-divider">&#8212;&#8212; Medium Priority &#8212;&#8212;</div>
 
-<!-- Role Manager -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Role Manager</div><div class="release-date">Discussed Feb 25 session</div></div>
-        <span class="release-tag tag-medium">Medium</span>
-        <span class="release-tag tag-prereq">Prereq for PACE</span>
-        <span class="release-tag tag-hrs">~3&ndash;4 hrs</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem</div>
-            <p class="note">Club roles are hardcoded in <code>renderSetupGrid()</code>. Clubs cannot add, rename, or customize roles to match their chapter&rsquo;s practices, and there&rsquo;s no way to assign timer thresholds or PACE point values per role.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Three Systems Stay Independent</div>
-            <ul>
-                <li><strong>Roles</strong> &mdash; what a member did at a meeting (drives Timer grid, Counter grid, PACE points)</li>
-                <li><strong>Filler words</strong> &mdash; what a member said during their speech (Ah-Counter tally cards &mdash; no changes to this flow)</li>
-                <li><strong>PACE</strong> &mdash; accumulates points from roles over time across meetings</li>
-            </ul>
-            <p class="note">The Ah-Counter workflow is completely unchanged: pick speaker &rarr; pick role &rarr; tap tally cards &rarr; save. The role grid just becomes dynamic instead of hardcoded.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Firestore Schema</div>
-            <pre>clubs/{syncCode}/roles → [
-
-{ name: “SPEAKER”,      timerPreset: {g:300,y:360,r:420}, pacePoints: 15, showInTimer: true,  showInCounter: true  },
-{ name: “EVALUATOR”,    timerPreset: {g:120,y:150,r:180}, pacePoints: 10, showInTimer: true,  showInCounter: true  },
-{ name: “TOASTMASTER”,  timerPreset: null,                 pacePoints: 10, showInTimer: false, showInCounter: true  },
-{ name: “TABLE TOPICS”, timerPreset: {g:60,y:90,r:120},   pacePoints:  3, showInTimer: true,  showInCounter: true  },
-{ name: “AH COUNTER”,   timerPreset: null,                 pacePoints:  2, showInTimer: false, showInCounter: true  },
-{ name: “TIMER”,        timerPreset: null,                 pacePoints:  2, showInTimer: false, showInCounter: true  }
+    <!-- Role Manager -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Role Manager</div><div class="release-date">Discussed Feb 25 session</div></div>
+            </div>
+            <span class="release-tag tag-feature">Shipped</span>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem</div>
+                <p class="note">Club roles are hardcoded in <code>renderSetupGrid()</code>. Clubs cannot add, rename, or customize roles to match their chapter&rsquo;s practices, and there&rsquo;s no way to assign timer thresholds or PACE point values per role.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Three Systems Stay Independent</div>
+                <ul>
+                    <li><strong>Roles</strong> &mdash; what a member did at a meeting (drives Timer grid, Counter grid, PACE points)</li>
+                    <li><strong>Filler words</strong> &mdash; what a member said during their speech (Ah-Counter tally cards &mdash; no changes to this flow)</li>
+                    <li><strong>PACE</strong> &mdash; accumulates points from roles over time across meetings</li>
+                </ul>
+                <p class="note">The Ah-Counter workflow is completely unchanged: pick speaker &rarr; pick role &rarr; tap tally cards &rarr; save. The role grid just becomes dynamic instead of hardcoded.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Firestore Schema</div>
+                <pre>clubs/{syncCode}/roles → [
+  { name: "SPEAKER",      timerPreset: {g:300,y:360,r:420}, pacePoints: 15, showInTimer: true,  showInCounter: true  },
+  { name: "EVALUATOR",    timerPreset: {g:120,y:150,r:180}, pacePoints: 10, showInTimer: true,  showInCounter: true  },
+  { name: "TOASTMASTER",  timerPreset: null,                 pacePoints: 10, showInTimer: false, showInCounter: true  },
+  { name: "TABLE TOPICS", timerPreset: {g:60,y:90,r:120},   pacePoints:  3, showInTimer: true,  showInCounter: true  },
+  { name: "AH COUNTER",   timerPreset: null,                 pacePoints:  2, showInTimer: false, showInCounter: true  },
+  { name: "TIMER",        timerPreset: null,                 pacePoints:  2, showInTimer: false, showInCounter: true  }
 ]</pre>
-</div>
-<div class="change-group">
-<div class="change-group-label">Settings UI</div>
-<ul>
-<li>Role Manager in Settings (alongside Filler Word Manager)</li>
-<li>Per role: name, PACE points, timer thresholds (optional toggle), Show in Timer, Show in Counter</li>
-<li>Add / delete roles with confirmation — changes push to Firestore and sync to all members immediately</li>
-<li>Migration: existing clubs get current hardcoded roles pre-populated on first load after update</li>
-</ul>
-</div>
-</div>
-</div>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Settings UI</div>
+                <ul>
+                    <li>Role Manager in Settings (alongside Filler Word Manager)</li>
+                    <li>Per role: name, PACE points, timer thresholds (optional toggle), Show in Timer, Show in Counter</li>
+                    <li>Add / delete roles with confirmation &mdash; changes push to Firestore and sync to all members immediately</li>
+                    <li>Migration: existing clubs get current hardcoded roles pre-populated on first load after update</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-<!-- PACE Race -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">PACE Race Tracker</div><div class="release-date">Discussed Feb 25 session</div></div>
-        <span class="release-tag tag-medium">Medium</span>
-        <span class="release-tag tag-prereq">Requires Role Manager</span>
-        <span class="release-tag tag-hrs">~4&ndash;6 hrs</span>
+    <!-- PACE Race -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">PACE Race Tracker</div><div class="release-date">Discussed Feb 25 session</div></div>
+            </div>
+            <span class="release-tag tag-feature">Shipped</span>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">What PACE Is</div>
+                <p class="note"><strong>Participating and Achieving Competence and Excellence</strong> &mdash; a point-based incentive system where members earn points by taking on meeting roles, targeting 100 points as the goal. Point values come directly from the Role Manager and are fully customizable per club.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Default Point Values (configurable in Role Manager)</div>
+                <table>
+                    <tr><th>Role</th><th>Points</th></tr>
+                    <tr><td>Speaker</td><td>15</td></tr>
+                    <tr><td>Evaluator</td><td>10</td></tr>
+                    <tr><td>Toastmaster</td><td>10</td></tr>
+                    <tr><td>General Evaluator</td><td>7</td></tr>
+                    <tr><td>Joke Master</td><td>5</td></tr>
+                    <tr><td>Table Topics Master</td><td>3</td></tr>
+                    <tr><td>Timer</td><td>2</td></tr>
+                    <tr><td>Ah Counter</td><td>2</td></tr>
+                </table>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">In-App Features</div>
+                <ul>
+                    <li>New PACE section &mdash; meeting date selector (defaults to today), assign roles to roster members</li>
+                    <li>Points calculated automatically from Role Manager values</li>
+                    <li>Leaderboard &mdash; cumulative points sorted descending, progress bar toward 100-point goal</li>
+                    <li>Tap any member to see full role history with dates and points per entry</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Embeddable Chart for Club Websites</div>
+                <ul>
+                    <li>Single <code>&lt;script&gt;</code> tag embed with club sync code as a parameter</li>
+                    <li>Fetches pace records from Firestore (public read scoped to pace subcollection only)</li>
+                    <li>Renders a bar chart via Chart.js &mdash; members on X axis, cumulative points on Y, goal line at 100</li>
+                    <li>Self-contained, no iframe, renders cleanly on any background</li>
+                </ul>
+                <pre>&lt;script src="kevinpshan.github.io/pace-widget.js"
+        data-club="ABCD-EF3G"&gt;&lt;/script&gt;</pre>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">What PACE Is</div>
-            <p class="note"><strong>Participating and Achieving Competence and Excellence</strong> &mdash; a point-based incentive system where members earn points by taking on meeting roles, targeting 100 points as the goal. Point values come directly from the Role Manager and are fully customizable per club.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Default Point Values (configurable in Role Manager)</div>
-            <table>
-                <tr><th>Role</th><th>Points</th></tr>
-                <tr><td>Speaker</td><td>15</td></tr>
-                <tr><td>Evaluator</td><td>10</td></tr>
-                <tr><td>Toastmaster</td><td>10</td></tr>
-                <tr><td>General Evaluator</td><td>7</td></tr>
-                <tr><td>Joke Master</td><td>5</td></tr>
-                <tr><td>Table Topics Master</td><td>3</td></tr>
-                <tr><td>Timer</td><td>2</td></tr>
-                <tr><td>Ah Counter</td><td>2</td></tr>
-            </table>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">In-App Features</div>
-            <ul>
-                <li>New PACE section &mdash; meeting date selector (defaults to today), assign roles to roster members</li>
-                <li>Points calculated automatically from Role Manager values</li>
-                <li>Leaderboard &mdash; cumulative points sorted descending, progress bar toward 100-point goal</li>
-                <li>Tap any member to see full role history with dates and points per entry</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Embeddable Chart for Club Websites</div>
-            <ul>
-                <li>Single <code>&lt;script&gt;</code> tag embed with club sync code as a parameter</li>
-                <li>Fetches pace records from Firestore (public read scoped to pace subcollection only)</li>
-                <li>Renders a bar chart via Chart.js &mdash; members on X axis, cumulative points on Y, goal line at 100</li>
-                <li>Self-contained, no iframe, renders cleanly on any background</li>
-            </ul>
-            <pre>&lt;script src="kevinpshan.github.io/pace-widget.js"
-    data-club="ABCD-EF3G"&gt;&lt;/script&gt;</pre>
-        </div>
-    </div>
-</div>
 
-<!-- Google Auth + Admin Panel -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Google Auth + Admin Panel</div><div class="release-date">Discussed Feb 25 session</div></div>
-        <span class="release-tag tag-medium">Medium</span>
-        <span class="release-tag tag-hrs">~1 day</span>
+    <!-- Google Auth + Admin Panel -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Google Auth + Admin Panel</div><div class="release-date">Discussed Feb 25 session</div></div>
+            <span class="release-tag tag-medium">Medium</span>
+            <span class="release-tag tag-hrs">~1 day</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem</div>
+                <p class="note">No admin capability exists &mdash; dead clubs accumulate, there&rsquo;s no usage visibility, and there&rsquo;s no way to manage elevated access without giving everyone the same sync code.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Authentication</div>
+                <p class="note">Google Sign-In via Firebase Auth &mdash; 20-minute Firebase Console change, no new service. Club members keep the existing sync code system unchanged. Google Auth required only for admin panel access.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Role-Based Access Control</div>
+                <table>
+                    <tr><th>Role</th><th>Permissions</th></tr>
+                    <tr><td><strong>owner</strong></td><td>Full access &mdash; add/remove admins, assign roles, delete any club, view all stats, purge dead clubs</td></tr>
+                    <tr><td><strong>admin</strong></td><td>View stats, archive/delete inactive clubs &mdash; cannot manage other admins</td></tr>
+                    <tr><td><strong>viewer</strong></td><td>Read-only &mdash; stats and club list, no modifications</td></tr>
+                </table>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Admin Panel Features</div>
+                <ul>
+                    <li>Dashboard &mdash; total active clubs, total members tracked, total sessions, sessions this month</li>
+                    <li>Club list &mdash; name, sync code (masked), member count, session count, last activity date</li>
+                    <li>Inactive club management &mdash; configurable threshold (default 6 months), soft-delete first, hard-delete after 90-day grace period</li>
+                    <li>Admin user management (owner only) &mdash; add Google email, assign role, remove access</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Delivery</div>
+                <p class="note">Separate <code>admin.html</code> &mdash; never linked from the app, accessed by direct URL only. Owner bootstraps by adding their own email to the <code>admins</code> collection in Firebase Console on first setup.</p>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem</div>
-            <p class="note">No admin capability exists &mdash; dead clubs accumulate, there&rsquo;s no usage visibility, and there&rsquo;s no way to manage elevated access without giving everyone the same sync code.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Authentication</div>
-            <p class="note">Google Sign-In via Firebase Auth &mdash; 20-minute Firebase Console change, no new service. Club members keep the existing sync code system unchanged. Google Auth required only for admin panel access.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Role-Based Access Control</div>
-            <table>
-                <tr><th>Role</th><th>Permissions</th></tr>
-                <tr><td><strong>owner</strong></td><td>Full access &mdash; add/remove admins, assign roles, delete any club, view all stats, purge dead clubs</td></tr>
-                <tr><td><strong>admin</strong></td><td>View stats, archive/delete inactive clubs &mdash; cannot manage other admins</td></tr>
-                <tr><td><strong>viewer</strong></td><td>Read-only &mdash; stats and club list, no modifications</td></tr>
-            </table>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Admin Panel Features</div>
-            <ul>
-                <li>Dashboard &mdash; total active clubs, total members tracked, total sessions, sessions this month</li>
-                <li>Club list &mdash; name, sync code (masked), member count, session count, last activity date</li>
-                <li>Inactive club management &mdash; configurable threshold (default 6 months), soft-delete first, hard-delete after 90-day grace period</li>
-                <li>Admin user management (owner only) &mdash; add Google email, assign role, remove access</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Delivery</div>
-            <p class="note">Separate <code>admin.html</code> &mdash; never linked from the app, accessed by direct URL only. Owner bootstraps by adding their own email to the <code>admins</code> collection in Firebase Console on first setup.</p>
-        </div>
-    </div>
-</div>
 
-<!-- Offline Resilience -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Offline Session Write Resilience</div><div class="release-date">Discussed Feb 25 session</div></div>
-        <span class="release-tag tag-medium">Medium</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem &amp; Solution</div>
-            <p class="note"><code>writeSession()</code> is fire-and-forget &mdash; if a device is offline at Commit &amp; Exit the session silently never reaches Firestore. Firebase SDK has built-in offline persistence that queues writes and replays automatically when connectivity resumes. Enabling it handles this transparently with no UX changes.</p>
-            <p class="note"><em>Low risk for typical WiFi meeting environment. Bump priority if members report missing sessions.</em></p>
+    <!-- Offline Resilience -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Offline Session Write Resilience</div><div class="release-date">Discussed Feb 25 session</div></div>
+            <span class="release-tag tag-medium">Medium</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem &amp; Solution</div>
+                <p class="note"><code>writeSession()</code> is fire-and-forget &mdash; if a device is offline at Commit &amp; Exit the session silently never reaches Firestore. Firebase SDK has built-in offline persistence that queues writes and replays automatically when connectivity resumes. Enabling it handles this transparently with no UX changes.</p>
+                <p class="note"><em>Low risk for typical WiFi meeting environment. Bump priority if members report missing sessions.</em></p>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="milestone-divider">&#8212;&#8212; Lower Priority &#8212;&#8212;</div>
+    <div class="milestone-divider">&#8212;&#8212; Lower Priority &#8212;&#8212;</div>
 
-<!-- Dev/Test/Prod Pipeline -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Dev / Test / Prod Pipeline</div><div class="release-date">Discussed Feb 26 session</div></div>
-        <span class="release-tag tag-low">Low</span>
+    <!-- Dev/Test/Prod Pipeline -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Dev / Test / Prod Pipeline</div><div class="release-date">Discussed Feb 26 session</div></div>
+            </div>
+            <span class="release-tag tag-feature">Shipped</span>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Goal</div>
+                <p class="note">Formalize a three-stage release pipeline so changes can be validated by beta testers before going live. Currently only two environments exist: <code>test/</code> (developer) and root (prod).</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Proposed Structure</div>
+                <ul>
+                    <li><strong>dev/</strong> &mdash; active development, breaks allowed, not shared</li>
+                    <li><strong>test/</strong> &mdash; feature-complete build shared with beta testers for validation</li>
+                    <li><strong>root (prod)</strong> &mdash; confirmed stable, deployed to all members</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">GitHub Actions</div>
+                <ul>
+                    <li>Extend existing Deploy workflow with a <strong>dev &rarr; test</strong> promotion step alongside the current test &rarr; prod step</li>
+                    <li>Each promotion requires a manual <code>DEPLOY</code> confirmation to prevent accidental pushes</li>
+                    <li>Beta testers access <code>kevinpshan.github.io/TMTools/test/</code> directly during the test window</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">localStorage Isolation</div>
+                <p class="note">Each environment needs its own localStorage prefix so dev, test, and prod data never collide. Currently <code>test/</code> uses <code>test_</code> prefix and prod uses <code>prod_</code>. A <code>dev/</code> folder would add a <code>dev_</code> prefix &mdash; one-line change in the URL path detection logic.</p>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Goal</div>
-            <p class="note">Formalize a three-stage release pipeline so changes can be validated by beta testers before going live. Currently only two environments exist: <code>test/</code> (developer) and root (prod).</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Proposed Structure</div>
-            <ul>
-                <li><strong>dev/</strong> &mdash; active development, breaks allowed, not shared</li>
-                <li><strong>test/</strong> &mdash; feature-complete build shared with beta testers for validation</li>
-                <li><strong>root (prod)</strong> &mdash; confirmed stable, deployed to all members</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">GitHub Actions</div>
-            <ul>
-                <li>Extend existing Deploy workflow with a <strong>dev &rarr; test</strong> promotion step alongside the current test &rarr; prod step</li>
-                <li>Each promotion requires a manual <code>DEPLOY</code> confirmation to prevent accidental pushes</li>
-                <li>Beta testers access <code>kevinpshan.github.io/TMTools/test/</code> directly during the test window</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">localStorage Isolation</div>
-            <p class="note">Each environment needs its own localStorage prefix so dev, test, and prod data never collide. Currently <code>test/</code> uses <code>test_</code> prefix and prod uses <code>prod_</code>. A <code>dev/</code> folder would add a <code>dev_</code> prefix &mdash; one-line change in the URL path detection logic.</p>
-        </div>
-    </div>
-</div>
 
-<!-- Edit Device Name -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Edit Device Name</div><div class="release-date">Discussed Feb 26 session</div></div>
-        <span class="release-tag tag-low">Low</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem &amp; Solution</div>
-            <p class="note">Device name is prompted once on first launch and stored in localStorage. There is currently no way to change it after the fact. Add an editable field in Settings so users can correct a name entered incorrectly (e.g. first name only) or update it when a device changes hands. Device name appears in PACE entry audit trail and cloud session &ldquo;recorded by&rdquo; attribution.</p>
+    <!-- Edit Device Name -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Edit Device Name</div><div class="release-date">Discussed Feb 26 session</div></div>
+            </div>
+            <span class="release-tag tag-feature">Shipped</span>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem &amp; Solution</div>
+                <p class="note">Device name is prompted once on first launch and stored in localStorage. There is currently no way to change it after the fact. Add an editable field in Settings so users can correct a name entered incorrectly (e.g. first name only) or update it when a device changes hands. Device name appears in PACE entry audit trail and cloud session &ldquo;recorded by&rdquo; attribution.</p>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Audit Log -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Audit Log</div><div class="release-date">Discussed Feb 26 session</div></div>
-        <span class="release-tag tag-low">Low</span>
+    <!-- Audit Log -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Audit Log</div><div class="release-date">Discussed Feb 26 session</div></div>
+            <span class="release-tag tag-low">Low</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Goal</div>
+                <p class="note">A view in Settings showing a chronological log of significant changes made to club data &mdash; who made them, from which device, and when. Gives the administering officer visibility into data changes without requiring formal authentication or role-based access control.</p>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Events to Log</div>
+                <ul>
+                    <li>Roster additions and deletions</li>
+                    <li>Filler word additions and deletions</li>
+                    <li>PACE entry creates, updates, and deletes</li>
+                    <li>Role and point value changes</li>
+                    <li>Cloud sync pushes (who pushed, what changed)</li>
+                    <li>API key updates</li>
+                </ul>
+            </div>
+            <div class="change-group">
+                <div class="change-group-label">Implementation Notes</div>
+                <p class="note">Each log entry stored in a <code>audit_log</code> subcollection on the club Firestore document: <code>clubs/{syncCode}/audit_log</code>. Fields: <code>action</code>, <code>detail</code>, <code>deviceName</code>, <code>timestamp</code>. Display most recent 100 entries. Read-only view &mdash; no editing of the log itself. Accountability without authentication: anyone can see the log but entries are immutable and attributed.</p>
+            </div>
+        </div>
     </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Goal</div>
-            <p class="note">A view in Settings showing a chronological log of significant changes made to club data &mdash; who made them, from which device, and when. Gives the administering officer visibility into data changes without requiring formal authentication or role-based access control.</p>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Events to Log</div>
-            <ul>
-                <li>Roster additions and deletions</li>
-                <li>Filler word additions and deletions</li>
-                <li>PACE entry creates, updates, and deletes</li>
-                <li>Role and point value changes</li>
-                <li>Cloud sync pushes (who pushed, what changed)</li>
-                <li>API key updates</li>
-            </ul>
-        </div>
-        <div class="change-group">
-            <div class="change-group-label">Implementation Notes</div>
-            <p class="note">Each log entry stored in a <code>audit_log</code> subcollection on the club Firestore document: <code>clubs/{syncCode}/audit_log</code>. Fields: <code>action</code>, <code>detail</code>, <code>deviceName</code>, <code>timestamp</code>. Display most recent 100 entries. Read-only view &mdash; no editing of the log itself. Accountability without authentication: anyone can see the log but entries are immutable and attributed.</p>
-        </div>
-    </div>
-</div>
 
-<!-- Delete Propagation -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Delete Propagation UI</div><div class="release-date">Discussed Feb 24 session</div></div>
-        <span class="release-tag tag-low">Low</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem &amp; Solution</div>
-            <p class="note">When a speaker is deleted from the roster, their Firestore session history remains (by design &mdash; Progress filter hides it). No formal archive vs. delete distinction. Solution: on speaker delete, offer &ldquo;Remove from roster only&rdquo; vs. &ldquo;Remove from roster and delete all cloud history.&rdquo; Destructive path requires confirmation modal.</p>
+    <!-- Delete Propagation -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Delete Propagation UI</div><div class="release-date">Discussed Feb 24 session</div></div>
+            <span class="release-tag tag-low">Low</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem &amp; Solution</div>
+                <p class="note">When a speaker is deleted from the roster, their Firestore session history remains (by design &mdash; Progress filter hides it). No formal archive vs. delete distinction. Solution: on speaker delete, offer &ldquo;Remove from roster only&rdquo; vs. &ldquo;Remove from roster and delete all cloud history.&rdquo; Destructive path requires confirmation modal.</p>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Export Enhancement -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Export / Import Enhancement</div><div class="release-date">Discussed early sessions</div></div>
-        <span class="release-tag tag-low">Low</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Problem &amp; Solution</div>
-            <p class="note">Backup JSON currently includes roster, fillers, and API key &mdash; but not meeting logs. Add an option to include current meeting logs in the export. Session history is already covered by Firestore cloud storage.</p>
+    <!-- Export Enhancement -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Export / Import Enhancement</div><div class="release-date">Discussed early sessions</div></div>
+            <span class="release-tag tag-low">Low</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem &amp; Solution</div>
+                <p class="note">Backup JSON currently includes roster, fillers, and API key &mdash; but not meeting logs. Add an option to include current meeting logs in the export. Session history is already covered by Firestore cloud storage.</p>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Training Video -->
-<div class="release">
-    <div class="release-header">
-        <div><div class="version-num">Google Vids Training Video</div><div class="release-date">Discussed Feb 24 session</div></div>
-        <span class="release-tag tag-low">Low</span>
-    </div>
-    <div class="release-body">
-        <div class="change-group">
-            <div class="change-group-label">Idea</div>
-            <p class="note">Short walkthrough video showing new members how to install the PWA, join the club, and use Timer and Ah-Counter. Hosted on Google Vids and linked from the manual onboarding section.</p>
+    <!-- Training Video -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Google Vids Training Video</div><div class="release-date">Discussed Feb 24 session</div></div>
+            <span class="release-tag tag-low">Low</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Idea</div>
+                <p class="note">Short walkthrough video showing new members how to install the PWA, join the club, and use Timer and Ah-Counter. Hosted on Google Vids and linked from the manual onboarding section.</p>
+            </div>
         </div>
     </div>
-</div>
+
+
+    <!-- Timing / Verbal Tab Rename -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Tab Rename: Timer → Timing, Ah-Counter → Verbal</div><div class="release-date">Feb 2026</div></div>
+            <span class="release-tag tag-feature">Shipped</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Change</div>
+                <p class="note">Bottom tabs renamed to better reflect what they do rather than naming a specific role. <strong>Timer</strong> → <strong>Timing</strong>. <strong>Ah-Counter</strong> → <strong>Verbal</strong> (covers Ah-Counter, Grammarian, and Word Master). <strong>Club</strong> unchanged.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your Name / Edit Device Name -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Your Name (Edit Device Name)</div><div class="release-date">Feb 2026</div></div>
+            <span class="release-tag tag-feature">Shipped</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Change</div>
+                <p class="note">Settings now has a <strong>Your Name</strong> card showing the stored name with a tap-to-edit modal. Pre-fills the current value. Replaces the one-time-only prompt with an always-editable setting.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verbal roles from PACE -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Verbal Roles Pulled from PACE</div><div class="release-date">Feb 2026</div></div>
+            <span class="release-tag tag-feature">Shipped</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Change</div>
+                <p class="note">The Verbal (Ah-Counter) role selection screen now pulls from the club&rsquo;s PACE role list instead of a hardcoded list. Clubs with custom roles see them in both PACE entry and Verbal setup automatically. Falls back to default list if PACE roles are not configured.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Broadcast Message -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Broadcast Message</div><div class="release-date">Issue #14</div></div>
+            <span class="release-tag tag-low">Low</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Idea</div>
+                <p class="note">Allow an officer to push a message to all club members that appears as a banner or modal on next app open &mdash; useful for announcing meeting changes, reminders, or feature announcements. Stored in Firestore on the club document, cleared after read or expiry.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual test URL -->
+    <div class="release">
+        <div class="release-header">
+            <div><div class="version-num">Manual: Fix Test URL Link</div><div class="release-date">Issue #13</div></div>
+            <span class="release-tag tag-low">Low</span>
+            <span class="release-tag tag-fix">Doc Fix</span>
+        </div>
+        <div class="release-body">
+            <div class="change-group">
+                <div class="change-group-label">Problem</div>
+                <p class="note">The Officers tab in manual.html links to the <code>/test/</code> URL instead of the production URL. Needs to be updated to point to the live production app.</p>
+            </div>
+        </div>
+    </div>
 
 </div><!-- end panel-roadmap -->
 
@@ -697,6 +755,5 @@
         window.scrollTo(0, 0);
     }
 </script>
-
 </body>
 </html>
