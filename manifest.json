@@ -1,23 +1,23 @@
 {
-  "name": "Meeting Timer TEST",
-  "short_name": "Timer TEST",
-  "version": "1.0.0",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#007AFF",
-  "icons": [
-    {
-      "src": "icon-timer.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-timer.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ]
+“name”: “Meeting Tools”,
+“short_name”: “TMTools”,
+“version”: “3.2.3”,
+“start_url”: “index.html”,
+“display”: “standalone”,
+“background_color”: “#ffffff”,
+“theme_color”: “#007AFF”,
+“icons”: [
+{
+“src”: “icon-timer.png”,
+“sizes”: “192x192”,
+“type”: “image/png”,
+“purpose”: “any”
+},
+{
+“src”: “icon-timer.png”,
+“sizes”: “512x512”,
+“type”: “image/png”,
+“purpose”: “any”
+}
+]
 }
