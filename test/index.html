@@ -499,7 +499,7 @@ function getActiveClub() { return clubs.find(c=>c.id===activeClubId); }
 let currentMode='timer', currentSpeaker='', currentTally={}, iv, start, elapsed=0, lims={g:0,y:0,r:0}, selectedTypeLabel='';
 let fillerList=[], allSpeakers=[], paceRoles=[], recordingEnabled=false, sessionFromTranscript=false, counterStartTime=0;
 let mediaRecorder=null, recordingStream=null, audioChunks=[], transcriptResult='', transcriptCounts={};
-let recordingStartTime=0, speechDuration=0, activeTranscriptIndex=-1;
+let recordingStartTime=0, speechDuration=0, activeTranscriptIndex=-1, whisperAbortController=null, whisperElapsedTimer=null, whisperStartTime=0;
 
 const WOD_LIBRARY=["Eloquent","Pernicious","Resilience","Sagacious","Ubiquitous","Meticulous","Pragmatic","Ineffable","Luminous","Tenacious","Altruistic","Candor","Enigma","Fastidious","Gregarious","Inundated","Magnanimous","Nefarious","Obsequious","Parsimonious","Abundant","Benevolent","Clarity","Diligence","Exuberant","Fortitude","Gratitude","Harmony","Insight","Jubilant","Kindle","Legacy","Munificent","Novel","Opulent","Pensive","Quaint","Ruminate","Serene","Thrive","Urbane","Vivid","Wander","Zeal","Acumen","Boisterous","Cerebral","Deferential","Ephemeral","Frugal","Acquiesce","Alacrity","Ameliorate","Anachronism","Anomaly","Antipathy","Archaic","Assiduous","Atrophy","Auspicious","Austere","Belligerent","Banal","Brusque","Cajole","Callous","Capricious","Castigate","Caustic","Censure","Churlish","Circumspect","Clandestine","Coalesce","Cogent","Complacent","Conciliatory","Concise","Conundrum","Copious","Cordial","Corroborate","Cryptic","Culpable","Dearth","Debacle","Decorum","Deference","Deleterious","Demure","Denigrate","Diatribe","Didactic","Diffident","Diligence","Disparate","Disseminate","Dissonance","Divergent","Dogmatic","Dormant","Duplicity","Ebullient","Eclectic","Edify","Efficacious","Effrontery","Egregious","Elated","Elicit","Elucidate","Elusive","Embellish","Emulate","Enervate","Engender","Enmity","Ennui","Ephemeral","Epitome","Equanimity","Equivocal","Eradicate","Erudite","Esoteric","Espouse","Ethereal","Euphoric","Evanescent","Exacerbate","Exalt","Exasperate","Exemplary","Exhort","Exonerate","Exorbitant","Expedient","Expedite","Extol","Extricate","Exult","Facade","Facetious","Facilitate","Fallacious","Fastidious","Fathom","Fatuous","Felicitous","Fervent","Fetter","Fickle","Fidelity","Flagrant","Flamboyant","Flaunt","Fledgling","Flout","Fluctuate","Forbearance","Forestall","Forlorn","Forsake","Fortitude","Fortuitous","Foster","Fractious","Fraught","Frugal","Furtive","Futile","Garrulous","Genial","Germane","Glib","Grandiloquent","Grandiose","Gregarious","Guile","Gullible","Hackneyed","Hapless","Harangue","Harbinger","Hardy","Haughty","Heinous","Heterogeneous","Hiatus","Hierarchy","Hubris","Hypocrisy","Iconoclast","Idiosyncratic","Immutable","Impassive","Impeccable","Imperative","Imperious","Impetuous","Implacable","Implausible","Implore","Imprudent","Impudence","Impugn","Impunity","Inadvertent","Inane","Inaugurate","Incendiary","Incessant","Incisive","Incite","Incorrigible","Incredulous","Inculcate","Incumbent","Indefatigable","Indigenous","Indigent","Indignant","Indomitable","Indubitable","Indulgent","Ineffable","Inept","Inert","Inevitable","Inexorable","Infamy","Infuriate","Ingenious","Ingenuous","Ingratiate","Inherent","Inhibit","Inimical","Iniquity","Innate","Innocuous","Innovate","Innuendo","Inordinate","Insatiable","Inscrutable","Insidious","Insinuate","Insipid","Insolent","Instigate","Insular","Intangible","Integrity","Intelligible","Interminable","Intermittent","Intractable","Intransigent","Intrepid","Intrinsic","Inundate","Inure","Invective","Inveterate","Invidious","Invincible","Irascible","Iridescent","Irrevocable","Jaded","Jargon","Jettison","Jocular","Jovial","Judicious","Juxtaposition","Labyrinth","Laconic","Lament","Lampoon","Languid","Largess","Lassitude","Latent","Laudatory","Lavish","Legacy","Lenient","Lethargic","Levity","Loquacious","Lucid","Lucrative","Ludicrous","Lugubrious","Luminescent","Machination","Magnanimous","Malevolent","Malleable","Mandate","Manifest","Maverick","Maxim","Meager","Mediate","Melancholy","Mellifluous","Mendacious","Mercurial","Meritorious","Meticulous","Mettle","Mitigate","Modicum","Mollify","Momentous","Morose","Munificent","Myriad","Nascent","Nebulous","Nefarious","Negligence","Neophyte","Nexus","Nonchalant","Notoriety","Noxious","Nuance","Obdurate","Obfuscate","Oblivious","Obscure","Obsequious","Obstinate","Odious","Officious","Ominous","Omnipotent","Opaque","Opulent","Ostentatious","Ostracism","Palatable","Palliate","Panacea","Paradigm","Paradox","Paragon","Paramount","Pariah","Parsimony","Pathos","Paucity","Pedantic","Pejorative","Penchant","Pensive","Perceptive","Perfunctory","Pernicious","Perpetual","Perplexity","Perspicacity","Pertinent","Perturb","Pervasive","Petulant","Philanthropic","Pinnacle","Pithy","Placate","Platitude","Plausible","Plethora","Poignant","Portent","Pragmatic","Precarious","Precedent","Precept","Preclude","Precocious","Predilection","Presage","Prescience","Presumptuous","Prevalent","Prevaricate","Pristine","Probity","Proclivity","Prodigious","Profuse","Prolific","Promulgate","Propensity","Propitious","Propriety","Prosaic","Prowess","Prudence","Pugnacious","Punctilious","Punitive","Quaint","Quandary","Quell","Querulous","Quintessential","Quixotic","Radiant","Rancor","Rapport","Raucous","Rebuke","Recalcitrant","Recant","Reciprocal","Recondite","Rectitude","Redoubtable","Refute","Reiterate","Relentless","Remiss","Renovate","Renounce","Repentant","Replete","Reprehensible","Reprieve","Reproach","Repudiate","Rescind","Resilient","Resolute","Resonance","Respite","Resplendent","Retract","Retribution","Revel","Revere","Revoke","Rhetoric","Rigor","Ruminate","Sacrosanct","Sagacious","Salient","Sanctimonious","Sanguine","Satiate","Scrupulous","Sedate","Sedulous","Serendipity","Serene","Sinuous","Sobriety","Solace","Soporific","Specious","Spurious","Stagnate","Steadfast","Stifle","Stigma","Stoic","Strenuous","Strident","Stupefy","Subjugate","Sublime","Submissive","Subterfuge","Subtle","Subversive","Succinct","Succumb","Sumptuous","Supercilious","Superficial","Superfluous","Surfeit","Surmise","Surreptitious","Susceptible","Sycophant","Tacit","Taciturn","Tangential","Tangible","Tantamount","Tedious","Temerity","Temperance","Tenable","Tenacious","Tenuous","Tepid","Terse","Timorous","Tirade","Tortuous","Tranquil","Transgress","Transient","Transmute","Treachery","Tremulous","Trenchant","Trepidation","Trite","Truculent","Turgid","Ubiquitous","Umbrage","Uncanny","Undulate","Upbraid","Usurp","Vacillate","Vacuous","Valiant","Vanquish","Vapid","Vehement","Venerable","Venerate","Veracity","Verbose","Verdant","Vernacular","Versatile","Vestige","Vicissitude","Vigilant","Vilify","Vindicate","Vindictive","Virtuoso","Virulent","Visionary","Vituperate","Vivacious","Vivid","Vociferous","Volatility","Volition","Voracious","Wane","Warrant","Wary","Waver","Whimsical","Wily","Winsome","Wistful","Wizened","Zealot","Zenith","Zephyr"];
 
@@ -1539,7 +1539,53 @@ function generateReportText(){
 }
 
 /* ============ TRANSCRIPTION ============ */
-function initTranscription(){transcriptResult='';transcriptCounts={};audioChunks=[];const st=document.getElementById('transcriptionStatus');st.innerText='READY TO RECORD';st.style.color='#8E8E93';st.classList.remove('recording-pulse');document.getElementById('transcriptionContent').innerHTML='<span style="color:#8E8E93;font-style:italic;">Transcript will appear here after recording...</span>';document.getElementById('transcriptionResults').style.display='none';const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText='Start Recording';btn.style.background='var(--red)';btn.onclick=startTranscriptionRecording;}
+function showTransBanner(type) {
+    const container = document.getElementById('transcriptionContent').parentElement;
+    const existing = document.getElementById('transBandwidthBanner');
+    if (existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.id = 'transBandwidthBanner';
+    if (type === 'offline') {
+        banner.style.cssText = 'background:#FFE8E8;border-left:4px solid var(--red);padding:10px 14px;font-size:14px;color:#990000;margin:8px 0;border-radius:8px;';
+        banner.innerHTML = '⚠️ No internet connection. Transcription is not available — use manual filler counting instead.';
+    } else if (type === 'slow') {
+        banner.style.cssText = 'background:#FFF9E6;border-left:4px solid #BF941A;padding:10px 14px;font-size:14px;color:#7A5C00;margin:8px 0;border-radius:8px;';
+        banner.innerHTML = '⚠️ Slow connection detected. Transcription may take longer than usual or fail. Consider manual filler counting instead.';
+    }
+    container.insertBefore(banner, container.firstChild);
+}
+
+function initTranscription(){transcriptResult='';transcriptCounts={};audioChunks=[];whisperAbortController=null;clearInterval(whisperElapsedTimer);whisperElapsedTimer=null;
+    const st=document.getElementById('transcriptionStatus');st.innerText='READY TO RECORD';st.style.color='#8E8E93';st.classList.remove('recording-pulse');
+    document.getElementById('transcriptionContent').innerHTML='<span style="color:#8E8E93;font-style:italic;">Transcript will appear here after recording...</span>';
+    document.getElementById('transcriptionResults').style.display='none';
+    const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText='Start Recording';btn.style.background='var(--red)';btn.onclick=startTranscriptionRecording;
+    // Remove any previous bandwidth banner
+    const oldBanner = document.getElementById('transBandwidthBanner');
+    if (oldBanner) oldBanner.remove();
+    // Step 1: instant offline check via navigator.onLine
+    if (!navigator.onLine) {
+        showTransBanner('offline');
+        return;
+    }
+    // Step 2: timed probe to detect slow connections (4s timeout)
+    const probeStart = Date.now();
+    const probeController = new AbortController();
+    const probeTimeout = setTimeout(() => probeController.abort(), 4000);
+    fetch('https://api.openai.com/v1/models', {
+        method: 'HEAD',
+        cache: 'no-store',
+        signal: probeController.signal
+    }).then(() => {
+        clearTimeout(probeTimeout);
+        const rtt = Date.now() - probeStart;
+        if (rtt > 1500) showTransBanner('slow');
+    }).catch(e => {
+        clearTimeout(probeTimeout);
+        // AbortError = timed out = slow connection
+        if (e.name === 'AbortError') showTransBanner('slow');
+        // CORS/other errors on HEAD are not meaningful — ignore
+    });btn.onclick=startTranscriptionRecording;}
 async function startTranscriptionRecording(){
     const aiKey=(localStorage.getItem(pk(KEY_AI_KEY))||'').trim();
     if(!aiKey){openModal("API Key Required","Please add your OpenAI Key in Settings first.",()=>{});return;}
@@ -1552,12 +1598,75 @@ async function startTranscriptionRecording(){
         const btn=document.getElementById('transRecordBtn');btn.innerText='End Speech';btn.style.background='var(--accent)';btn.onclick=stopTranscriptionRecording;
     }catch(e){openModal("Microphone Error","Could not access microphone. Please check permissions.",()=>{});}
 }
-function stopTranscriptionRecording(){speechDuration=Math.round((Date.now()-recordingStartTime)/1000);if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}const st=document.getElementById('transcriptionStatus');st.innerText='ANALYZING...';st.style.color='var(--accent)';st.classList.remove('recording-pulse');const btn=document.getElementById('transRecordBtn');btn.disabled=true;btn.innerText='Analyzing...';btn.style.background='#8E8E93';}
+function stopTranscriptionRecording(){
+    speechDuration=Math.round((Date.now()-recordingStartTime)/1000);
+    if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
+    if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}
+    whisperStartTime=Date.now();
+    const st=document.getElementById('transcriptionStatus');
+    st.classList.remove('recording-pulse');
+    // Start elapsed timer
+    clearInterval(whisperElapsedTimer);
+    whisperElapsedTimer=setInterval(()=>{
+        const secs=Math.floor((Date.now()-whisperStartTime)/1000);
+        const mm=String(Math.floor(secs/60)).padStart(2,'0');
+        const ss=String(secs%60).padStart(2,'0');
+        st.innerText='PROCESSING... '+mm+':'+ss;
+        st.style.color='var(--accent)';
+        // Nudge after 2 minutes
+        const btn=document.getElementById('transRecordBtn');
+        if(secs===120){btn.innerText='Still working... (tap to cancel)';btn.style.background='var(--gold)';}
+    },1000);
+    st.innerText='PROCESSING... 00:00';st.style.color='var(--accent)';
+    const btn=document.getElementById('transRecordBtn');
+    btn.disabled=false;btn.innerText='Cancel';btn.style.background='#8E8E93';
+    btn.onclick=cancelWhisper;
+}
 async function sendToWhisper(){
     const aiKey=(localStorage.getItem(pk(KEY_AI_KEY))||'').trim();
-    const blob=new Blob(audioChunks,{type:'audio/webm'});const fd=new FormData();fd.append("file",blob,"recording.webm");fd.append("model","whisper-1");fd.append("prompt","Transcribe literally, capturing all filler words such as um, uh, ah, er, like, so, you know exactly as spoken.");
-    try{const res=await fetch("https://api.openai.com/v1/audio/transcriptions",{method:"POST",headers:{"Authorization":`Bearer ${aiKey}`},body:fd});const data=await res.json();if(data.text){transcriptResult=data.text;analyzeTranscript(data.text);}else showTranscriptionError("Transcription failed. Please try again.");}
-    catch(e){showTranscriptionError("Network error. Please check your connection.");}
+    const blob=new Blob(audioChunks,{type:'audio/webm'});
+    const fd=new FormData();
+    fd.append('file',blob,'recording.webm');
+    fd.append('model','whisper-1');
+    fd.append('prompt','Transcribe literally, capturing all filler words such as um, uh, ah, er, like, so, you know exactly as spoken.');
+    whisperAbortController=new AbortController();
+    // 5-minute hard timeout
+    const timeoutId=setTimeout(()=>{
+        if(whisperAbortController){whisperAbortController.abort();}
+    }, 5*60*1000);
+    try{
+        const res=await fetch('https://api.openai.com/v1/audio/transcriptions',{
+            method:'POST',
+            headers:{'Authorization':'Bearer '+aiKey},
+            body:fd,
+            signal:whisperAbortController.signal
+        });
+        clearTimeout(timeoutId);
+        clearInterval(whisperElapsedTimer);whisperElapsedTimer=null;
+        const data=await res.json();
+        if(data.text){transcriptResult=data.text;analyzeTranscript(data.text);}
+        else showTranscriptionError('Transcription failed. Please try again.');
+    }catch(e){
+        clearTimeout(timeoutId);
+        clearInterval(whisperElapsedTimer);whisperElapsedTimer=null;
+        if(e.name==='AbortError'){
+            const secs=Math.floor((Date.now()-whisperStartTime)/1000);
+            if(secs>=300){
+                showTranscriptionError('Transcription timed out after 5 minutes. Connection may be too slow. Your recording was not saved.');
+            } else {
+                showTranscriptionError('Transcription cancelled.');
+            }
+        } else {
+            showTranscriptionError('Network error. Please check your connection.');
+        }
+    } finally {
+        whisperAbortController=null;
+    }
+}
+
+function cancelWhisper(){
+    if(whisperAbortController){whisperAbortController.abort();}
+    clearInterval(whisperElapsedTimer);whisperElapsedTimer=null;
 }
 function showTranscriptionError(msg){const st=document.getElementById('transcriptionStatus');st.innerText='ERROR';st.style.color='var(--red)';document.getElementById('transcriptionContent').innerText=msg;const btn=document.getElementById('transRecordBtn');btn.disabled=false;btn.innerText='Try Again';btn.style.background='var(--red)';btn.onclick=startTranscriptionRecording;}
 function analyzeTranscript(rawText){
@@ -1739,9 +1848,18 @@ async function loadPaceLeaderboard() {
         clearTimeout(paceSpinnerTimer);
         const sorted = Object.entries(totals).sort((a,b) => b[1].points - a[1].points);
         if (!sorted.length) {
-            area.innerHTML = `<div style="padding:30px 20px;text-align:center;opacity:0.5;font-size:17px;">No entries for ${paceSelectedYear}.<br><br>Tap <strong>+ New Entry</strong> to record a meeting.</div>`;
+            // If this is the first load after a fresh sync, retry once after 2s
+            // in case pace_entries haven't settled yet
+            if (!loadPaceLeaderboard._retried) {
+                loadPaceLeaderboard._retried = true;
+                setTimeout(loadPaceLeaderboard, 2000);
+                return;
+            }
+            loadPaceLeaderboard._retried = false;
+            area.innerHTML = `<div style="padding:30px 20px;text-align:center;opacity:0.5;font-size:17px;">No PACE data for ${paceSelectedYear}.<br><br>Tap <strong>+ New Entry</strong> to record a meeting.</div>`;
             return;
         }
+        loadPaceLeaderboard._retried = false;
         const goal = 100;
         area.innerHTML = sorted.map(([name, data], i) => {
             const meetings = data.meetings.size;

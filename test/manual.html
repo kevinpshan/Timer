@@ -101,7 +101,7 @@
                 <a href="#firstrun">1. First Time Setup</a>
                 <a href="#wod">2. Word of the Day</a>
                 <a href="#timer">3. Timer</a>
-                <a href="#counter">4. Ah-Counter &amp; Filler Words</a>
+                <a href="#counter">4. Verbal &amp; Filler Words</a>
                 <a href="#report">5. Meeting Report</a>
                 <a href="#transcription">6. Speech Recording &amp; Transcription</a>
                 <a href="#transcripts">7. Transcripts</a>
@@ -149,7 +149,7 @@
                 <li><strong>Commit &amp; Exit</strong> — saves to the meeting report and returns to menu.</li>
             </ul>
 
-            <h2 id="counter">4. Ah-Counter &amp; Filler Words</h2>
+            <h2 id="counter">4. Verbal &amp; Filler Words</h2>
             <p>Track filler words for any speaker in any role.</p>
             <h3>Default Filler Words</h3>
             <p>Every club starts with: <code>AH</code>, <code>UH</code>, <code>UM</code>, <code>ER</code>, <code>SO</code>, <code>LIKE</code>, <code>YOU KNOW</code>, plus a Word of the Day placeholder.</p>
@@ -173,7 +173,7 @@
             <p>Scored manual sessions appear in the Progress tracker with the same color-coded percentage as transcribed sessions. The score also writes to Firestore and appears in the Cloud Meeting Report.</p>
 
             <h2 id="report">5. Meeting Report</h2>
-            <p>Access via Timer → Meeting Report or Ah-Counter → Counter Report.</p>
+            <p>Access via Timing → Meeting Report or Verbal → Counter Report.</p>
             <h3>This Device Tab</h3>
             <p>Shows all sessions recorded on this device during the current meeting — same Name | Role | Result format as before.</p>
             <h3>☁ Cloud Tab</h3>
@@ -190,10 +190,13 @@
             <h2 id="transcription">6. Speech Recording &amp; Transcription</h2>
             <p>Record a speaker, transcribe with <strong>OpenAI Whisper</strong>, and automatically detect filler words.</p>
             <ol>
-                <li>On the Setup screen in Ah-Counter mode, toggle <strong>Record Speech</strong> on.</li>
+                <li>On the Setup screen in Verbal mode, toggle <strong>Record Speech</strong> on.</li>
                 <li>Enter the speaker name, select their role, tap <strong>START</strong>.</li>
+                <li>The app checks your connection automatically. A yellow banner means slow connection — transcription may take longer or fail. A red banner means no connection — use manual filler counting instead.</li>
                 <li>Tap <strong>Start Recording</strong> when the speaker begins.</li>
-                <li>Tap <strong>End Speech</strong> when they finish — the audio transcribes automatically.</li>
+                <li>Tap <strong>End Speech</strong> when they finish — processing begins automatically with an elapsed timer showing progress.</li>
+                <li>Tap <strong>Cancel</strong> at any time during processing to abort. After 2 minutes the button turns gold as a reminder it's still working.</li>
+                <li>Processing times out automatically after 5 minutes if no response is received.</li>
                 <li>Tap <strong>Merge to Counter</strong> to send detected counts to the tally.</li>
             </ol>
             <h3>Filler Score</h3>
@@ -207,7 +210,7 @@
             <h2 id="transcripts">7. Transcripts</h2>
             <p>Every transcribed speech is saved for the current meeting so you can share it with the speaker.</p>
             <ul>
-                <li><strong>Access:</strong> Ah-Counter menu → Transcripts.</li>
+                <li><strong>Access:</strong> Verbal menu → Transcripts.</li>
                 <li><strong>View:</strong> Tap any speaker to open their highlighted transcript with filler summary and score.</li>
                 <li><strong>Share:</strong> Tap Share to send via email, Messages, Slack, or any app.</li>
                 <li><strong>Cleared with meeting data:</strong> Transcripts reset when you tap Clear Meeting Data in Settings.</li>
@@ -259,8 +262,9 @@
             <h3>Embedding on Your Club Website</h3>
             <p>Tap <strong>Embed ↗</strong> on the leaderboard to get ready-to-paste HTML snippets for a ranked leaderboard or bar chart widget. Paste either snippet anywhere on your club website — no setup required, data updates automatically.</p>
 
-            <h2 id="settings-member">9. Settings</h2>
+            <h2 id="settings-member">10. Settings</h2>
             <ul>
+                <li><strong>Your Name</strong> — the name recorded on session reports and PACE entries. Set once on first use; tap to edit at any time.</li>
                 <li><strong>Markdown Export</strong> — reports and transcripts use markdown formatting for Slack and email.</li>
                 <li><strong>ChatGPT API Key</strong> — pre-filled automatically if your officer set one up via cloud sync.</li>
                 <li><strong>Backup Data</strong> — downloads a JSON file as an emergency restore.</li>
